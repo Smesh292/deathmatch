@@ -46,11 +46,11 @@ public void OnPluginStart()
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
-	KeyValues origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
-	KeyValues angles = CreateKeyValues("GlobalKey")
+	KeyValues kv_origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	KeyValues kv_angles = CreateKeyValues("GlobalKey")
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
-	origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
-	angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
+	kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
+	kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sKVStringOrigin[32]
 	char sKVStringAngles[32]
