@@ -53,17 +53,17 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	char sKVStringOrigin[32]
 	char sKVStringAngles[32]
 	//spawn.ImportFromString("")
-	int count = 1
+	//int count = 1
 	int randomint = GetRandomInt(1, 31)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
-	for(int i = 1; i <= randomint; i++)
+	//for(int i = 1; i <= randomint; i++)
 	{
-		if(i == randomint)
+		//if(i == randomint)
 		{
-			char sInt[32]
-			IntToString(i, sInt, 32)
-			spawn.GetString(sInt, sKVStringOrigin, 32)
+			char sRandomInt[32]
+			IntToString(randomint, sRandomInt, 32)
+			spawn.GetString(sRandomInt, sKVStringOrigin, 32)
 			PrintToServer("1. %s", sKVStringOrigin)
 			char sOrigin[4][64]
 			ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
