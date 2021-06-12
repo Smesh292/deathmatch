@@ -43,6 +43,7 @@ public void OnPluginStart()
 	//Event
 	HookEvent("player_death", playerdeath)
 	HookEvent("player_class", playerclass)
+	RegConsoleCmd("sm_testbuyzone", cmd_testbuyzone)
 }
 
 Action playerclass(Event event, const char[] name, bool dontBroadcast)
@@ -136,6 +137,12 @@ Action respawnTimer(Handle timer, int client)
 		//RequestFrame(frame, client)
 	}
 	return Plugin_Stop
+}
+
+Action cmd_testbuyzone(int client, int args)
+{
+	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iAccount"))
+	return Plugin_Handled
 }
 
 //void frame(int client)
