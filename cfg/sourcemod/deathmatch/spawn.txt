@@ -1,1 +1,4 @@
-"test"
+"GlobalKey"
+{
+	"1"	"test"
+}
