@@ -81,7 +81,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 				//CS_RespawnPlayer(client)
 				//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
 			}
-			continue
+			//continue
 		}
 	}
 	//spawn.GetString("1", sKVString, 32)
