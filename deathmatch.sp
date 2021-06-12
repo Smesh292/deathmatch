@@ -25,7 +25,7 @@ software and other kinds of works.
 #include <sdktools>
 
 float gF_origin[MAXPLAYERS + 1][3]
-float gF_angles[3]
+float gF_angles[MAXPLAYERS + 1[3]
 
 public Plugin myinfo =
 {
@@ -64,9 +64,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			char sRandomInt[32]
 			IntToString(randomint, sRandomInt, 32)
 			spawn.GetString(sRandomInt, sKVStringOrigin, 32)
+			spawn.GetString(sRandomInt, sKVStringAngles, 32)
 			PrintToServer("1. %s", sKVStringOrigin)
 			char sOrigin[4][64]
+			char sAngles[4][64]
 			ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
+			ExplodeString(sKVStringAngles, " ", sAngles, 3, 64)
 			PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
 			float origin[3]
 			origin[0] = StringToFloat(sOrigin[0])
@@ -75,6 +78,13 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			gF_origin[client][1] = origin[1]
 			origin[2] = StringToFloat(sOrigin[2])
 			gF_origin[client][2] = origin[2]
+			float angles[3]
+			angles[0] = StringToFloat(sAngles[0])
+			gF_angles[client][0] = angles[0]
+			angles[1] = StringToFloat(sAngles[1])
+			gF_angles[client][1] = angles[1]
+			angles[2] = StringToFloat(sAngles[2])
+			gF_angles[client][2] = angles[2]
 			//if(IsClientInGame(client) && IsValidEntity(client))
 			{
 				CreateTimer(1.0, respawnTimer, client)
@@ -100,21 +110,22 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action respawnTimer(Handle timer, int client)
 {
 	CS_RespawnPlayer(client)
-	RequestFrame(frame, client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], {0.0, 0.0, 0.0})
+	//RequestFrame(frame, client)
 	return Plugin_Stop
 }
 
-void frame(int client)
-{
-	RequestFrame(frame2, client)
-	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
-}
-
-void frame2(int client)
-{
+//void frame(int client)
+//{
 	//RequestFrame(frame2, client)
-	TeleportEntity(client, gF_origin[client], gF_angles, {0.0, 0.0, 0.0})
-}
+	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+//}
+
+//void frame2(int client)
+//{
+	//RequestFrame(frame2, client)
+	
+//}
 
 public void OnMapStart()
 {
