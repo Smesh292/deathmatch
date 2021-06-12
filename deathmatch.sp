@@ -32,10 +32,11 @@ public Plugin myinfo =
 
 public void OnMapStart()
 {
-	KeyValues spawn
-	spawn.FileToKeyValues("cfg/sourcemod/deathmmatch/spawn.txt")
+	KeyValues spawn = CreateKeyValues("") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt")
+	PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sSpawn[32]
-	spawn.KvGetString(NULL_STRING, sSpawn, 32)
+	spawn.GetString(NULL_STRING, sSpawn, 32)
 	PrintToServer("%s", sSpawn)
 	//FileType_Directory(
 }
