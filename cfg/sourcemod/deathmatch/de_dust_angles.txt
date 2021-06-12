@@ -32,3 +32,4 @@
 	"30"	"0.000000 61.995850 0.000000"
 	"31"	"0.000000 95.388794 0.000000"
 }
+//https://github.com/alliedmodders/cssdm/blob/master/cfg/spawns/cstrike/de_dust.txt
