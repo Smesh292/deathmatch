@@ -50,8 +50,8 @@ Action playerclass(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	GetPossition(client)
-	CS_RespawnPlayer(client)
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+	//CS_RespawnPlayer(client)
+	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 }
 
 void GetPossition(int client)
@@ -97,6 +97,7 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sAngles[2])
 	gF_angles[client][2] = angles[2]
+	CreateTimer(1.0, respawnTimer, client)
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
@@ -105,7 +106,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//{
 		int client = GetClientOfUserId(event.GetInt("userid"))
 		GetPossition(client)
-		CreateTimer(1.0, respawnTimer, client)
+		//CreateTimer(1.0, respawnTimer, client)
 		//CS_RespawnPlayer(client)
 		//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
 	//}
