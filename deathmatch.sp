@@ -48,10 +48,12 @@ public void OnPluginStart()
 Action playerclass(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
+	GetPossition(client)
 	CS_RespawnPlayer(client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 }
 
-Action playerdeath(Event event, const char[] name, bool dontBroadcast)
+void GetPossition(int client)
 {
 	KeyValues kv_origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
 	KeyValues kv_angles = CreateKeyValues("GlobalKey")
@@ -64,45 +66,51 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//spawn.ImportFromString("")
 	//int count = 1
 	int randomint = GetRandomInt(1, 31)
-	int client = GetClientOfUserId(event.GetInt("userid"))
+	//int client = GetClientOfUserId(event.GetInt("userid"))
 	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
 	//for(int i = 1; i <= randomint; i++)
-	{
+	//{
 		//if(i == randomint)
-		{
-			char sRandomInt[32]
-			IntToString(randomint, sRandomInt, 32)
-			kv_origin.GetString(sRandomInt, sKVStringOrigin, 32)
-			kv_angles.GetString(sRandomInt, sKVStringAngles, 32)
-			PrintToServer("1. %s", sKVStringOrigin)
-			char sOrigin[4][64]
-			char sAngles[4][64]
-			ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
-			ExplodeString(sKVStringAngles, " ", sAngles, 3, 64)
-			PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
-			float origin[3]
-			origin[0] = StringToFloat(sOrigin[0])
-			gF_origin[client][0] = origin[0]
-			origin[1] = StringToFloat(sOrigin[1])
-			gF_origin[client][1] = origin[1]
-			origin[2] = StringToFloat(sOrigin[2])
-			gF_origin[client][2] = origin[2]
-			float angles[3]
-			angles[0] = StringToFloat(sAngles[0])
-			gF_angles[client][0] = angles[0]
-			angles[1] = StringToFloat(sAngles[1])
-			gF_angles[client][1] = angles[1]
-			angles[2] = StringToFloat(sAngles[2])
-			gF_angles[client][2] = angles[2]
-			//if(IsClientInGame(client) && IsValidEntity(client))
-			{
-				CreateTimer(1.0, respawnTimer, client)
-				//CS_RespawnPlayer(client)
-				//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
-			}
-			//continue
-		}
-	}
+		//{
+	char sRandomInt[32]
+	IntToString(randomint, sRandomInt, 32)
+	kv_origin.GetString(sRandomInt, sKVStringOrigin, 32)
+	kv_angles.GetString(sRandomInt, sKVStringAngles, 32)
+	PrintToServer("1. %s", sKVStringOrigin)
+	char sOrigin[4][64]
+	char sAngles[4][64]
+	ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
+	ExplodeString(sKVStringAngles, " ", sAngles, 3, 64)
+	PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
+	float origin[3]
+	origin[0] = StringToFloat(sOrigin[0])
+	gF_origin[client][0] = origin[0]
+	origin[1] = StringToFloat(sOrigin[1])
+	gF_origin[client][1] = origin[1]
+	origin[2] = StringToFloat(sOrigin[2])
+	gF_origin[client][2] = origin[2]
+	float angles[3]
+	angles[0] = StringToFloat(sAngles[0])
+	gF_angles[client][0] = angles[0]
+	angles[1] = StringToFloat(sAngles[1])
+	gF_angles[client][1] = angles[1]
+	angles[2] = StringToFloat(sAngles[2])
+	gF_angles[client][2] = angles[2]
+}
+
+Action playerdeath(Event event, const char[] name, bool dontBroadcast)
+{
+	//if(IsClientInGame(client) && IsValidEntity(client))
+	//{
+		int client = GetClientOfUserId(event.GetInt("userid"))
+		GetPossition(client)
+		
+		//CS_RespawnPlayer(client)
+		//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+	//}
+	//continue
+//}
+	//}
 	//spawn.GetString("1", sKVString, 32)
 	//PrintToServer("%s", sKVString)
 	//char sSpawn[32]
@@ -122,6 +130,8 @@ Action respawnTimer(Handle timer, int client)
 	{
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		//https://forums.alliedmods.net/showthread.php?t=267445
+		SetEntProp(client, Prop_Data, "m_iAccount", 9)
 	//}
 		//RequestFrame(frame, client)
 	}
