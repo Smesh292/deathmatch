@@ -42,6 +42,13 @@ public void OnPluginStart()
 	//Event
 	//Event
 	HookEvent("player_death", playerdeath)
+	HookEvent("player_class", playerclass)
+}
+
+Action playerclass(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	CS_RespawnPlayer(client)
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
