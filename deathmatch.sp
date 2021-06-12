@@ -77,8 +77,9 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			gF_origin[2] = origin[2]
 			//if(IsClientInGame(client) && IsValidEntity(client))
 			{
-				CS_RespawnPlayer(client)
-				TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+				CreateTimer(1.0, respawnTimer, client)
+				//CS_RespawnPlayer(client)
+				//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
 			}
 			continue
 		}
@@ -94,6 +95,13 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//SetEntProp
 	//CS_RespawnPlayer(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
+}
+
+Action respawnTimer(Handle timer, int client)
+{
+	CS_RespawnPlayer(client)
+	TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+	return Plugin_Stop
 }
 
 public void OnMapStart()
