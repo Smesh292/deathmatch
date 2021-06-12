@@ -109,8 +109,11 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 
 Action respawnTimer(Handle timer, int client)
 {
-	CS_RespawnPlayer(client)
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+	if(IsClientInGame(client))
+	{
+		CS_RespawnPlayer(client)
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+	}
 	//RequestFrame(frame, client)
 	return Plugin_Stop
 }
