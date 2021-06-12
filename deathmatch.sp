@@ -132,7 +132,8 @@ Action respawnTimer(Handle timer, int client)
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		//https://forums.alliedmods.net/showthread.php?t=267445
-		SetEntProp(client, Prop_Send, "m_iAccount", 9)
+		//SetEntProp(client, Prop_Send, "m_iAccount", 9)
+		SetEntProp(client, Prop_Send, "m_bInBuyZone", 1)
 	//}
 		//RequestFrame(frame, client)
 	}
