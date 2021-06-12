@@ -24,7 +24,7 @@ software and other kinds of works.
 #include <cstrike>
 #include <sdktools>
 
-float gF_origin[3]
+float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[3]
 
 public Plugin myinfo =
@@ -69,12 +69,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
 			PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
 			float origin[3]
-			origin[0] = StringToInt(sOrigin[0])
-			gF_origin[0] = origin[0]
-			origin[1] = StringToInt(sOrigin[1])
-			gF_origin[1] = origin[1]
-			origin[2] = StringToInt(sOrigin[2])
-			gF_origin[2] = origin[2]
+			origin[0] = StringToFloat(sOrigin[0])
+			gF_origin[client][0] = origin[0]
+			origin[1] = StringToFloat(sOrigin[1])
+			gF_origin[client][1] = origin[1]
+			origin[2] = StringToFloat(sOrigin[2])
+			gF_origin[client][2] = origin[2]
 			//if(IsClientInGame(client) && IsValidEntity(client))
 			{
 				CreateTimer(1.0, respawnTimer, client)
@@ -113,7 +113,7 @@ void frame(int client)
 void frame2(int client)
 {
 	//RequestFrame(frame2, client)
-	TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+	TeleportEntity(client, gF_origin[client], gF_angles, {0.0, 0.0, 0.0})
 }
 
 public void OnMapStart()
