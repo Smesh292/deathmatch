@@ -100,8 +100,20 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action respawnTimer(Handle timer, int client)
 {
 	CS_RespawnPlayer(client)
-	TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+	RequestFrame(frame, client)
 	return Plugin_Stop
+}
+
+void frame(int client)
+{
+	RequestFrame(frame2, client)
+	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+}
+
+void frame2(int client)
+{
+	//RequestFrame(frame2, client)
+	TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
 }
 
 public void OnMapStart()
