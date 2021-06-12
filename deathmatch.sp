@@ -121,15 +121,15 @@ Action respawnTimer(Handle timer, int client)
 
 void frame(int client)
 {
+	RequestFrame(frame2, client)
+	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+}
+
+void frame2(int client)
+{
 	//RequestFrame(frame2, client)
 	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 }
-
-//void frame2(int client)
-//{
-	//RequestFrame(frame2, client)
-	
-//}
 
 public void OnMapStart()
 {
