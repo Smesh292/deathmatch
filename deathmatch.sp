@@ -104,7 +104,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//{
 		int client = GetClientOfUserId(event.GetInt("userid"))
 		GetPossition(client)
-		
+		CreateTimer(1.0, respawnTimer, client)
 		//CS_RespawnPlayer(client)
 		//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
 	//}
