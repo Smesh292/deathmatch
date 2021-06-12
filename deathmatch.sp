@@ -37,7 +37,7 @@ public void OnMapStart()
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sKVString[32]
 	//spawn.ImportFromString("")
-	spawn.GetString("key_key", sKVString, 32)
+	spawn.GetString(NULL_STRING, sKVString, 32)
 	PrintToServer("%s", sKVString)
 	//char sSpawn[32]
 	//spawn.GetString(NULL_STRING, sSpawn, 32)
