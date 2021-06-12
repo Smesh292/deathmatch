@@ -21,6 +21,12 @@ software and other kinds of works.
 	any other work released this way by its authors. You can apply it to
 	your programs, too.*/
 
+#include <cstrike>
+#include <sdktools>
+
+float gF_origin[3]
+float gF_angles[3]
+
 public Plugin myinfo =
 {
 	name = "Deathmatch",
@@ -30,17 +36,62 @@ public Plugin myinfo =
 	url = "http://www.sourcemod.net/"
 }
 
-public void OnMapStart()
+public void OnPluginStart()
+{
+	//EventHook(
+	//Event
+	//Event
+	HookEvent("player_spawn", playerspawn)
+}
+
+Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	KeyValues spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
-	spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
+	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
+	spawn.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
-	char sKVString[32]
+	char sKVStringOrigin[32]
+	char sKVStringAngles[32]
 	//spawn.ImportFromString("")
-	spawn.GetString("1", sKVString, 32)
-	PrintToServer("%s", sKVString)
+	int count = 1
+	int randomint = GetRandomInt(1, 31)
+	int client = event.GetInt("userid")
+	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
+	for(int i = 1; i <= randomint; i++)
+	{
+		if(i == randomint)
+		{
+			char sInt[32]
+			IntToString(i, sInt, 32)
+			spawn.GetString(sInt, sKVStringOrigin, 32)
+			char sOrigin[32][3]
+			ExplodeString(sKVStringOrigin, " ", sOrigin, 2, 32)
+			float origin[3]
+			origin[0] = StringToInt(sOrigin[0])
+			gF_origin[0] = origin[0]
+			origin[1] = StringToInt(sOrigin[1])
+			gF_origin[1] = origin[1]
+			origin[2] = StringToInt(sOrigin[2])
+			gF_origin[2] = origin[2]
+			CS_RespawnPlayer(client)
+			TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+			continue
+		}
+	}
+	//spawn.GetString("1", sKVString, 32)
+	//PrintToServer("%s", sKVString)
 	//char sSpawn[32]
 	//spawn.GetString(NULL_STRING, sSpawn, 32)
 	//PrintToServer("%s", sSpawn)
 	//FileType_Directory(
+	//int client
+	//int client = event.EventInt("userid")
+	//SetEntProp
+	//CS_RespawnPlayer(client)
+	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
+}
+
+public void OnMapStart()
+{
+
 }
