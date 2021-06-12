@@ -46,9 +46,11 @@ public void OnPluginStart()
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
-	KeyValues spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	KeyValues origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	KeyValues angles = CreateKeyValues("GlobalKey")
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
-	spawn.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
+	origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
+	angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sKVStringOrigin[32]
 	char sKVStringAngles[32]
@@ -63,8 +65,8 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			char sRandomInt[32]
 			IntToString(randomint, sRandomInt, 32)
-			spawn.GetString(sRandomInt, sKVStringOrigin, 32)
-			spawn.GetString(sRandomInt, sKVStringAngles, 32)
+			origin.GetString(sRandomInt, sKVStringOrigin, 32)
+			angles.GetString(sRandomInt, sKVStringAngles, 32)
 			PrintToServer("1. %s", sKVStringOrigin)
 			char sOrigin[4][64]
 			char sAngles[4][64]
@@ -79,12 +81,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			origin[2] = StringToFloat(sOrigin[2])
 			gF_origin[client][2] = origin[2]
 			float angles[3]
-			angles[0] = StringToFloat(sAngles[0])
-			gF_angles[client][0] = angles[0]
+			//angles[0] = StringToFloat(sAngles[0])
+			//gF_angles[client][0] = angles[0]
 			angles[1] = StringToFloat(sAngles[1])
 			gF_angles[client][1] = angles[1]
-			angles[2] = StringToFloat(sAngles[2])
-			gF_angles[client][2] = angles[2]
+			//angles[2] = StringToFloat(sAngles[2])
+			//gF_angles[client][2] = angles[2]
 			//if(IsClientInGame(client) && IsValidEntity(client))
 			{
 				CreateTimer(1.0, respawnTimer, client)
@@ -114,22 +116,22 @@ Action respawnTimer(Handle timer, int client)
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 	//}
-		RequestFrame(frame, client)
+		//RequestFrame(frame, client)
 	}
 	return Plugin_Stop
 }
 
-void frame(int client)
-{
-	RequestFrame(frame2, client)
-	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-}
-
-void frame2(int client)
-{
+//void frame(int client)
+//{
 	//RequestFrame(frame2, client)
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-}
+	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+//}
+
+//void frame2(int client)
+//{
+	//RequestFrame(frame2, client)
+	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+//}
 
 public void OnMapStart()
 {
