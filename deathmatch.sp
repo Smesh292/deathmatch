@@ -41,10 +41,10 @@ public void OnPluginStart()
 	//EventHook(
 	//Event
 	//Event
-	HookEvent("player_spawn", playerspawn)
+	HookEvent("player_death", playerdeath)
 }
 
-Action playerspawn(Event event, const char[] name, bool dontBroadcast)
+Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	KeyValues spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
