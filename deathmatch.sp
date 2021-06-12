@@ -81,12 +81,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			origin[2] = StringToFloat(sOrigin[2])
 			gF_origin[client][2] = origin[2]
 			float angles[3]
-			//angles[0] = StringToFloat(sAngles[0])
-			//gF_angles[client][0] = angles[0]
+			angles[0] = StringToFloat(sAngles[0])
+			gF_angles[client][0] = angles[0]
 			angles[1] = StringToFloat(sAngles[1])
 			gF_angles[client][1] = angles[1]
-			//angles[2] = StringToFloat(sAngles[2])
-			//gF_angles[client][2] = angles[2]
+			angles[2] = StringToFloat(sAngles[2])
+			gF_angles[client][2] = angles[2]
 			//if(IsClientInGame(client) && IsValidEntity(client))
 			{
 				CreateTimer(1.0, respawnTimer, client)
