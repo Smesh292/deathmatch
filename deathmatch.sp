@@ -113,16 +113,17 @@ Action respawnTimer(Handle timer, int client)
 	{
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+	//}
+		RequestFrame(frame, client)
 	}
-	//RequestFrame(frame, client)
 	return Plugin_Stop
 }
 
-//void frame(int client)
-//{
+void frame(int client)
+{
 	//RequestFrame(frame2, client)
-	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
-//}
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+}
 
 //void frame2(int client)
 //{
