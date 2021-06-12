@@ -25,7 +25,7 @@ software and other kinds of works.
 #include <sdktools>
 
 float gF_origin[MAXPLAYERS + 1][3]
-float gF_angles[MAXPLAYERS + 1[3]
+float gF_angles[MAXPLAYERS + 1][3]
 
 public Plugin myinfo =
 {
