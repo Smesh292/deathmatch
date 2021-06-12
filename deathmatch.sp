@@ -65,8 +65,8 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		{
 			char sRandomInt[32]
 			IntToString(randomint, sRandomInt, 32)
-			origin.GetString(sRandomInt, sKVStringOrigin, 32)
-			angles.GetString(sRandomInt, sKVStringAngles, 32)
+			kv_origin.GetString(sRandomInt, sKVStringOrigin, 32)
+			kv_angles.GetString(sRandomInt, sKVStringAngles, 32)
 			PrintToServer("1. %s", sKVStringOrigin)
 			char sOrigin[4][64]
 			char sAngles[4][64]
