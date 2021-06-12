@@ -55,7 +55,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//spawn.ImportFromString("")
 	int count = 1
 	int randomint = GetRandomInt(1, 31)
-	int client = event.GetInt("userid")
+	int client = GetClientOfUserId(event.GetInt("userid"))
 	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
 	for(int i = 1; i <= randomint; i++)
 	{
@@ -64,8 +64,10 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			char sInt[32]
 			IntToString(i, sInt, 32)
 			spawn.GetString(sInt, sKVStringOrigin, 32)
-			char sOrigin[32][3]
-			ExplodeString(sKVStringOrigin, " ", sOrigin, 2, 32)
+			PrintToServer("1. %s", sKVStringOrigin)
+			char sOrigin[4][64]
+			ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
+			PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
 			float origin[3]
 			origin[0] = StringToInt(sOrigin[0])
 			gF_origin[0] = origin[0]
@@ -73,8 +75,11 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			gF_origin[1] = origin[1]
 			origin[2] = StringToInt(sOrigin[2])
 			gF_origin[2] = origin[2]
-			CS_RespawnPlayer(client)
-			TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+			//if(IsClientInGame(client) && IsValidEntity(client))
+			{
+				CS_RespawnPlayer(client)
+				TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
+			}
 			continue
 		}
 	}
