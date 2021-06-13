@@ -202,3 +202,29 @@ Action cmd_testbuyzone(int client, int args)
 	//RequestFrame(frame2, client)
 	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 //}
+
+int Stuck(int client)
+{
+	float mins[3]
+	float maxs[3]
+	float origin[3]
+	GetClientMins(client, mins)
+	GetClientMaxs(client, maxs)
+	GetClientAbsOrigin(client, origin)
+	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //skiper, gurman idea, plugin 2020
+}
+
+bool TR_donthitself(int entity, int mask, int client)
+{
+	return entity != client
+}
+
+public Action OnPlayerRunCmd(int client)
+{
+	int other = Stuck(client)
+	
+	if(0 < other <= MaxClients)
+	{
+		PrintToServer("%i %N", other, other)
+	}
+}
