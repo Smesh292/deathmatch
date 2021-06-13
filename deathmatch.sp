@@ -122,9 +122,9 @@ void GetPossition(int client)
 	PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
 	PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
 	//PrintToServer("%i", kv_spawn.GetNum("GlobalKey"))
-	int keyid
-	while((keyid = kv_spawn.JumpToKeySymbol(keyid)) != -1)
-		PrintToServer("%i", keyid)
+	//int keyid
+	//while((keyid = kv_spawn.JumpToKeySymbol(keyid)) != -1)
+		//PrintToServer("%i", keyid)
 	float origin[3]
 	origin[0] = StringToFloat(sString[0])
 	gF_origin[client][0] = origin[0]
