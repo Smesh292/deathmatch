@@ -224,8 +224,13 @@ public Action OnPlayerRunCmd(int client)
 {
 	int other = Stuck(client)
 	
-	if(0 < other <= MaxClients)
+	//if(0 < other <= MaxClients)
+	if(IsValidEntity(other))
 	{
 		PrintToServer("%i %N", other, other)
+	}
+	else
+	{
+		PrintToChat("%i %N", other, other)
 	}
 }
