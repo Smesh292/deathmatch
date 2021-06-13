@@ -230,9 +230,9 @@ public Action OnPlayerRunCmd(int client)
 	//if(0 < other <= MaxClients)
 	if(0 < other <= MaxClients && IsPlayerAlive(other))
 	{
-		if(GetEntProp(other, Prop_Data, "m_iCollisionGroup") == 5)
+		//if(GetEntProp(other, Prop_Data, "m_iCollisionGroup") == 5)
 		{
-			SetEntProp(other, Prop_Data, "m_iCollisionGroup", 2)
+			//SetEntProp(other, Prop_Data, "m_iCollisionGroup", 2)
 			PrintToServer("Stuck: %i %N", other, other)
 		}
 	}
