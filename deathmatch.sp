@@ -236,7 +236,7 @@ public Action OnPlayerRunCmd(int client)
 		}
 	}
 	//if(other == -1)
-	if(!IsClientInGame(other))
+	if(other == -1 && !IsClientInGame(other))
 	{
 		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
 		{
