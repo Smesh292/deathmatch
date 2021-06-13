@@ -50,7 +50,7 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	GetCurrentMap(gS_Map, 192)
+	GetCurrentMap(gS_map, 192)
 }
 
 Action joinclass(int client, const char[] command, int argc)
