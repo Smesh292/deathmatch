@@ -142,4 +142,5 @@ public Action OnPlayerRunCmd(int client)
 			PrintToServer("Unstuck.")
 		}
 	}
+	SetEntProp(client, Prop_Send, "m_bInBuyZone", true)
 }
