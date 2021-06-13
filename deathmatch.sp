@@ -226,11 +226,16 @@ public Action OnPlayerRunCmd(int client)
 	
 	//if(0 < other <= MaxClients)
 	if(IsValidEntity(other))
+	if(0 < other <= MaxClients)
 	{
-		PrintToServer("%i %N", other, other)
+		PrintToServer("Stuck: %i %N", other, other)
 	}
-	if(0 < other < MaxClients && !IsValidEntity(other))
+	else
 	{
-		PrintToServer("%i %N", other, other)
+		PrintToServer("Unstuck.")
 	}
+	//if(0 < other < MaxClients && !IsValidEntity(other))
+	//{
+		//PrintToServer("%i %N", other, other)
+	//}
 }
