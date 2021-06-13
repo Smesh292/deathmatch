@@ -234,7 +234,7 @@ public Action OnPlayerRunCmd(int client)
 			PrintToServer("Stuck: %i %N", other, other)
 		}
 	}
-	if(other < 0)
+	if(other == -1)
 	{
 		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
 		{
