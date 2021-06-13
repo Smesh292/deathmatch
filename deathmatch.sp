@@ -217,7 +217,8 @@ int Stuck(int client)
 
 bool TR_donthitself(int entity, int mask, int client)
 {
-	return entity != client && IsClientInGame(entity)
+	//return entity != client && IsClientInGame(entity)
+	return entity != client
 }
 
 public Action OnPlayerRunCmd(int client)
