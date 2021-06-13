@@ -187,7 +187,7 @@ Action cmd_testbuyzone(int client, int args)
 {
 	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iAccount"))
 	SetEntProp(client, Prop_Send, "m_bInBuyZone", 1)
-	SetEntProp(client, Prop_Data, "m_bInBuyZone", 1)
+	//SetEntProp(client, Prop_Data, "m_bInBuyZone", 1)
 	return Plugin_Handled
 }
 
