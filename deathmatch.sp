@@ -226,7 +226,8 @@ public Action OnPlayerRunCmd(int client)
 	
 	//if(0 < other <= MaxClients)
 	//if(IsValidEntity(other))
-	if(0 < other <= MaxClients)
+	//if(0 < other <= MaxClients)
+	if(IsClientInGame(other))
 	{
 		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 5)
 		{
@@ -234,7 +235,8 @@ public Action OnPlayerRunCmd(int client)
 			PrintToServer("Stuck: %i %N", other, other)
 		}
 	}
-	if(other == -1)
+	//if(other == -1)
+	if(!IsClientInGame(other))
 	{
 		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
 		{
