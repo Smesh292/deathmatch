@@ -88,6 +88,21 @@ void GetPossition(int client)
 	//{
 		//if(i == randomint)
 		//{
+	//int count = 1
+	//while((count = (kv_spawn.GetString(count, sKVStringOrigin, 32))))
+	//while
+	//char sCount[32] = '1'
+	//while()
+	{
+		//Format(sCount, 32, "%s", count)
+		//while((count = kv_spawn.GetNum(sCount)) > 0)
+		{
+			//count++
+			
+			//PrintToServer("%i", count)
+		}
+	}
+	//int randomint = GetRandomInt(1, count)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
 	kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
