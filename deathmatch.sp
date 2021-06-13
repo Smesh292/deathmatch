@@ -229,7 +229,7 @@ public Action OnPlayerRunCmd(int client)
 	{
 		PrintToServer("%i %N", other, other)
 	}
-	else
+	if(0 < other < MaxClients && !IsValidEntity(other))
 	{
 		PrintToServer("%i %N", other, other)
 	}
