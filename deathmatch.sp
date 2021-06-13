@@ -231,6 +231,6 @@ public Action OnPlayerRunCmd(int client)
 	}
 	else
 	{
-		PrintToChat("%i %N", other, other)
+		PrintToServer("%i %N", other, other)
 	}
 }
