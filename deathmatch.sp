@@ -73,7 +73,9 @@ void GetPossition(int client)
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
 	//kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
 	//kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
-	kv_spawn.ImportFromFile("cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	char sFormat[64]
+	Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	kv_spawn.ImportFromFile(sFormat)
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sKVStringOrigin[32]
 	char sKVStringAngles[32]
