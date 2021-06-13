@@ -81,28 +81,29 @@ void GetPossition(int client)
 	char sKVStringAngles[32]
 	//spawn.ImportFromString("")
 	//int count = 1
-	int randomint = GetRandomInt(1, 31)
+	//int randomint = GetRandomInt(1, 31)
 	//int client = GetClientOfUserId(event.GetInt("userid"))
 	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
 	//for(int i = 1; i <= randomint; i++)
 	//{
 		//if(i == randomint)
 		//{
-	//int count = 1
+	int count = 1
 	//while((count = (kv_spawn.GetString(count, sKVStringOrigin, 32))))
 	//while
-	//char sCount[32] = '1'
+	char sCount[32] = '1'
+	PrintToServer("sCount: %s", sCount)
 	//while()
 	{
 		//Format(sCount, 32, "%s", count)
-		//while((count = kv_spawn.GetNum(sCount)) > 0)
+		while((count = kv_spawn.GetNum(sCount)) > 0)
 		{
-			//count++
-			
-			//PrintToServer("%i", count)
+			count++
+			Format(sCount, 32, "%s", count)
+			PrintToServer("%i", count)
 		}
 	}
-	//int randomint = GetRandomInt(1, count)
+	int randomint = GetRandomInt(1, count)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
 	kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
