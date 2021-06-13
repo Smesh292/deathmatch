@@ -94,15 +94,15 @@ void GetPossition(int client)
 	//char sCount[32] = '1'
 	//PrintToServer("sCount: %s", sCount)
 	//while()
-	{
+	//{
 		//Format(sCount, 32, "%s", count)
 		//while((count = kv_spawn.GetNum(sCount)) > 0)
-		{
+		//{
 			//count++
 			//Format(sCount, 32, "%s", count)
 			//PrintToServer("%i", count)
-		}
-	}
+		//}
+	//}
 	//int randomint = GetRandomInt(1, count)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
