@@ -50,7 +50,7 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	GetCurrentMap(sMap, 192)
+	GetCurrentMap(gS_Map, 192)
 }
 
 Action joinclass(int client, const char[] command, int argc)
@@ -68,8 +68,8 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	KeyValues kv_origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
-	KeyValues kv_angles = CreateKeyValues("GlobalKey")
+	KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	//KeyValues kv_angles = CreateKeyValues("GlobalKey")
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
 	//kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
 	//kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
