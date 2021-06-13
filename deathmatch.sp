@@ -227,7 +227,7 @@ public Action OnPlayerRunCmd(int client)
 	//if(0 < other <= MaxClients)
 	//if(IsValidEntity(other))
 	//if(0 < other <= MaxClients)
-	if(IsClientInGame(other))
+	if(IsClientInGame(other) && < 0 other <= MaxClients)
 	{
 		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 5)
 		{
