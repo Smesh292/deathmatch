@@ -26,6 +26,7 @@ software and other kinds of works.
 
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
+char gS_map[192]
 
 public Plugin myinfo =
 {
@@ -47,6 +48,11 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_testbuyzone", cmd_testbuyzone)
 }
 
+public void OnMapStart()
+{
+	GetCurrentMap(sMap, 192)
+}
+
 Action joinclass(int client, const char[] command, int argc)
 {
 	GetPossition(client)
@@ -65,8 +71,9 @@ void GetPossition(int client)
 	KeyValues kv_origin = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
 	KeyValues kv_angles = CreateKeyValues("GlobalKey")
 	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
-	kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
-	kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
+	//kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
+	//kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
+	kv_spawn.ImportFromFile("cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
 	char sKVStringOrigin[32]
 	char sKVStringAngles[32]
@@ -81,14 +88,15 @@ void GetPossition(int client)
 		//{
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
-	kv_origin.GetString(sRandomInt, sKVStringOrigin, 32)
-	kv_angles.GetString(sRandomInt, sKVStringAngles, 32)
+	kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
+	kv_spawn.GetString(sRandomInt, sKVStringAngles, 32)
 	PrintToServer("1. %s", sKVStringOrigin)
 	char sOrigin[4][64]
-	char sAngles[4][64]
+	char sAngles[7][64]
 	ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
-	ExplodeString(sKVStringAngles, " ", sAngles, 3, 64)
+	ExplodeString(sKVStringAngles, " ", sAngles, 6, 64)
 	PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
+	PrintToServer("3. %s %s %s", sAngles[3], sAngles[4], sAngles[5])
 	float origin[3]
 	origin[0] = StringToFloat(sOrigin[0])
 	gF_origin[client][0] = origin[0]
@@ -97,11 +105,11 @@ void GetPossition(int client)
 	origin[2] = StringToFloat(sOrigin[2])
 	gF_origin[client][2] = origin[2]
 	float angles[3]
-	angles[0] = StringToFloat(sAngles[0])
+	angles[0] = StringToFloat(sAngles[3])
 	gF_angles[client][0] = angles[0]
-	angles[1] = StringToFloat(sAngles[1])
+	angles[1] = StringToFloat(sAngles[4])
 	gF_angles[client][1] = angles[1]
-	angles[2] = StringToFloat(sAngles[2])
+	angles[2] = StringToFloat(sAngles[5])
 	gF_angles[client][2] = angles[2]
 	CreateTimer(1.0, respawnTimer, client)
 }
@@ -164,8 +172,3 @@ Action cmd_testbuyzone(int client, int args)
 	//RequestFrame(frame2, client)
 	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 //}
-
-public void OnMapStart()
-{
-
-}
