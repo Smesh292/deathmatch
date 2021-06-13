@@ -77,8 +77,9 @@ void GetPossition(int client)
 	Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	kv_spawn.ImportFromFile(sFormat)
 	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
-	char sKVStringOrigin[32]
-	char sKVStringAngles[32]
+	//char sKVStringOrigin[32]
+	//char sKVStringAngles[32]
+	char sKVString[64]
 	//spawn.ImportFromString("")
 	//int count = 1
 	int randomint = GetRandomInt(1, 31)
@@ -106,29 +107,33 @@ void GetPossition(int client)
 	//int randomint = GetRandomInt(1, count)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
-	kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
-	kv_spawn.GetString(sRandomInt, sKVStringAngles, 32)
-	PrintToServer("1. %s", sKVStringOrigin)
-	PrintToServer("1 angles: %s", sKVStringAngles)
-	char sOrigin[4][64]
-	char sAngles[7][64]
-	ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
-	ExplodeString(sKVStringAngles, " ", sAngles, 6, 64)
-	PrintToServer("2. %s %s %s", sOrigin[0], sOrigin[1], sOrigin[2])
-	PrintToServer("3. %s %s %s", sAngles[3], sAngles[4], sAngles[5])
+	//kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
+	//kv_spawn.GetString(sRandomInt, sKVStringAngles, 32)
+	kv_spawn.GetString(sRandomInt, sKVString, 64)
+	//PrintToServer("1. %s", sKVStringOrigin)
+	//PrintToServer("1 angles: %s", sKVStringAngles)
+	PrintToServer("1. %s", sKVString)
+	//char sOrigin[4][64]
+	//char sAngles[7][64]
+	char sString[7][64]
+	//ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
+	//ExplodeString(sKVStringAngles, " ", sAngles, 6, 64)
+	ExplodeString(sKVString, " ", sString, 6, 64)
+	PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
+	PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
 	float origin[3]
-	origin[0] = StringToFloat(sOrigin[0])
+	origin[0] = StringToFloat(sString[0])
 	gF_origin[client][0] = origin[0]
-	origin[1] = StringToFloat(sOrigin[1])
+	origin[1] = StringToFloat(sString[1])
 	gF_origin[client][1] = origin[1]
-	origin[2] = StringToFloat(sOrigin[2])
+	origin[2] = StringToFloat(sString[2])
 	gF_origin[client][2] = origin[2]
 	float angles[3]
-	angles[0] = StringToFloat(sAngles[3])
+	angles[0] = StringToFloat(sString[3])
 	gF_angles[client][0] = angles[0]
-	angles[1] = StringToFloat(sAngles[4])
+	angles[1] = StringToFloat(sString[4])
 	gF_angles[client][1] = angles[1]
-	angles[2] = StringToFloat(sAngles[5])
+	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
 	CreateTimer(1.0, respawnTimer, client)
 }
