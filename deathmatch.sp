@@ -237,9 +237,9 @@ public Action OnPlayerRunCmd(int client)
 		}
 	}
 	//if(other == -1)
-	if(IsClientInGame(client) && other == -1)
+	if(IsPlayerAlive(client) && other == -1)
 	{
-		//if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
+		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
 		{
 			SetEntProp(client, Prop_Data, "m_iCollisionGroup", 5)
 			PrintToServer("Unstuck.")
