@@ -109,6 +109,7 @@ void GetPossition(int client)
 	kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
 	kv_spawn.GetString(sRandomInt, sKVStringAngles, 32)
 	PrintToServer("1. %s", sKVStringOrigin)
+	PrintToServer("1 angles: %s", sKVStringAngles)
 	char sOrigin[4][64]
 	char sAngles[7][64]
 	ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
