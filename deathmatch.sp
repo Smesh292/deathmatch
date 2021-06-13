@@ -212,6 +212,7 @@ int Stuck(int client)
 	GetClientMaxs(client, maxs)
 	GetClientAbsOrigin(client, origin)
 	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //skiper, gurman idea, plugin 2020
+	TR_GetEntityIndex()
 }
 
 bool TR_donthitself(int entity, int mask, int client)
