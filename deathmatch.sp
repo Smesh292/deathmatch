@@ -218,7 +218,8 @@ int Stuck(int client)
 bool TR_donthitself(int entity, int mask, int client)
 {
 	//return entity != client && IsClientInGame(entity)
-	return entity != client && IsPlayerAlive(entity)
+	//return entity != client && IsPlayerAlive(entity)
+	return entity != client && 0 < entity <= MaxClients
 }
 
 public Action OnPlayerRunCmd(int client)
