@@ -61,6 +61,7 @@ void GetPossition(int client)
 	kv_spawn.ImportFromFile(sFormat)
 	char sKVString[64]
 	int randomint = GetRandomInt(1, 31)
+	PrintToServer("%i", randomint)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
 	kv_spawn.GetString(sRandomInt, sKVString, 64)
@@ -98,22 +99,22 @@ Action respawnTimer(Handle timer, int client)
 	if(IsClientInGame(client))
 	{
 		CS_RespawnPlayer(client)
-		RequestFrame(frame, client)
-		//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		//RequestFrame(frame, client)
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		//https://forums.alliedmods.net/showthread.php?t=267445
 	}
 	return Plugin_Stop
 }
 
-void frame(int client)
-{
-	RequestFrame(frame2, client)
-}
+//void frame(int client)
+//{
+	//RequestFrame(frame2, client)
+//}
 
-void frame2(int client)
-{
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-}
+//void frame2(int client)
+//{
+	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+//}
 
 int Stuck(int client)
 {
