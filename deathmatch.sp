@@ -228,13 +228,19 @@ public Action OnPlayerRunCmd(int client)
 	if(IsValidEntity(other))
 	if(0 < other <= MaxClients)
 	{
-		SetEntProp(client, Prop_Data, "m_iCollisionGroup", 2)
-		PrintToServer("Stuck: %i %N", other, other)
+		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 5)
+		{
+			SetEntProp(client, Prop_Data, "m_iCollisionGroup", 2)
+			PrintToServer("Stuck: %i %N", other, other)
+		}
 	}
 	if(other < 0)
 	{
-		SetEntProp(client, Prop_Data, "m_iCollisionGroup", 5)
-		PrintToServer("Unstuck.")
+		if(GetEntProp(client, Prop_Data, "m_iCollisionGroup") == 2)
+		{
+			SetEntProp(client, Prop_Data, "m_iCollisionGroup", 5)
+			PrintToServer("Unstuck.")
+		}
 	}
 	//if(0 < other < MaxClients && !IsValidEntity(other))
 	//{
