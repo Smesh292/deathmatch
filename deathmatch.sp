@@ -42,17 +42,23 @@ public void OnPluginStart()
 	//Event
 	//Event
 	HookEvent("player_death", playerdeath)
-	HookEvent("player_class", playerclass)
+	//HookEvent("player_class", playerclass)
+	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_testbuyzone", cmd_testbuyzone)
 }
 
-Action playerclass(Event event, const char[] name, bool dontBroadcast)
+Action joinclass(int client, const char[] command, int argc)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
 	GetPossition(client)
+}
+
+//Action playerclass(Event event, const char[] name, bool dontBroadcast)
+//{
+	//int client = GetClientOfUserId(event.GetInt("userid"))
+	//GetPossition(client)
 	//CS_RespawnPlayer(client)
 	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-}
+//}
 
 void GetPossition(int client)
 {
