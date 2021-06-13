@@ -39,13 +39,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	//EventHook(
-	//Event
-	//Event
 	HookEvent("player_death", playerdeath)
-	//HookEvent("player_class", playerclass)
 	AddCommandListener(joinclass, "joinclass")
-	RegConsoleCmd("sm_testbuyzone", cmd_testbuyzone)
 }
 
 public void OnMapStart()
@@ -58,73 +53,22 @@ Action joinclass(int client, const char[] command, int argc)
 	GetPossition(client)
 }
 
-//Action playerclass(Event event, const char[] name, bool dontBroadcast)
-//{
-	//int client = GetClientOfUserId(event.GetInt("userid"))
-	//GetPossition(client)
-	//CS_RespawnPlayer(client)
-	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-//}
-
 void GetPossition(int client)
 {
 	KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
-	//KeyValues kv_angles = CreateKeyValues("GlobalKey")
-	//spawn.ImportFromFile("cfg/sourcemod/deathmatch/spawn.txt")
-	//kv_origin.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_origin.txt")
-	//kv_angles.ImportFromFile("cfg/sourcemod/deathmatch/de_dust_angles.txt")
 	char sFormat[64]
 	Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	kv_spawn.ImportFromFile(sFormat)
-	//PrintToServer("%s", spawn.ImportFromFile("cfg/sourcemod/deathmmatch/spawn.txt"))
-	//char sKVStringOrigin[32]
-	//char sKVStringAngles[32]
 	char sKVString[64]
-	//spawn.ImportFromString("")
-	//int count = 1
 	int randomint = GetRandomInt(1, 31)
-	//int client = GetClientOfUserId(event.GetInt("userid"))
-	//while((count = (spawn.GetString(count, sKVStringOrigin, 32))))
-	//for(int i = 1; i <= randomint; i++)
-	//{
-		//if(i == randomint)
-		//{
-	//int count = 1
-	//while((count = (kv_spawn.GetString(count, sKVStringOrigin, 32))))
-	//while
-	//char sCount[32] = '1'
-	//PrintToServer("sCount: %s", sCount)
-	//while()
-	//{
-		//Format(sCount, 32, "%s", count)
-		//while((count = kv_spawn.GetNum(sCount)) > 0)
-		//{
-			//count++
-			//Format(sCount, 32, "%s", count)
-			//PrintToServer("%i", count)
-		//}
-	//}
-	//int randomint = GetRandomInt(1, count)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
-	//kv_spawn.GetString(sRandomInt, sKVStringOrigin, 32)
-	//kv_spawn.GetString(sRandomInt, sKVStringAngles, 32)
 	kv_spawn.GetString(sRandomInt, sKVString, 64)
-	//PrintToServer("1. %s", sKVStringOrigin)
-	//PrintToServer("1 angles: %s", sKVStringAngles)
-	PrintToServer("1. %s", sKVString)
-	//char sOrigin[4][64]
-	//char sAngles[7][64]
+	//PrintToServer("1. %s", sKVString)
 	char sString[7][64]
-	//ExplodeString(sKVStringOrigin, " ", sOrigin, 3, 64)
-	//ExplodeString(sKVStringAngles, " ", sAngles, 6, 64)
 	ExplodeString(sKVString, " ", sString, 6, 64)
-	PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
-	PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
-	//PrintToServer("%i", kv_spawn.GetNum("GlobalKey"))
-	//int keyid
-	//while((keyid = kv_spawn.JumpToKeySymbol(keyid)) != -1)
-		//PrintToServer("%i", keyid)
+	//PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
+	//PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
 	float origin[3]
 	origin[0] = StringToFloat(sString[0])
 	gF_origin[client][0] = origin[0]
@@ -144,27 +88,8 @@ void GetPossition(int client)
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
-	//if(IsClientInGame(client) && IsValidEntity(client))
-	//{
-		int client = GetClientOfUserId(event.GetInt("userid"))
-		GetPossition(client)
-		//CreateTimer(1.0, respawnTimer, client)
-		//CS_RespawnPlayer(client)
-		//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0})
-	//}
-	//continue
-//}
-	//}
-	//spawn.GetString("1", sKVString, 32)
-	//PrintToServer("%s", sKVString)
-	//char sSpawn[32]
-	//spawn.GetString(NULL_STRING, sSpawn, 32)
-	//PrintToServer("%s", sSpawn)
-	//FileType_Directory(
-	//int client
-	//int client = event.EventInt("userid")
-	//SetEntProp
-	//CS_RespawnPlayer(client)
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 }
 
@@ -175,33 +100,10 @@ Action respawnTimer(Handle timer, int client)
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		//https://forums.alliedmods.net/showthread.php?t=267445
-		//SetEntProp(client, Prop_Send, "m_iAccount", 9)
-		SetEntProp(client, Prop_Send, "m_bInBuyZone", 1)
-	//}
-		//RequestFrame(frame, client)
 	}
 	return Plugin_Stop
 }
 
-Action cmd_testbuyzone(int client, int args)
-{
-	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iAccount"))
-	SetEntProp(client, Prop_Send, "m_bInBuyZone", 1)
-	//SetEntProp(client, Prop_Data, "m_bInBuyZone", 1)
-	return Plugin_Handled
-}
-
-//void frame(int client)
-//{
-	//RequestFrame(frame2, client)
-	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-//}
-
-//void frame2(int client)
-//{
-	//RequestFrame(frame2, client)
-	//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-//}
 
 int Stuck(int client)
 {
@@ -217,8 +119,6 @@ int Stuck(int client)
 
 bool TR_donthitself(int entity, int mask, int client)
 {
-	//return entity != client && IsClientInGame(entity)
-	//return entity != client && IsPlayerAlive(entity)
 	return entity != client && 0 < entity <= MaxClients
 }
 
@@ -226,9 +126,6 @@ public Action OnPlayerRunCmd(int client)
 {
 	int other = Stuck(client)
 	
-	//if(0 < other <= MaxClients)
-	//if(IsValidEntity(other))
-	//if(0 < other <= MaxClients)
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
 	{
 		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
@@ -237,7 +134,6 @@ public Action OnPlayerRunCmd(int client)
 			PrintToServer("Stuck: %i %N", other, other)
 		}
 	}
-	//if(other == -1)
 	if(IsPlayerAlive(client) && other == -1)
 	{
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
@@ -246,8 +142,4 @@ public Action OnPlayerRunCmd(int client)
 			PrintToServer("Unstuck.")
 		}
 	}
-	//if(0 < other < MaxClients && !IsValidEntity(other))
-	//{
-		//PrintToServer("%i %N", other, other)
-	//}
 }
