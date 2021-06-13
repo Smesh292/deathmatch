@@ -231,7 +231,7 @@ public Action OnPlayerRunCmd(int client)
 		SetEntProp(client, Prop_Data, "m_iCollisionGroup", 2)
 		PrintToServer("Stuck: %i %N", other, other)
 	}
-	else
+	if(other < 0)
 	{
 		SetEntProp(client, Prop_Data, "m_iCollisionGroup", 5)
 		PrintToServer("Unstuck.")
