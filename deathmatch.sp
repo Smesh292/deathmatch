@@ -102,10 +102,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	bool headshot = event.GetBool("headshot") //https://sm.alliedmods.net/new-api/events
 	if(headshot)
 	{
+		int ragdoll = GetEntProp(client, Prop_Send, "m_hRagdoll")
+		//if()
 		vecRagdollVelocity[2] = 15000.0
-		GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
+		GetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
 		PrintToServer("%f %f %f", vecRagdollVelocity[0], vecRagdollVelocity[1], vecRagdollVelocity[2])
-		SetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
+		SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
 	}
 }
 
