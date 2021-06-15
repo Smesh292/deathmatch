@@ -157,7 +157,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 		{
 			GetPossition(i)
 			if(gH_timer[i] != null)
-				KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
+				delete gH_timer[i] //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 			//GetEntPropString(
 		}
 	}
