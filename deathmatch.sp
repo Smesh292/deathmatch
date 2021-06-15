@@ -23,6 +23,7 @@ software and other kinds of works.
 
 #include <cstrike>
 #include <sdktools>
+#include <sdkhooks>
 
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
