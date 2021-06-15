@@ -64,15 +64,15 @@ void GetPossition(int client)
 	kv_spawn.ImportFromFile(sFormat)
 	char sKVString[128]
 	int randomint = GetRandomInt(1, 31)
-	//PrintToServer("%i", randomint)
+	PrintToServer("%i", randomint)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
 	kv_spawn.GetString(sRandomInt, sKVString, 128)
-	//PrintToServer("1. %s", sKVString)
+	PrintToServer("1. %s", sKVString)
 	char sString[7][128]
 	ExplodeString(sKVString, " ", sString, 6, 128)
-	//PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
-	//PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
+	PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
+	PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
 	float origin[3]
 	origin[0] = StringToFloat(sString[0])
 	gF_origin[client][0] = origin[0]
