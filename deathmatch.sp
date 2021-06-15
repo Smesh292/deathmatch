@@ -78,7 +78,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start, EventHookMode_Pre)
+	HookEvent("round_start", round_start, EventHookMode_Post)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
