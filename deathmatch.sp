@@ -92,9 +92,9 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
-	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
+	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	float vecRagdollVelocity[3]
-	float vecEyePosition[3]
+	//float vecEyePosition[3]
 	//GetClientEyePosition(attacker, vecEyePosition)
 	//if(vecEyePosition[0] > 0.0)
 	//GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity")
@@ -103,7 +103,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	if(headshot)
 	{
 		vecRagdollVelocity[2] = 15000.0
-		SetEntPropVector(client, Prop_Send, "m_vecRagdollVeclity", vecRagdollVelocity)
+		SetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
 	}
 }
 
