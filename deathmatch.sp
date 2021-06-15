@@ -100,6 +100,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
+	gH_timer[client] = null
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
