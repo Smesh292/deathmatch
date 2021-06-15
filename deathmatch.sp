@@ -132,7 +132,13 @@ void GetPossition(int client)
 	gF_angles[client][2] = angles[2]
 	if(!gB_roundStart)
 		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
-	gB_roundStart = false
+	else
+	{
+		//CS_RespawnPlayer(client)
+		//RequestFrame(frame, client)
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		gB_roundStart = false
+	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
