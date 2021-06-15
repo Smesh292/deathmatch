@@ -94,13 +94,15 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
-		delete gH_timer[i]
+		if(gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
+			delete gH_timer[i]
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
-	delete gH_timer[client]
+	if(gH_timer[client] != null)
+		delete gH_timer[client]
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
