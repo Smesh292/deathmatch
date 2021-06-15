@@ -93,13 +93,13 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
-	float vecRagdollVelocity[3]
+	//float vecRagdollVelocity[3]
 	//float vecEyePosition[3]
 	//GetClientEyePosition(attacker, vecEyePosition)
 	//if(vecEyePosition[0] > 0.0)
 	//GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity")
 		//vec
-	bool headshot = event.GetBool("headshot") //https://sm.alliedmods.net/new-api/events
+	/*bool headshot = event.GetBool("headshot") //https://sm.alliedmods.net/new-api/events
 	if(headshot)
 	{
 		int ragdoll = GetEntProp(client, Prop_Send, "m_hRagdoll")
@@ -108,7 +108,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		GetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
 		PrintToServer("%f %f %f", vecRagdollVelocity[0], vecRagdollVelocity[1], vecRagdollVelocity[2])
 		SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
-	}
+	}*/
 }
 
 Action respawnTimer(Handle timer, int client)
