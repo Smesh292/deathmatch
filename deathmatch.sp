@@ -103,6 +103,8 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	if(headshot)
 	{
 		vecRagdollVelocity[2] = 15000.0
+		GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
+		PrintToServer("%f %f %f", vecRagdollVelocity[0], vecRagdollVelocity[1], vecRagdollVelocity[2])
 		SetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
 	}
 }
