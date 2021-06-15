@@ -34,6 +34,7 @@ Handle gH_timer[MAXPLAYERS + 1] = null
 KeyValues gKV_spawnpoint
 
 bool gB_roundStart
+bool gB_onSpawn[MAXPLAYERS + 1]
 
 enum WeaponType
 {
@@ -101,7 +102,8 @@ public void OnClientPutInServer(int client)
 
 void sdkspawnpost(int client)
 {
-	GetInstantPossition(client)
+	gB_onSpawn[client] = true
+	GetPossition(client)
 }
 
 Action joinclass(int client, const char[] command, int argc)
@@ -141,18 +143,18 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
-	//if(!gB_roundStart)
-	gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
-	//else
+	if(gB_onSpawn[client])
+		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+	else
 	//{
 		//CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
-		//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-		//gB_roundStart = false
-	//}
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		gB_onSpawn[client] = false
+	}
 }
 
-void GetInstantPossition(int client)
+/*void GetInstantPossition(int client)
 {
 	//KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
 	//char sFormat[64]
@@ -193,7 +195,7 @@ void GetInstantPossition(int client)
 	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		//gB_roundStart = false
 	//}
-}
+}*/
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
 {
