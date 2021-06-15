@@ -30,6 +30,8 @@ char gS_map[192]
 
 Handle gH_timer[MAXPLAYERS + 1] = null
 
+KeyValues gKV_spawnpoint
+
 public Plugin myinfo =
 {
 	name = "Deathmatch",
@@ -49,6 +51,10 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
+	gKV_spawnpoint = CreateKeyValues("GlobalKey")
+	char sFormat[256]
+	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	gKV_spawnpoint.ImportFromFile(sFormat)
 }
 
 Action joinclass(int client, const char[] command, int argc)
@@ -58,21 +64,22 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
-	char sFormat[64]
-	Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	kv_spawn.ImportFromFile(sFormat)
+	//KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	//char sFormat[64]
+	//Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	//kv_spawn.ImportFromFile(sFormat)
 	char sKVString[128]
 	int randomint = GetRandomInt(1, 31)
-	PrintToServer("%i", randomint)
+	//PrintToServer("%i", randomint)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
-	kv_spawn.GetString(sRandomInt, sKVString, 128)
-	PrintToServer("1. %s", sKVString)
+	//kv_spawn.GetString(sRandomInt, sKVString, 128)
+	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	//PrintToServer("1. %s", sKVString)
 	char sString[7][128]
 	ExplodeString(sKVString, " ", sString, 6, 128)
-	PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
-	PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
+	//PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
+	//PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
 	float origin[3]
 	origin[0] = StringToFloat(sString[0])
 	gF_origin[client][0] = origin[0]
@@ -101,8 +108,8 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
-	if(IsClientInGame(client) && gH_timer[client] != null)
-		KillTimer(gH_timer[client])
+	//if(IsClientInGame(client) && gH_timer[client] != null)
+		//KillTimer(gH_timer[client])
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
