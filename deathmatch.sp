@@ -135,7 +135,7 @@ void GetPossition(int client)
 	gB_roundStart = false
 }
 
-public void OnEntityCreated(int entity, cont char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
+public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
 {
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity)
