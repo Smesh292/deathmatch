@@ -32,6 +32,8 @@ Handle gH_timer[MAXPLAYERS + 1] = null
 
 KeyValues gKV_spawnpoint
 
+bool gB_roundStart
+
 enum WeaponType
 {
 	Weapon_Glock = 0,
@@ -128,15 +130,28 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
-	gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+	if(!gB_roundStart)
+		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+	gB_roundStart = false
+}
+
+public void OnEntityCreated(int entity, cont char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
+{
+	if(StrEqual(classname, "weapon_c4"))
+		RemoveEntity(entity)
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
+	gB_roundStart = true
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
+		{
 			KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
+			GetPossition(client)
+			//GetEntPropString(
+		}
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
