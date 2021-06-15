@@ -95,14 +95,14 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
-			CloseHandle(gH_timer[i])
+			KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
 	if(IsClientInGame(client) && gH_timer[client] != null)
-		CloseHandle(gH_timer[client])
+		KillTimer(gH_timer[client])
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
