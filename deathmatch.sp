@@ -209,7 +209,8 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 				char sItem[32]
 				menu.GetItem(param2, sItem, 32)
 				PrintToServer("weapon name: %s", sItem)
-				GivePlayerItem(param1, "give_%s", sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
+				Format(sItem, 32, "give_%s", sItem)
+				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			}
 		}
 	}
