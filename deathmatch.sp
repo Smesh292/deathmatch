@@ -212,6 +212,30 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 				Format(sItem, 32, "weapon_%s", sItem)
 				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			}
+			menurifle(param1)
+		}
+	}
+}
+
+void menurifle(int client)
+{
+	Menu menu = new Menu(menu2_handler)
+	for(int i = 6; i <= 23; i++)
+		menu.AddItem(gS_weapon[i], gS_weapon[i])
+	menu.Display(client, 20)
+}
+
+void menu2_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			char sItem[32]
+			menu.GetItem(param2, sItem, 32)
+			PrintToServer("weapon name: %s", sItem)
+			Format(sItem, 32, "weapon_%s", sItem)
+			GivePlayerItem(param1, sItem)
 		}
 	}
 }
