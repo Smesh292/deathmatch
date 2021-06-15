@@ -61,9 +61,9 @@ enum WeaponType
 }
 
 //char weapon[2][WeaponType]
-char gS_weapon[][] = "Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
+char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
-					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"
+					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 
 public Plugin myinfo =
 {
@@ -179,7 +179,7 @@ Action respawnTimer(Handle timer, int client)
 	return Plugin_Stop
 }
 
-Action cmd_gunsmenu(int client)
+Action cmd_gunsmenu(int client, int args)
 {
 	gunsmenu(client)
 	return Plugin_Handled
@@ -189,8 +189,8 @@ void gunsmenu(int client)
 {
 	Menu menu = new Menu(menu_handler)
 	menu.SetTitle("Pistols")
-	for(int = 0; i <= 5; i++)
-		menu.AddItem(gS_weapon, gS_weapon)
+	for(int i = 0; i <= 5; i++)
+		menu.AddItem(gS_weapon[i], gS_weapon[i])
 	menu.Display(client, 20)
 	
 	//{
@@ -198,7 +198,7 @@ void gunsmenu(int client)
 	//}
 }
 
-void menu_handler(Menu menu, MenuAction action, int param1, int param2)
+int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -208,6 +208,7 @@ void menu_handler(Menu menu, MenuAction action, int param1, int param2)
 			{
 				char sItem[32]
 				menu.GetItem(param2, sItem, 32)
+				PrintToServer("weapon name: %s", sItem)
 				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			}
 		}
