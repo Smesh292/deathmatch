@@ -204,12 +204,12 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 	{
 		case MenuAction_Select:
 		{
-			for(int i = 0; i <= 5; i++)
+			//for(int i = 0; i <= 5; i++)
 			{
 				char sItem[32]
 				menu.GetItem(param2, sItem, 32)
 				PrintToServer("weapon name: %s", sItem)
-				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
+				GivePlayerItem(param1, "give_%s", sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			}
 		}
 	}
