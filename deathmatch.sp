@@ -143,7 +143,7 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
-	if(gB_onSpawn[client])
+	if(!gB_onSpawn[client])
 		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
 	else
 	{
