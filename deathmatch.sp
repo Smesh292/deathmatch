@@ -92,6 +92,7 @@ void GetPossition(int client)
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
+	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 		gH_timer[i] = null
 }
