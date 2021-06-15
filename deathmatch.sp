@@ -32,6 +32,39 @@ Handle gH_timer[MAXPLAYERS + 1] = null
 
 KeyValues gKV_spawnpoint
 
+enum WeaponType
+{
+	Weapon_Glock = 0,
+	Weapon_USP,
+	Weapon_P228,
+	Weapon_Deagle,
+	Weapon_Elite,
+	Weapon_FiveSeven,
+	Weapon_M3,
+	Weapon_XM1014,
+	Weapon_Galil,
+	Weapon_AK47,
+	Weapon_Scout,
+	Weapon_SG552,
+	Weapon_AWP,
+	Weapon_G3SG1,
+	Weapon_Famas,
+	Weapon_M4A1,
+	Weapon_Aug,
+	Weapon_SG550,
+	Weapon_Mac10,
+	Weapon_TMP,
+	Weapon_MP5Navy,
+	Weapon_Ump45,
+	Weapon_P90,
+	Weapon_M249
+}
+
+//char weapon[2][WeaponType]
+char gS_weapon[][] = "Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
+					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
+					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"
+
 public Plugin myinfo =
 {
 	name = "Deathmatch",
@@ -46,6 +79,7 @@ public void OnPluginStart()
 	HookEvent("round_start", round_start, EventHookMode_Pre)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
+	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 }
 
 public void OnMapStart()
@@ -100,9 +134,9 @@ void GetPossition(int client)
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	PrintToServer("round start!")
-	//for(int i = 1; i <= MaxClients; i++)
-		//if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
-			//KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
+			KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
@@ -143,6 +177,41 @@ Action respawnTimer(Handle timer, int client)
 		KillTimer(timer)
 	}
 	return Plugin_Stop
+}
+
+Action cmd_gunsmenu(int client)
+{
+	gunsmenu(client)
+	return Plugin_Handled
+}
+
+void gunsmenu(int client)
+{
+	Menu menu = new Menu(menu_handler)
+	menu.SetTitle("Pistols")
+	for(int = 0; i <= 5; i++)
+		menu.AddItem(gS_weapon, gS_weapon)
+	menu.Display(client, 20)
+	
+	//{
+		
+	//}
+}
+
+void menu_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			for(int i = 0; i <= 5; i++)
+			{
+				char sItem[32]
+				menu.GetItem(param2, sItem, 32)
+				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
+			}
+		}
+	}
 }
 
 //void frame(int client)
