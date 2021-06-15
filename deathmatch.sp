@@ -132,6 +132,8 @@ Action respawnTimer(Handle timer, int client)
 		//RequestFrame(frame, client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		//https://forums.alliedmods.net/showthread.php?t=267445
+		KillTimer(gH_timer[client])
+		KillTimer(timer)
 	}
 	return Plugin_Stop
 }
