@@ -94,6 +94,16 @@ public void OnMapStart()
 	gKV_spawnpoint.ImportFromFile(sFormat)
 }
 
+public void OnClientPutInServer(int client)
+{
+	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
+}
+
+void sdkspawnpost(int client)
+{
+	GetPossition(client)
+}
+
 Action joinclass(int client, const char[] command, int argc)
 {
 	GetPossition(client)
@@ -157,7 +167,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	{
 		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
 		{
-			GetPossition(i)
+			//GetPossition(i)
 			if(gH_timer[i] != null)
 				delete gH_timer[i] //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 			//GetEntPropString(
