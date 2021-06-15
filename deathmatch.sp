@@ -149,7 +149,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 		if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
 		{
 			KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
-			GetPossition(client)
+			GetPossition(i)
 			//GetEntPropString(
 		}
 }
