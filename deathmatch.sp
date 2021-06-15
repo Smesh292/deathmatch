@@ -100,8 +100,8 @@ void GetPossition(int client)
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	PrintToServer("round start!")
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
+	//for(int i = 1; i <= MaxClients; i++)
+		//if(IsClientInGame(i) && gH_timer[i] != null) //thanks to log for this idea . skin pref .sp
 			//KillTimer(gH_timer[i]) //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 }
 
