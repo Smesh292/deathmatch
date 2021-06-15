@@ -146,7 +146,7 @@ void GetPossition(int client)
 	if(gB_onSpawn[client])
 		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
 	else
-	//{
+	{
 		//CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
