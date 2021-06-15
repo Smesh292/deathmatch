@@ -220,12 +220,13 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 void menurifle(int client)
 {
 	Menu menu = new Menu(menu2_handler)
+	menu.SetTitle("Rifles")
 	for(int i = 6; i <= 23; i++)
 		menu.AddItem(gS_weapon[i], gS_weapon[i])
 	menu.Display(client, 20)
 }
 
-void menu2_handler(Menu menu, MenuAction action, int param1, int param2)
+int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
