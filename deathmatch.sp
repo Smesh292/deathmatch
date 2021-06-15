@@ -101,7 +101,7 @@ public void OnClientPutInServer(int client)
 
 void sdkspawnpost(int client)
 {
-	GetPossition(client)
+	GetInstantPossition(client)
 }
 
 Action joinclass(int client, const char[] command, int argc)
@@ -141,20 +141,63 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
-	if(!gB_roundStart)
-		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
-	else
-	{
+	//if(!gB_roundStart)
+	gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+	//else
+	//{
 		//CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-		gB_roundStart = false
-	}
+		//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		//gB_roundStart = false
+	//}
+}
+
+void GetInstantPossition(int client)
+{
+	//KeyValues kv_spawn = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
+	//char sFormat[64]
+	//Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	//kv_spawn.ImportFromFile(sFormat)
+	char sKVString[128]
+	int randomint = GetRandomInt(1, 31)
+	//PrintToServer("%i", randomint)
+	char sRandomInt[32]
+	IntToString(randomint, sRandomInt, 32)
+	//kv_spawn.GetString(sRandomInt, sKVString, 128)
+	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	//PrintToServer("1. %s", sKVString)
+	char sString[7][128]
+	ExplodeString(sKVString, " ", sString, 6, 128)
+	//PrintToServer("2 origin. %s %s %s", sString[0], sString[1], sString[2])
+	//PrintToServer("3 angles. %s %s %s", sString[3], sString[4], sString[5])
+	float origin[3]
+	origin[0] = StringToFloat(sString[0])
+	gF_origin[client][0] = origin[0]
+	origin[1] = StringToFloat(sString[1])
+	gF_origin[client][1] = origin[1]
+	origin[2] = StringToFloat(sString[2])
+	gF_origin[client][2] = origin[2]
+	float angles[3]
+	angles[0] = StringToFloat(sString[3])
+	gF_angles[client][0] = angles[0]
+	angles[1] = StringToFloat(sString[4])
+	gF_angles[client][1] = angles[1]
+	angles[2] = StringToFloat(sString[5])
+	gF_angles[client][2] = angles[2]
+	//if(!gB_roundStart)
+		//gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+	//else
+	//{
+		//CS_RespawnPlayer(client)
+		//RequestFrame(frame, client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		//gB_roundStart = false
+	//}
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
 {
-	PrintToServer("OnEntityCreated succesfuly complete.")
+	//PrintToServer("OnEntityCreated succesfuly complete.")
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity)
 }
