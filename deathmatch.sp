@@ -43,7 +43,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start)
+	HookEvent("round_start", round_start, EventHookMode_Pre)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 }
