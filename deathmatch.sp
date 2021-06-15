@@ -28,7 +28,7 @@ float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
 
-Handle gH_timer[MAXPLAYERS + 1]
+Handle gH_timer[MAXPLAYERS + 1] = null
 
 public Plugin myinfo =
 {
@@ -94,13 +94,13 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
-		gH_timer[i] = null
+		delete gH_timer[i]
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
-	gH_timer[client] = null
+	delete gH_timer[client]
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
