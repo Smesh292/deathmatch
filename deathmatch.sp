@@ -59,7 +59,7 @@ void GetPossition(int client)
 	char sFormat[64]
 	Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	kv_spawn.ImportFromFile(sFormat)
-	char sKVString[64]
+	char sKVString[128]
 	int randomint = GetRandomInt(1, 31)
 	//PrintToServer("%i", randomint)
 	char sRandomInt[32]
