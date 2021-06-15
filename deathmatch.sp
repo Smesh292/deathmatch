@@ -143,6 +143,7 @@ void GetPossition(int client)
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
 {
+	PrintToServer("OnEntityCreated succesfuly complete.")
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity)
 }
