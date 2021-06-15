@@ -28,7 +28,7 @@ float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
 
-Handle timer[MAXPLAYERS + 1]
+Handle gH_timer[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -87,13 +87,13 @@ void GetPossition(int client)
 	gF_angles[client][1] = angles[1]
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
-	timer[client] = CreateTimer(1.0, respawnTimer, client)
+	gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	for(int i = 1; i <= MaxClients; i++)
-		timer[i] = null
+		gH_timer[i] = null
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
