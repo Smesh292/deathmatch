@@ -102,7 +102,7 @@ public void OnClientPutInServer(int client)
 
 void sdkspawnpost(int client)
 {
-	if(IsFakeClient(client)
+	if(IsFakeClient(client))
 	{
 		//for(int i = 0; 
 		int random = GetRandomInt(0, 5)
