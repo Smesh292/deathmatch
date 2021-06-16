@@ -89,6 +89,7 @@ public void OnPluginStart()
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
+	RegConsoleCmd("sm_score", cmd_getscore)
 }
 
 public void OnMapStart()
@@ -133,6 +134,8 @@ Action cmd_getscore(int client, int args)
 {
 	//PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iScore"))
 	//PrintToServer("%i", GetEntProp(client, Prop_Data, "m_Score"))
+	PrintToServer("Counter-Terorist score is: %i", gI_countCT)
+	PrintToServer("Terorist score is: %i", gI_countT)
 	return Plugin_Handled
 }
 
