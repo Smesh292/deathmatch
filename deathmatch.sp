@@ -351,6 +351,7 @@ public void OnGameFrame()
 	exploded[1] = StringToInt(sExploded[1])
 	char sFormat2[32]
 	Format(sFormat2, 32, "%1.f", exploded[1])
+	PrintToServer("sFormat2: %s", sFormat2)
 	exploded[1] = StringToInt(sFormat2)
 	exploded[1] = exploded[1] * 30
 	//char sFormat[32]
