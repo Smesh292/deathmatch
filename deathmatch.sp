@@ -347,7 +347,7 @@ public void OnGameFrame()
 	exploded[1] = StringToFloat(sExploded[1])
 	exploded[1] = exploded[1] * 30.0
 	char sFormat[32]
-	Format(sRoundtime, 32, "%s.%s", exploded[0], exploded[1])
+	Format(sRoundtime, 32, "%f.%f", exploded[0], exploded[1])
 	PrintToServer("sRoundtime: %s", sRoundtime)
 	int formatedRoundtime = StringToFloat(sRoundtime)
 	if((float(gI_time) + formatedRoundtime - 1.0) == GetTime() && gI_closeIf)
