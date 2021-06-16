@@ -111,7 +111,7 @@ void sdkspawnpost(int client)
 		GivePlayerItem(client, sWeapon)
 		random = GetRandomInt(6, 23)
 		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
-		GIvePlayerItem(client, sWeapon)
+		GivePlayerItem(client, sWeapon)
 	}
 	gB_onSpawn[client] = true
 	GetPossition(client)
