@@ -297,6 +297,14 @@ Action cswinpanelround(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
+public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
+{
+	if(gI_countT > gI_countCT)
+		CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
+	if(gI_countT < gI_countCT)
+		CS_TerminateRound(0.0, CSRoundEnd_CTWin)
+}
+
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
