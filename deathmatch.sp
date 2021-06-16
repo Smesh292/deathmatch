@@ -332,12 +332,25 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 public void OnGameFrame()
 {
 	Handle convar = FindConVar("mp_roundtime")
-	Handle convar2 = FindConVar("mp_freezetime")
+	//Handle convar2 = FindConVar("mp_freezetime")
 	float roundtime = GetConVarFloat(convar)
-	float freezetime = GetConVarFloat(convar2)
+	//float freezetime = GetConVarFloat(convar2)
 	//int time = GetTime()
 	//if(roundtime == 5.0 && x)
-	if((float(gI_time) + (roundtime * 60.0) - 1.0 - freezetime) == GetTime() && gI_closeIf)
+	char sRoundtime[32]
+	FloatToString(roundtime, sRoundtime, 32)
+	char sExploded[2][32]
+	ExplodeString(sRoundtime, ".", sExploded, 1, 32)
+	float exploded[1]
+	exploaded[0] = StringToFloat(sExploded[0])
+	exploded[0] = exploded[0] * 60.0
+	exploded[1] = StringToFloat(sExploded[1])
+	exploded[1] = exploded[1] * 30.0
+	char sFormat[32]
+	Format(sRoundtime, 32, "%s.%s", exploded[0], exploded[1])
+	PrintToServer("sRoundtime: %s", sRoundtime)
+	int formatedRoundtime = StringToFloat(sRoundtime)
+	if((float(gI_time) + formatedRoundtime - 1.0) == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
