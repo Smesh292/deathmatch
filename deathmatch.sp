@@ -84,7 +84,8 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start, EventHookMode_Post)
-	HookEvent("round_end", round_end, EventHookMode_Pre)
+	//HookEvent("round_end", round_end, EventHookMode_Pre)
+	HookEvent("round_end", round_end)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
@@ -263,8 +264,8 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				//ServerCommand("sm_slay %s", sName)
-				FakeClientCommand(i, "kill")
+				ServerCommand("sm_slay %s", sName)
+				//FakeClientCommand(i, "kill")
 			}
 	if(gI_countT < gI_countCT)
 		for(int i = 1; i <= MaxClients; i++)
@@ -272,8 +273,8 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				//ServerCommand("sm_slay %s", sName)
-				FakeClientCommand(i, "kill")
+				ServerCommand("sm_slay %s", sName)
+				//FakeClientCommand(i, "kill")
 			}
 }
 
