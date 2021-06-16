@@ -264,7 +264,7 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				ServerCommand("sm_slay %s", sName)
-				FakeClientCommand(client, "kill")
+				FakeClientCommand(i, "kill")
 			}
 	if(gI_countT < gI_countCT)
 		for(int i = 1; i <= MaxClients; i++)
