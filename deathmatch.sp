@@ -39,6 +39,8 @@ bool gB_onSpawn[MAXPLAYERS + 1]
 int gI_countT
 int gI_countCT
 
+bool x
+
 public Plugin myinfo = 
 {
 	name = "Deathmatch",
@@ -255,6 +257,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gB_roundStart = true
 	gI_countT = 0
 	gI_countCT = 0
+	x = true
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -297,14 +300,14 @@ Action cswinpanelround(Event event, const char[] name, bool dontBroadcast)
 	//SetEve //https://wiki.alliedmods.net/Counter-Strike:_Source_Events#cs_win_panel_round
 	if(gI_countT > gI_countCT)
 	{
-		event.SetInt("final_event", CSRoundEnd_TerroristWin)
-		CS_TerminateRound(0.0, CSRoundEnd_TerroristWin, true)
+		//event.SetInt("final_event", CSRoundEnd_TerroristWin)
+		//CS_TerminateRound(0.0, CSRoundEnd_TerroristWin, true)
 		//event.SetInt("final_event", CS
 	}
 	if(gI_countT < gI_countCT)
 	{
-		SetEventInt(event, "final_event", CSRoundEnd_CTWin)
-		CS_TerminateRound(0.0, CSRoundEnd_CTWin, true) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
+		//SetEventInt(event, "final_event", CSRoundEnd_CTWin)
+		//CS_TerminateRound(0.0, CSRoundEnd_CTWin, true) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
 	}
 }
 
@@ -315,6 +318,22 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 	//if(gI_countT < gI_countCT)
 		//CS_TerminateRound(0.0, CSRoundEnd_CTWin)
 	//return Plugin_Handled
+}
+//bool x
+//public Action OnPlayerRuncCmd
+public void OnGameFrame()
+{
+	Handle convar = FindConVar("mp_roundtime")
+	int roundtime = GetConVarInt(convar)
+	if(roundtime == 5.0 && x)
+	{
+		//x
+		if(gI_countT > gI_countCT)
+			CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
+		if(gI_countT < gI_countCT)
+			CS_TerminateRound(0.0, CSRoundEnd_CTWin)
+		x = false
+	}
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
