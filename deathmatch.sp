@@ -332,10 +332,10 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 public void OnGameFrame()
 {
 	Handle convar = FindConVar("mp_roundtime")
-	//Handle convar2 = FindConVar("mp_freezetime")
+	Handle convar2 = FindConVar("mp_freezetime")
 	float roundtime = GetConVarFloat(convar)
 	
-	//float freezetime = GetConVarFloat(convar2)
+	int freezetime = GetConVarInt(convar2)
 	//int time = GetTime()
 	//if(roundtime == 5.0 && x)
 	char sRoundtime[32]
@@ -361,7 +361,7 @@ public void OnGameFrame()
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
 	//PrintToServer("exploded(formated): %i", exploded[0] + exploded[1])
 	//float formatedRoundtime = (sRoundtime)
-	if(gI_time + exploded[0] + exploded[1] - 1 == GetTime() && gI_closeIf)
+	if(gI_time + exploded[0] + exploded[1] - freezetime - 1 == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
