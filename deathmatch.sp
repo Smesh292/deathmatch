@@ -39,6 +39,15 @@ bool gB_onSpawn[MAXPLAYERS + 1]
 int gI_countT
 int gI_countCT
 
+public Plugin myinfo = 
+{
+	name = "Deathmatch",
+	author = "Smesh, Nick Jurevich"
+	description = "Make able to spawn after kill while round is running."
+	version = "1.0",
+	url = "http://www.sourcemod.net/"
+}
+
 enum WeaponType
 {
 	Weapon_Glock = 0,
