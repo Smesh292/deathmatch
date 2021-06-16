@@ -333,6 +333,7 @@ public void OnGameFrame()
 		if(gI_countT < gI_countCT)
 			CS_TerminateRound(0.0, CSRoundEnd_CTWin)
 		x = false
+		PrintToServer("Round end terminate by OnGameFrame()")
 	}
 }
 
