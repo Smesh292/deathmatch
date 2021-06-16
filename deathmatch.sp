@@ -361,7 +361,7 @@ public void OnGameFrame()
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
 	//PrintToServer("exploded(formated): %i", exploded[0] + exploded[1])
 	//float formatedRoundtime = (sRoundtime)
-	if(gI_time + exploded[0] + exploded[1] - 1.0 == GetTime() && gI_closeIf)
+	if(gI_time + exploded[0] + exploded[1] - 1 == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
