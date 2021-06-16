@@ -286,13 +286,13 @@ Action cswinpanelround(Event event, const char[] name, bool dontBroadcast)
 	//SetEve //https://wiki.alliedmods.net/Counter-Strike:_Source_Events#cs_win_panel_round
 	if(gI_countT > gI_countCT)
 	{
-		//event.SetInt("final_event", CSRoundEnd_TerroristWin)
+		event.SetInt("final_event", CSRoundEnd_TerroristWin)
 		CS_TerminateRound(0.0, CSRoundEnd_TerroristWin, true)
 		//event.SetInt("final_event", CS
 	}
 	if(gI_countT < gI_countCT)
 	{
-		//SetEventInt(event, "final_event", CSRoundEnd_CTWin)
+		SetEventInt(event, "final_event", CSRoundEnd_CTWin)
 		CS_TerminateRound(0.0, CSRoundEnd_CTWin, true) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
 	}
 }
