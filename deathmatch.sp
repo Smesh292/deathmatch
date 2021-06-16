@@ -247,8 +247,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 {
 	//PrintToServer("OnEntityCreated succesfuly complete.")
 	if(StrEqual(classname, "weapon_c4"))
-		RemoveEntity(entity)
-	if(StrEqual(classname, "func_bomb_target")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
+		RemoveEntity(entity) //https://www.bing.com/search?q=hostage+cs+source&cvid=8d2fdfec401e4826b26c977db5f1395d&aqs=edge..69i57.3328j0j4&FORM=ANAB01&PC=U531
+	if(StrEqual(classname, "hostage_entity")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
 		RemoveEntity(entity)
 }
 
