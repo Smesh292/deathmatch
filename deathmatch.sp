@@ -98,6 +98,7 @@ public void OnMapStart()
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
+	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 }
 
 void sdkspawnpost(int client)
@@ -115,6 +116,11 @@ void sdkspawnpost(int client)
 	}
 	gB_onSpawn[client] = true
 	GetPossition(client)
+}
+
+Action sdkweapondrop(int client, int weapon)
+{
+	RemoveEntity(weapon)
 }
 
 Action joinclass(int client, const char[] command, int argc)
