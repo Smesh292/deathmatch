@@ -363,6 +363,26 @@ public void OnGameFrame()
 	//float formatedRoundtime = (sRoundtime)
 	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && gI_closeIf)
 	{
+		if(gI_countT > gI_countCT)
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && GetClientTeam(i) == 3)
+				{
+					char sName[MAX_NAME_LENGTH]
+					GetClientName(i, sName, MAX_NAME_LENGTH)
+					//ServerCommand("sm_slay %s", sName)
+					FakeClientCommand(i, "kill")
+					PrintToChatAll("Player "%s" lose the round.", sName)
+				}
+		if(gI_countT < gI_countCT)
+			for(int i = 1; i <= MaxClients; i++)
+				if(IsClientInGame(i) && GetClientTeam(i) == 2)
+				{
+					char sName[MAX_NAME_LENGTH]
+					GetClientName(i, sName, MAX_NAME_LENGTH)
+					//ServerCommand("sm_slay %s", sName)
+					FakeClientCommand(i, "kill")
+					PrintToChatAll("Player "%s" lose the round.", sName)
+				}
 		//x
 		if(gI_countT > gI_countCT)
 			CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
