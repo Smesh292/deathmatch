@@ -349,11 +349,12 @@ public void OnGameFrame()
 	//char sFormat2[32]
 	//Format(sFormat2, 32, "%f"
 	exploded[1] = StringToInt(sExploded[1])
+	exploded[1] = exploded[1] / 50000
 	PrintToServer("%i", exploded[1])
-	char sFormat2[32]
-	Format(sFormat2, 32, "%1.f", exploded[1])
-	PrintToServer("sFormat2: %s", sFormat2)
-	exploded[1] = StringToInt(sFormat2)
+	//char sFormat2[32]
+	//Format(sFormat2, 32, "%1.f", exploded[1])
+	//PrintToServer("sFormat2: %s", sFormat2)
+	//exploded[1] = StringToInt(sFormat2)
 	exploded[1] = exploded[1] * 30
 	//char sFormat[32]
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
