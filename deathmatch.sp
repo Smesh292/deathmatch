@@ -120,7 +120,8 @@ void sdkspawnpost(int client)
 
 Action sdkweapondrop(int client, int weapon)
 {
-	RemoveEntity(weapon)
+	if(IsValidEntity(weapon))
+		RemoveEntity(weapon)
 }
 
 Action joinclass(int client, const char[] command, int argc)
