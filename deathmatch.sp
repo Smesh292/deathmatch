@@ -324,7 +324,7 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 public void OnGameFrame()
 {
 	Handle convar = FindConVar("mp_roundtime")
-	int roundtime = GetConVarInt(convar)
+	float roundtime = GetConVarFloat(convar)
 	if(roundtime == 5.0 && x)
 	{
 		//x
