@@ -339,9 +339,9 @@ public void OnGameFrame()
 	//if(roundtime == 5.0 && x)
 	char sRoundtime[32]
 	FloatToString(roundtime, sRoundtime, 32)
-	char sExploded[2][32]
-	ExplodeString(sRoundtime, ".", sExploded, 1, 32)
-	float exploded[1]
+	char sExploded[3][32]
+	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
+	float exploded[2]
 	exploded[0] = StringToFloat(sExploded[0])
 	exploded[0] = exploded[0] * 60.0
 	exploded[1] = StringToFloat(sExploded[1])
