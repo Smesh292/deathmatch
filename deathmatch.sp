@@ -263,7 +263,7 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				ServerCommand("sm_slay %s", sName)
+				//ServerCommand("sm_slay %s", sName)
 				FakeClientCommand(i, "kill")
 			}
 	if(gI_countT < gI_countCT)
@@ -272,7 +272,7 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				ServerCommand("sm_slay %s", sName)
+				//ServerCommand("sm_slay %s", sName)
 				FakeClientCommand(i, "kill")
 			}
 }
