@@ -128,6 +128,7 @@ Action sdkweapondrop(int client, int weapon)
 Action cmd_getscore(int client, int args)
 {
 	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iScore"))
+	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_Score"))
 	return Plugin_Handled
 }
 
