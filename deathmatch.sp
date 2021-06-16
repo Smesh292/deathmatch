@@ -149,6 +149,9 @@ Action cmd_getscore(int client, int args)
 	//PrintToServer("%i", GetEntProp(client, Prop_Data, "m_Score"))
 	PrintToServer("Counter-Terorist score is: %i", gI_countCT)
 	PrintToServer("Terorist score is: %i", gI_countT)
+	Handle convar = FindConVar("mp_roundtime")
+	float roundtime = GetConVarFloat(convar)
+	PrintToServer("%f round time", roundtime)
 	return Plugin_Handled
 }
 
