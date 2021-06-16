@@ -310,11 +310,11 @@ Action cswinpanelround(Event event, const char[] name, bool dontBroadcast)
 
 public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 {
-	if(gI_countT > gI_countCT)
+	//if(gI_countT > gI_countCT)
 		//CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
-	if(gI_countT < gI_countCT)
+	//if(gI_countT < gI_countCT)
 		//CS_TerminateRound(0.0, CSRoundEnd_CTWin)
-	return Plugin_Handled
+	//return Plugin_Handled
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
