@@ -349,6 +349,7 @@ public void OnGameFrame()
 	//char sFormat2[32]
 	//Format(sFormat2, 32, "%f"
 	exploded[1] = StringToInt(sExploded[1])
+	PrintToServer("%i", exploded[1])
 	char sFormat2[32]
 	Format(sFormat2, 32, "%1.f", exploded[1])
 	PrintToServer("sFormat2: %s", sFormat2)
