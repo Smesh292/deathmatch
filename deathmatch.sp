@@ -355,12 +355,13 @@ public void OnGameFrame()
 	//Format(sFormat2, 32, "%1.f", exploded[1])
 	//PrintToServer("sFormat2: %s", sFormat2)
 	//exploded[1] = StringToInt(sFormat2)
-	exploded[1] = (exploded[1] * 60) / 2
+	exploded[1] = (exploded[1] * 60) / 10
+	//exploded[1] = exploded[1] * 7
 	//char sFormat[32]
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
 	PrintToServer("exploded(formated): %i", exploded[0] + exploded[1])
 	//float formatedRoundtime = (sRoundtime)
-	if((float(gI_time) + float(exploded[0] + exploded[1]) - 1.0) == GetTime() && gI_closeIf)
+	if(gI_time + exploded[0] + exploded[1] - 1.0 == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
