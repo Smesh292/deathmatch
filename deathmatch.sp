@@ -332,10 +332,12 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 public void OnGameFrame()
 {
 	Handle convar = FindConVar("mp_roundtime")
+	Handle convar2 = FindConVar("mp_freezetime")
 	float roundtime = GetConVarFloat(convar)
+	float freezetime = GetConVarFloat(convar2)
 	//int time = GetTime()
 	//if(roundtime == 5.0 && x)
-	if((float(gI_time) + (roundtime * 60.0) - 5.0) == GetTime() && gI_closeIf)
+	if((float(gI_time) + (roundtime * 60.0) - 1.0 - freezetime) == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
