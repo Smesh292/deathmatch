@@ -346,7 +346,12 @@ public void OnGameFrame()
 	int exploded[2]
 	exploded[0] = StringToInt(sExploded[0])
 	exploded[0] = exploded[0] * 60
+	//char sFormat2[32]
+	//Format(sFormat2, 32, "%f"
 	exploded[1] = StringToInt(sExploded[1])
+	char sFormat2[32]
+	Format(sFormat2, 32, "%1.f", exploded[1])
+	exploded[1] = StringToInt(sFormat2)
 	exploded[1] = exploded[1] * 30
 	//char sFormat[32]
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
