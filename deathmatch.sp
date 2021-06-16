@@ -36,6 +36,9 @@ KeyValues gKV_spawnpoint
 bool gB_roundStart
 bool gB_onSpawn[MAXPLAYERS + 1]
 
+int gI_countT
+int gI_countCT
+
 enum WeaponType
 {
 	Weapon_Glock = 0,
@@ -81,6 +84,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start, EventHookMode_Post)
+	HookEvent("round_end", round_end, EventHookMode_Pre)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
@@ -128,7 +132,7 @@ Action sdkweapondrop(int client, int weapon)
 Action cmd_getscore(int client, int args)
 {
 	//PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iScore"))
-	PrintToServer("%i", GetEntProp(client, Prop_Data, "m_Score"))
+	//PrintToServer("%i", GetEntProp(client, Prop_Data, "m_Score"))
 	return Plugin_Handled
 }
 
@@ -233,6 +237,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	gB_roundStart = true
+	gI_countT = 0
+	gI_countCT = 0
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -246,6 +252,26 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
+Action round_end(Event event, const char[] name, bool dontBroadcast)
+{
+	if(gI_countT > gI_countCT)
+		for(int i = 1; i <= MaxClients; i++)
+			if(GetClientTeam(i) == 3)
+			{
+				char sName[MAX_NAME_LENGTH]
+				GetClientName(i, sName, MAX_NAME_LENGTH)
+				ServerCommand("sm_slay %s", sName)
+			}
+	if(gI_countT < gI_countCT)
+		for(int i = 1; i <= MaxClients; i++)
+			if(GetClientTeam(i) == 2)
+			{
+				char sName[MAX_NAME_LENGTH]
+				GetClientName(i, sName, MAX_NAME_LENGTH)
+				ServerCommand("sm_slay %s", sName)
+			}
+}
+
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
@@ -253,7 +279,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		//KillTimer(gH_timer[client])
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
-	//int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
+	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
+	int team = GetClientTeam(attacker)
+	if(team == 2)
+		gI_countT++
+	if(team == 3)
+		gI_countCT++
 	//float vecRagdollVelocity[3]
 	//float vecEyePosition[3]
 	//GetClientEyePosition(attacker, vecEyePosition)
