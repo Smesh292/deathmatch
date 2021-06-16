@@ -84,6 +84,7 @@ public void OnPluginStart()
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
+	RegConsoleCmd("sm_getscore", cmd_getscore)
 }
 
 public void OnMapStart()
@@ -122,6 +123,12 @@ Action sdkweapondrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+}
+
+Action cmd_getscore(int clinet, int args)
+{
+	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iScore"))
+	return Plugin_Handled
 }
 
 Action joinclass(int client, const char[] command, int argc)
