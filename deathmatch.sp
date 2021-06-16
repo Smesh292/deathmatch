@@ -371,7 +371,7 @@ public void OnGameFrame()
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					//ServerCommand("sm_slay %s", sName)
 					FakeClientCommand(i, "kill")
-					PrintToChatAll("Player "%s" lose the round.", sName)
+					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 		if(gI_countT < gI_countCT)
 			for(int i = 1; i <= MaxClients; i++)
@@ -381,7 +381,7 @@ public void OnGameFrame()
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					//ServerCommand("sm_slay %s", sName)
 					FakeClientCommand(i, "kill")
-					PrintToChatAll("Player "%s" lose the round.", sName)
+					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 		//x
 		if(gI_countT > gI_countCT)
