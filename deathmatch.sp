@@ -340,7 +340,7 @@ public void OnGameFrame()
 	//if(roundtime == 5.0 && x)
 	char sRoundtime[32]
 	FloatToString(roundtime, sRoundtime, 32)
-	PrintToServer("sRountime: %s" sRoundtime)
+	PrintToServer("sRountime: %s", sRoundtime)
 	char sExploded[3][32]
 	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
 	int exploded[2]
