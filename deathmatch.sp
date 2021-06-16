@@ -341,15 +341,15 @@ public void OnGameFrame()
 	FloatToString(roundtime, sRoundtime, 32)
 	char sExploded[3][32]
 	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
-	float exploded[2]
-	exploded[0] = StringToFloat(sExploded[0])
-	exploded[0] = exploded[0] * 60.0
-	exploded[1] = StringToFloat(sExploded[1])
-	exploded[1] = exploded[1] * 30.0
+	int exploded[2]
+	exploded[0] = StringToInt(sExploded[0])
+	exploded[0] = exploded[0] * 60
+	exploded[1] = StringToInt(sExploded[1])
+	exploded[1] = exploded[1] * 30
 	char sFormat[32]
-	Format(sRoundtime, 32, "%f.%f", exploded[0], exploded[1])
+	Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
 	PrintToServer("sRoundtime: %s", sRoundtime)
-	int formatedRoundtime = StringToFloat(sRoundtime)
+	float formatedRoundtime = StringToFloat(sRoundtime)
 	if((float(gI_time) + formatedRoundtime - 1.0) == GetTime() && gI_closeIf)
 	{
 		//x
