@@ -334,11 +334,13 @@ public void OnGameFrame()
 	Handle convar = FindConVar("mp_roundtime")
 	//Handle convar2 = FindConVar("mp_freezetime")
 	float roundtime = GetConVarFloat(convar)
+	
 	//float freezetime = GetConVarFloat(convar2)
 	//int time = GetTime()
 	//if(roundtime == 5.0 && x)
 	char sRoundtime[32]
 	FloatToString(roundtime, sRoundtime, 32)
+	PrintToServer("sRountime: %s" sRoundtime)
 	char sExploded[3][32]
 	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
 	int exploded[2]
@@ -348,7 +350,7 @@ public void OnGameFrame()
 	exploded[1] = exploded[1] * 30
 	//char sFormat[32]
 	//Format(sRoundtime, 32, "%i.%i", exploded[0], exploded[1])
-	PrintToServer("sRoundtime: %i", exploded[0] + exploded[1])
+	PrintToServer("exploded(formated): %i", exploded[0] + exploded[1])
 	//float formatedRoundtime = (sRoundtime)
 	if((float(gI_time) + float(exploded[0] + exploded[1]) - 1.0) == GetTime() && gI_closeIf)
 	{
