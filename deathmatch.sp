@@ -342,7 +342,7 @@ public void OnGameFrame()
 	char sExploded[2][32]
 	ExplodeString(sRoundtime, ".", sExploded, 1, 32)
 	float exploded[1]
-	exploaded[0] = StringToFloat(sExploded[0])
+	exploded[0] = StringToFloat(sExploded[0])
 	exploded[0] = exploded[0] * 60.0
 	exploded[1] = StringToFloat(sExploded[1])
 	exploded[1] = exploded[1] * 30.0
