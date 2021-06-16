@@ -246,8 +246,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 	//PrintToServer("OnEntityCreated succesfuly complete.")
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity)
-	if(StrContains(classname, "bomb"))
-		RemoveEntity(entity)
+	//if(StrContains(classname, "plant"))
+		//RemoveEntity(entity)
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
