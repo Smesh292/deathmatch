@@ -39,7 +39,8 @@ bool gB_onSpawn[MAXPLAYERS + 1]
 int gI_countT
 int gI_countCT
 
-bool x
+bool gI_closeIf
+int gI_time
 
 public Plugin myinfo = 
 {
@@ -260,7 +261,8 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gB_roundStart = true
 	gI_countT = 0
 	gI_countCT = 0
-	x = true
+	gI_closeIf = true
+	gI_time = GetTime()
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -328,14 +330,16 @@ public void OnGameFrame()
 {
 	Handle convar = FindConVar("mp_roundtime")
 	float roundtime = GetConVarFloat(convar)
-	if(roundtime == 5.0 && x)
+	//int time = GetTime()
+	//if(roundtime == 5.0 && x)
+	if(float(gI_time) + roundtime - 1.0 == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
 			CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
 		if(gI_countT < gI_countCT)
 			CS_TerminateRound(0.0, CSRoundEnd_CTWin)
-		x = false
+		gI_closeIf = false
 		PrintToServer("Round end terminate by OnGameFrame()")
 	}
 }
