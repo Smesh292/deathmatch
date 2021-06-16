@@ -303,6 +303,7 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 		CS_TerminateRound(0.0, CSRoundEnd_TerroristWin)
 	if(gI_countT < gI_countCT)
 		CS_TerminateRound(0.0, CSRoundEnd_CTWin)
+	return Plugin_Handled
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
