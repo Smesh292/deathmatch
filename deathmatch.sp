@@ -102,6 +102,17 @@ public void OnClientPutInServer(int client)
 
 void sdkspawnpost(int client)
 {
+	if(IsFakeClient(client)
+	{
+		//for(int i = 0; 
+		int random = GetRandomInt(0, 5)
+		char sWeapon[32]
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
+		GivePlayerItem(client, sWeapon)
+		random = GetRandomInt(6, 23)
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
+		GIvePlayerItem(client, sWeapon)
+	}
 	gB_onSpawn[client] = true
 	GetPossition(client)
 }
