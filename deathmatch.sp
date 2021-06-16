@@ -288,7 +288,7 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				ServerCommand("sm_slay %s", sName)
+				//ServerCommand("sm_slay %s", sName)
 				//FakeClientCommand(i, "kill")
 			}
 	if(gI_countT < gI_countCT)
@@ -297,7 +297,7 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
-				ServerCommand("sm_slay %s", sName)
+				//ServerCommand("sm_slay %s", sName)
 				//FakeClientCommand(i, "kill")
 			}
 }
@@ -335,7 +335,7 @@ public void OnGameFrame()
 	float roundtime = GetConVarFloat(convar)
 	//int time = GetTime()
 	//if(roundtime == 5.0 && x)
-	if((float(gI_time) + roundtime * 60.0 - 5.0) == GetTime() && gI_closeIf)
+	if((float(gI_time) + (roundtime * 60.0) - 5.0) == GetTime() && gI_closeIf)
 	{
 		//x
 		if(gI_countT > gI_countCT)
