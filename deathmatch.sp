@@ -84,13 +84,14 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start, EventHookMode_Post)
-	//HookEvent("round_end", round_end, EventHookMode_Pre)
-	HookEvent("round_end", round_end)
+	HookEvent("round_end", round_end, EventHookMode_Pre)
+	//HookEvent("round_end", round_end)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
+	HookEvent("cs_win_panel_round", cswinpanelround, EventHookMode_Pre)
 }
 
 public void OnMapStart()
@@ -258,9 +259,10 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 
 Action round_end(Event event, const char[] name, bool dontBroadcast)
 {
+	//CSRoundEnd_CTWin
 	if(gI_countT > gI_countCT)
 		for(int i = 1; i <= MaxClients; i++)
-			if(GetClientTeam(i) == 3)
+			if(IsClientInGame(i) && GetClientTeam(i) == 3)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
@@ -269,13 +271,23 @@ Action round_end(Event event, const char[] name, bool dontBroadcast)
 			}
 	if(gI_countT < gI_countCT)
 		for(int i = 1; i <= MaxClients; i++)
-			if(GetClientTeam(i) == 2)
+			if(IsClientInGame(i) && GetClientTeam(i) == 2)
 			{
 				char sName[MAX_NAME_LENGTH]
 				GetClientName(i, sName, MAX_NAME_LENGTH)
 				ServerCommand("sm_slay %s", sName)
 				//FakeClientCommand(i, "kill")
 			}
+}
+
+Action cswinpanelround(Event event, const char[] name, bool dontBroadcast)
+{
+	//event.SetInt
+	//SetEve //https://wiki.alliedmods.net/Counter-Strike:_Source_Events#cs_win_panel_round
+	if(gI_countT > gI_countCT)
+		event.SetInt("final_event", CSRoundEnd_TerroristWin)
+	if(gI_countT < gI_countCT)
+		SetEventInt(event, "final_event", CSRoundEnd_CTWin)
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
