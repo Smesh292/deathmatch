@@ -125,7 +125,7 @@ Action sdkweapondrop(int client, int weapon)
 		RemoveEntity(weapon)
 }
 
-Action cmd_getscore(int clinet, int args)
+Action cmd_getscore(int client, int args)
 {
 	PrintToServer("%i", GetEntProp(client, Prop_Send, "m_iScore"))
 	return Plugin_Handled
