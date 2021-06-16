@@ -42,8 +42,8 @@ int gI_countCT
 public Plugin myinfo = 
 {
 	name = "Deathmatch",
-	author = "Smesh, Nick Jurevich"
-	description = "Make able to spawn after kill while round is running."
+	author = "Smesh, Nick Jurevich",
+	description = "Make able to spawn after kill while round is running.",
 	version = "1.0",
 	url = "http://www.sourcemod.net/"
 }
