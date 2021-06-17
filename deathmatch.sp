@@ -119,7 +119,7 @@ public void OnMapStart()
 	gKV_spawnpoint.ImportFromFile(sFormat)
 	char sKVStringTest[128]
 	gI_randomInt = 0
-	for(int i = 1; i <= 100; i++)
+	for(int i = 1; i <= 1000; i++)
 	{
 		IntToString(i, sRandomInt, 32)
 		gKV_spawnpoint.GetString(sRandomInt, sKVStringTest, 128)
