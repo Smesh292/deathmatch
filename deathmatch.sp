@@ -171,12 +171,27 @@ void GetPossition(int client)
 	//Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	//kv_spawn.ImportFromFile(sFormat)
 	char sKVString[128]
-	int randomint = GetRandomInt(1, 31)
+	//int randomint = GetRandomInt(1, 100)
 	//PrintToServer("%i", randomint)
 	char sRandomInt[32]
-	IntToString(randomint, sRandomInt, 32)
+	//IntToString(randomint, sRandomInt, 32)
 	//kv_spawn.GetString(sRandomInt, sKVString, 128)
+	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	//int count = 1
+	//while((count = gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)) != null)
+	for(int i = 1, i <= 100; i++)
+	{
+		IntToString(i, sRandomInt, 32)
+		gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+		if(strlen(sKVString) > 0)
+		{
+			randomint = GetRandomInt(1, i)
+			i++
+			IntToString(randomint, sRandomInt, 32)
+		}
+	}
 	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	//ConVarGetString(
 	//PrintToServer("1. %s", sKVString)
 	char sString[7][128]
 	ExplodeString(sKVString, " ", sString, 6, 128)
