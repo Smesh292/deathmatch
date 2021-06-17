@@ -42,6 +42,9 @@ int gI_countCT
 bool gI_closeIf
 int gI_time
 
+char sKVString[128]
+char sRandomInt[32]
+
 public Plugin myinfo = 
 {
 	name = "Deathmatch",
@@ -113,6 +116,28 @@ public void OnMapStart()
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	gKV_spawnpoint.ImportFromFile(sFormat)
+	char sKVStringTest[128]
+	for(int i = 1; i <= 100; i++)
+	{
+		IntToString(i, sRandomInt, 32)
+		gKV_spawnpoint.GetString(sRandomInt, sKVStringTest, 128)
+		//int randomint = GetRandomInt(1, i)
+		//IntToString(randomint, sRandomInt, 32)
+		
+		//PrintToServer("%i", strlen(sKVStringTest))
+		//if(strlen(sKVStringTest) == 0)
+			//break
+		if(strlen(sKVStringTest) > 0)
+		{
+			int randomint = GetRandomInt(1, i)
+			//i++
+			IntToString(randomint, sRandomInt, 32)
+			gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+			//break
+		}
+		if(strlen(sKVString) == 0)
+			continue
+	}
 }
 
 public void OnClientPutInServer(int client)
@@ -170,37 +195,37 @@ void GetPossition(int client)
 	//char sFormat[64]
 	//Format(sFormat, 64, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	//kv_spawn.ImportFromFile(sFormat)
-	char sKVString[128]
-	char sKVStringTest[128]
+	
+	
 	//int randomint = GetRandomInt(1, 31)
 	//PrintToServer("%i", randomint)
-	char sRandomInt[32]
+	
 	//IntToString(randomint, sRandomInt, 32)
 	//kv_spawn.GetString(sRandomInt, sKVString, 128)
 	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//int count = 1
 	//while((count = gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)) != null)
-	for(int i = 1; i <= 100; i++)
-	{
-		IntToString(i, sRandomInt, 32)
-		gKV_spawnpoint.GetString(sRandomInt, sKVStringTest, 128)
+	//for(int i = 1; i <= 100; i++)
+	//{
+		//IntToString(i, sRandomInt, 32)
+		//gKV_spawnpoint.GetString(sRandomInt, sKVStringTest, 128)
 		//int randomint = GetRandomInt(1, i)
 		//IntToString(randomint, sRandomInt, 32)
 		
 		//PrintToServer("%i", strlen(sKVStringTest))
 		//if(strlen(sKVStringTest) == 0)
 			//break
-		if(strlen(sKVStringTest) > 0)
-		{
-			int randomint = GetRandomInt(1, i)
+		//if(strlen(sKVStringTest) > 0)
+		//{
+			//int randomint = GetRandomInt(1, i)
 			//i++
-			IntToString(randomint, sRandomInt, 32)
-			gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+			//IntToString(randomint, sRandomInt, 32)
+			//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 			//break
-		}
-		if(strlen(sKVString) == 0)
-			continue
-	}
+		//}
+		//if(strlen(sKVString) == 0)
+			//continue
+	//}
 	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//ConVarGetString(
 	//PrintToServer("1. %s", sKVString)
