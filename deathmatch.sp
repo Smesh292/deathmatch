@@ -486,7 +486,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 
 Action respawnTimer(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gH_timer[client] != null && timer != null && gB_isRoundEnd)
+	if(IsClientInGame(client) && gH_timer[client] != null && timer != null && !gB_isRoundEnd)
 	{
 		CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
