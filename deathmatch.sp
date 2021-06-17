@@ -384,7 +384,9 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 	//if(gI_countT < gI_countCT)
 		//CS_TerminateRound(0.0, CSRoundEnd_CTWin)
 	//return Plugin_Handled
-	CS_TerminateRound(delay, CSRoundEnd_Draw)
+	//Handle convar3 = FindConVar("mp_round_restart_delay")
+	//float roundrestartdelay = GetConVarFloat(convar3)
+	//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 }
 //bool x
 //public Action OnPlayerRuncCmd
