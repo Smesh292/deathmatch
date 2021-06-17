@@ -172,7 +172,7 @@ void GetPossition(int client)
 	//kv_spawn.ImportFromFile(sFormat)
 	char sKVString[128]
 	//char sKVStringTest[128]
-	int randomint = GetRandomInt(1, 100)
+	int randomint = GetRandomInt(1, 31)
 	//PrintToServer("%i", randomint)
 	char sRandomInt[32]
 	IntToString(randomint, sRandomInt, 32)
