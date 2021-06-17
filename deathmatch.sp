@@ -179,7 +179,7 @@ void GetPossition(int client)
 	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//int count = 1
 	//while((count = gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)) != null)
-	for(int i = 1, i <= 100; i++)
+	for(int i = 1; i <= 100; i++)
 	{
 		IntToString(i, sRandomInt, 32)
 		gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
