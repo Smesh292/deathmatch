@@ -446,13 +446,14 @@ public void OnGameFrame()
 		float roundrestartdelay = GetConVarFloat(convar3)
 		if(gI_countT > gI_countCT)
 		{
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
+			
 		}
 		if(gI_countT < gI_countCT)
 		{
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
 		gI_closeIf = false
 		PrintToServer("Round end terminate by OnGameFrame()")
