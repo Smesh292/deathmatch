@@ -44,6 +44,7 @@ int gI_time
 
 char sKVString[128]
 char sRandomInt[32]
+int gI_randomInt
 
 public Plugin myinfo = 
 {
@@ -129,9 +130,9 @@ public void OnMapStart()
 			//break
 		if(strlen(sKVStringTest) > 0)
 		{
-			int randomint = GetRandomInt(1, i)
+			gI_randomInt = GetRandomInt(1, i)
 			//i++
-			IntToString(randomint, sRandomInt, 32)
+			//IntToString(randomint, sRandomInt, 32)
 			//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 			//break
 		}
@@ -197,10 +198,10 @@ void GetPossition(int client)
 	//kv_spawn.ImportFromFile(sFormat)
 	
 	
-	//int randomint = GetRandomInt(1, 31)
+	int randomint = GetRandomInt(1, gI_randomInt)
 	//PrintToServer("%i", randomint)
 	
-	//IntToString(randomint, sRandomInt, 32)
+	IntToString(randomint, sRandomInt, 32)
 	//kv_spawn.GetString(sRandomInt, sKVString, 128)
 	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//int count = 1
