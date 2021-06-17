@@ -44,7 +44,7 @@ int gI_time
 
 char sKVString[128]
 char sRandomInt[32]
-int gI_randomInt
+int gI_randomInt = 1
 
 public Plugin myinfo = 
 {
@@ -130,7 +130,8 @@ public void OnMapStart()
 			//break
 		if(strlen(sKVStringTest) > 0)
 		{
-			gI_randomInt = GetRandomInt(1, i)
+			//gI_randomInt = GetRandomInt(1, i)
+			gI_randomInt++
 			//i++
 			//IntToString(randomint, sRandomInt, 32)
 			//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
