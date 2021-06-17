@@ -46,6 +46,8 @@ char sKVString[128]
 char sRandomInt[32]
 int gI_randomInt
 
+bool gB_isRoundEnd
+
 public Plugin myinfo = 
 {
 	name = "Deathmatch",
@@ -316,6 +318,7 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	gB_roundStart = true
+	gB_isRoundEnd = false
 	gI_countT = 0
 	gI_countCT = 0
 	gI_closeIf = true
@@ -336,6 +339,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 Action round_end(Event event, const char[] name, bool dontBroadcast)
 {
 	//CSRoundEnd_CTWin
+	gB_isRoundEnd = true
 	if(gI_countT > gI_countCT)
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsClientInGame(i) && GetClientTeam(i) == 3)
@@ -482,7 +486,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 
 Action respawnTimer(Handle timer, int client)
 {
-	if(IsClientInGame(client) && gH_timer[client] != null && timer != null)
+	if(IsClientInGame(client) && gH_timer[client] != null && timer != null && gB_isRoundEnd)
 	{
 		CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
