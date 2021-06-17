@@ -192,7 +192,7 @@ void GetPossition(int client)
 		if(strlen(sKVString) > 0)
 		{
 			int randomint = GetRandomInt(1, i)
-			i++
+			//i++
 			IntToString(randomint, sRandomInt, 32)
 			gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 			break
