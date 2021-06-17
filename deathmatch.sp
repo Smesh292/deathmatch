@@ -438,7 +438,7 @@ public void OnGameFrame()
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 		//x
-		Handle convar3 = FindConVar("map_round_restart_delay")
+		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
 		if(gI_countT > gI_countCT)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
