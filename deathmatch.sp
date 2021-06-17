@@ -132,7 +132,7 @@ public void OnMapStart()
 			int randomint = GetRandomInt(1, i)
 			//i++
 			IntToString(randomint, sRandomInt, 32)
-			gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+			//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 			//break
 		}
 		if(strlen(sKVString) == 0)
@@ -226,7 +226,7 @@ void GetPossition(int client)
 		//if(strlen(sKVString) == 0)
 			//continue
 	//}
-	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//ConVarGetString(
 	//PrintToServer("1. %s", sKVString)
 	char sString[7][128]
