@@ -190,7 +190,7 @@ void GetPossition(int client)
 			IntToString(randomint, sRandomInt, 32)
 		}
 	}
-	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
+	//gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
 	//ConVarGetString(
 	//PrintToServer("1. %s", sKVString)
 	char sString[7][128]
