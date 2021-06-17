@@ -599,8 +599,15 @@ bool TR_donthitself(int entity, int mask, int client)
 	return entity != client && 0 < entity <= MaxClients
 }
 
-public Action OnPlayerRunCmd(int client)
+public Action OnPlayerRunCmd(int client, int &buttons)
 {
+	if(gB_isRoundEnd) //https://forums.alliedmods.net/showthread.php?t=279227
+	{
+		//if(!(buttons & IN_ATTACK))
+			//return Plugin_Continue
+		//if(!(buttons & IN_ATTACK2))
+			//return Plugin_Continue
+	}
 	int other = Stuck(client)
 	
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
@@ -620,4 +627,5 @@ public Action OnPlayerRunCmd(int client)
 		}
 	}
 	SetEntProp(client, Prop_Send, "m_bInBuyZone", true)
+	//return Plugin_Continue
 }
