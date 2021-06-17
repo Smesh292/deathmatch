@@ -44,7 +44,7 @@ int gI_time
 
 char sKVString[128]
 char sRandomInt[32]
-int gI_randomInt = 1
+int gI_randomInt
 
 public Plugin myinfo = 
 {
@@ -118,6 +118,7 @@ public void OnMapStart()
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	gKV_spawnpoint.ImportFromFile(sFormat)
 	char sKVStringTest[128]
+	gI_randomInt = 0
 	for(int i = 1; i <= 100; i++)
 	{
 		IntToString(i, sRandomInt, 32)
