@@ -384,6 +384,7 @@ public Action CS_OnTerminateRound(float &delay, CSRoundEndReason &reason)
 	//if(gI_countT < gI_countCT)
 		//CS_TerminateRound(0.0, CSRoundEnd_CTWin)
 	//return Plugin_Handled
+	CS_TerminateRound(delay, CSRoundEnd_Draw)
 }
 //bool x
 //public Action OnPlayerRuncCmd
