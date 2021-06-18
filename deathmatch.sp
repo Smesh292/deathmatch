@@ -426,7 +426,10 @@ public void OnGameFrame()
 	//float formatedRoundtime = (sRoundtime)
 	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && gI_closeIf)
 	{
-		if(gI_countT > gI_countCT)
+		Handle convar3 = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar3)
+		if(gI_countT > gI_countCT && !gB_slayed)
+		{
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i) && GetClientTeam(i) == 3)
 				{
@@ -436,7 +439,13 @@ public void OnGameFrame()
 					FakeClientCommand(i, "kill")
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
-		if(gI_countT < gI_countCT)
+			gB_slayed = true
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+		}
+		if(gI_countT < gI_countCT && !gB_slayed)
+		{
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsClientInGame(i) && GetClientTeam(i) == 2)
 				{
@@ -446,25 +455,23 @@ public void OnGameFrame()
 					FakeClientCommand(i, "kill")
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
+			gB_slayed = true
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+		}
 		//x
-		Handle convar3 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar3)
+
 		//if(!)
 		{
 			if(gI_countT > gI_countCT && !gB_slayed)
 			{
-				gB_slayed = true
-				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-				CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
-				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+
 				
 			}
 			if(gI_countT < gI_countCT && !gB_slayed)
 			{
-				gB_slayed = true
-				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-				CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+
 			}
 		}
 		gI_closeIf = false
