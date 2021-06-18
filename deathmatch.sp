@@ -436,13 +436,13 @@ public void OnGameFrame()
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					//ServerCommand("sm_slay %s", sName)
-					//FakeClientCommand(i, "kill")
-					//PrintToChatAll("Player '%s' lose the round.", sName)
+					FakeClientCommand(i, "kill")
+					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 			gB_slayed = true
 			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_BombDefused)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_BombDefused)
 			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 		}
 		if(gI_countT > gI_countCT && !gB_slayed)
@@ -453,13 +453,13 @@ public void OnGameFrame()
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					//ServerCommand("sm_slay %s", sName)
-					//FakeClientCommand(i, "kill")
-					//PrintToChatAll("Player '%s' lose the round.", sName)
+					FakeClientCommand(i, "kill")
+					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 			gB_slayed = true
 			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TargetBombed)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
+			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_TargetBombed)
 			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 		}
 		//x
