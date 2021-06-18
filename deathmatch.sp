@@ -428,10 +428,10 @@ public void OnGameFrame()
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT > gI_countCT && !gB_slayed)
+		if(gI_countT < gI_countCT && !gB_slayed)
 		{
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && GetClientTeam(i) == 3)
+				if(IsClientInGame(i) && GetClientTeam(i) == 2)
 				{
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
@@ -444,10 +444,10 @@ public void OnGameFrame()
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 		}
-		if(gI_countT < gI_countCT && !gB_slayed)
+		if(gI_countT > gI_countCT && !gB_slayed)
 		{
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && GetClientTeam(i) == 2)
+				if(IsClientInGame(i) && GetClientTeam(i) == 3)
 				{
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
