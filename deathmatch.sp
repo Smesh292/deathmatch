@@ -47,6 +47,7 @@ char sRandomInt[32]
 int gI_randomInt
 
 bool gB_isRoundEnd
+bool gB_slayed
 
 public Plugin myinfo = 
 {
@@ -323,6 +324,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_countCT = 0
 	gI_closeIf = true
 	gI_time = GetTime()
+	gB_slayed = false
 	PrintToServer("round start!")
 	for(int i = 1; i <= MaxClients; i++)
 	{
@@ -447,18 +449,23 @@ public void OnGameFrame()
 		//x
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT > gI_countCT)
+		//if(!)
 		{
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-			
-		}
-		if(gI_countT < gI_countCT)
-		{
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-			//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			if(gI_countT > gI_countCT && !gB_slayed)
+			{
+				gB_slayed = true
+				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+				CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin)
+				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+				
+			}
+			if(gI_countT < gI_countCT && !gB_slayed)
+			{
+				gB_slayed = true
+				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+				CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+				//CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			}
 		}
 		gI_closeIf = false
 		PrintToServer("Round end terminate by OnGameFrame()")
