@@ -520,14 +520,19 @@ Action respawnTimer(Handle timer, int client)
 		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 		if(IsValidEntity(ragdoll))
 			RemoveEntity(ragdoll)
-		CS_RespawnPlayer(client)
-		//RequestFrame(frame, client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-		//https://forums.alliedmods.net/showthread.php?t=267445
+		RequestFrame(rf_ragdoll, client)
 		KillTimer(gH_timer[client])
 		KillTimer(timer)
 	}
 	return Plugin_Stop
+}
+
+void rf_ragdoll(int client)
+{
+	CS_RespawnPlayer(client)
+	//RequestFrame(frame, client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+	//https://forums.alliedmods.net/showthread.php?t=267445
 }
 
 Action cmd_gunsmenu(int client, int args)
