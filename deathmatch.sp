@@ -489,27 +489,30 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	GetPossition(client)
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
-	int team = GetClientTeam(attacker)
-	if(team == 2)
-		gI_countT++
-	if(team == 3)
-		gI_countCT++
-	//float vecRagdollVelocity[3]
-	//float vecEyePosition[3]
-	//GetClientEyePosition(attacker, vecEyePosition)
-	//if(vecEyePosition[0] > 0.0)
-	//GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity")
-		//vec
-	/*bool headshot = event.GetBool("headshot") //https://sm.alliedmods.net/new-api/events
-	if(headshot)
+	if(IsClientInGame(attacker))
 	{
-		int ragdoll = GetEntProp(client, Prop_Send, "m_hRagdoll")
-		//if()
-		vecRagdollVelocity[2] = 15000.0
-		GetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
-		PrintToServer("%f %f %f", vecRagdollVelocity[0], vecRagdollVelocity[1], vecRagdollVelocity[2])
-		SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
-	}*/
+		int team = GetClientTeam(attacker)
+		if(team == 2)
+			gI_countT++
+		if(team == 3)
+			gI_countCT++
+		//float vecRagdollVelocity[3]
+		//float vecEyePosition[3]
+		//GetClientEyePosition(attacker, vecEyePosition)
+		//if(vecEyePosition[0] > 0.0)
+		//GetEntPropVector(client, Prop_Send, "m_vecRagdollVelocity")
+			//vec
+		/*bool headshot = event.GetBool("headshot") //https://sm.alliedmods.net/new-api/events
+		if(headshot)
+		{
+			int ragdoll = GetEntProp(client, Prop_Send, "m_hRagdoll")
+			//if()
+			vecRagdollVelocity[2] = 15000.0
+			GetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
+			PrintToServer("%f %f %f", vecRagdollVelocity[0], vecRagdollVelocity[1], vecRagdollVelocity[2])
+			SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollVelocity", vecRagdollVelocity)
+		}*/
+	}
 }
 
 Action respawnTimer(Handle timer, int client)
