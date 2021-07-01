@@ -529,6 +529,11 @@ Action respawnTimer(Handle timer, int client)
 
 void rf_ragdoll(int client)
 {
+	RequestFrame(rf_ragdoll2, client)
+}
+
+void rf_ragdoll2(int client)
+{
 	CS_RespawnPlayer(client)
 	//RequestFrame(frame, client)
 	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
