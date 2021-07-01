@@ -517,6 +517,8 @@ Action respawnTimer(Handle timer, int client)
 	//if(IsClientInGame(client) && gH_timer[client] != null && timer != null && !gB_isRoundEnd)
 	if(IsClientInGame(client) && gH_timer[client] != null && timer != null)
 	{
+		int ragdoll = GetEntPropEnt(client, Prop_Data, "m_hRagdoll")
+		RemoveEntity(ragdoll)
 		CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
