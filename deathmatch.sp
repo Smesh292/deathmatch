@@ -33,7 +33,7 @@ Handle gH_timer[MAXPLAYERS + 1] = null
 
 KeyValues gKV_spawnpoint
 
-bool gB_roundStart
+bool gB_roundStart[MAXPLAYERS + 1]
 bool gB_onSpawn[MAXPLAYERS + 1]
 
 int gI_countT
@@ -318,7 +318,6 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
-	gB_roundStart = true
 	gB_isRoundEnd = false
 	gI_countT = 0
 	gI_countCT = 0
@@ -331,9 +330,10 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
 		{
 			//GetPossition(i)
-			if(gH_timer[i] != null)
-				delete gH_timer[i] //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
+			//if(gH_timer[i] != null)
+				//delete gH_timer[i] //https://wiki.alliedmods.net/Handles_(SourceMod_Scripting) code bottom
 			//GetEntPropString(
+			gB_roundStart[i] = true
 		}
 	}
 }
@@ -487,6 +487,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	//if(IsClientInGame(client) && gH_timer[client] != null)
 		//KillTimer(gH_timer[client])
 	GetPossition(client)
+	gB_roundStart[client] = false
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(IsClientInGame(attacker))
@@ -520,13 +521,17 @@ Action respawnTimer(Handle timer, int client)
 	//if(IsClientInGame(client) && gH_timer[client] != null && timer != null && !gB_isRoundEnd)
 	if(IsClientInGame(client) && gH_timer[client] != null && timer != null)
 	{
-		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-		if(IsValidEntity(ragdoll))
-			RemoveEntity(ragdoll)
-		//RequestFrame(rf_ragdoll, client)
-		CreateTimer(0.1, timer_ragdoll, client)
-		KillTimer(gH_timer[client])
-		KillTimer(timer)
+		gB_roundStart[client] = false
+		if(!gB_roundStart[client])
+		{
+			int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+			if(IsValidEntity(ragdoll))
+				RemoveEntity(ragdoll)
+			//RequestFrame(rf_ragdoll, client)
+			CreateTimer(0.1, timer_ragdoll, client)
+			KillTimer(gH_timer[client])
+			KillTimer(timer)
+		}
 	}
 	return Plugin_Stop
 }
@@ -548,11 +553,15 @@ Action timer_ragdoll(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		CS_RespawnPlayer(client)
-		//RequestFrame(frame, client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-		//https://forums.alliedmods.net/showthread.php?t=267445
-		KillTimer(timer)
+		//gB_roundStart[client] = false
+		//if(!gB_roundStart[client])
+		{
+			CS_RespawnPlayer(client)
+			//RequestFrame(frame, client)
+			TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+			//https://forums.alliedmods.net/showthread.php?t=267445
+			KillTimer(timer)
+		}
 	}
 	return Plugin_Stop
 }
