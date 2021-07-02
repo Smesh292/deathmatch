@@ -29,7 +29,7 @@ float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
 
-Handle gH_timer[MAXPLAYERS + 1] = null
+//Handle gH_timer[MAXPLAYERS + 1] = null
 
 KeyValues gKV_spawnpoint
 
@@ -254,7 +254,7 @@ void GetPossition(int client)
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
 	if(!gB_onSpawn[client])
-		gH_timer[client] = CreateTimer(1.0, respawnTimer, client)
+		CreateTimer(1.0, respawnTimer, client)
 	else
 	{
 		//CS_RespawnPlayer(client)
@@ -519,7 +519,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action respawnTimer(Handle timer, int client)
 {
 	//if(IsClientInGame(client) && gH_timer[client] != null && timer != null && !gB_isRoundEnd)
-	if(IsClientInGame(client) && gH_timer[client] != null && timer != null)
+	if(IsClientInGame(client))
 	{
 		gB_roundStart[client] = false
 		if(!gB_roundStart[client])
@@ -529,10 +529,10 @@ Action respawnTimer(Handle timer, int client)
 				RemoveEntity(ragdoll)
 			//RequestFrame(rf_ragdoll, client)
 			CreateTimer(0.1, timer_ragdoll, client)
-			KillTimer(gH_timer[client])
-			KillTimer(timer)
+			//KillTimer(gH_timer[client])
 		}
 	}
+	KillTimer(timer)
 	return Plugin_Stop
 }
 
@@ -560,9 +560,9 @@ Action timer_ragdoll(Handle timer, int client)
 			//RequestFrame(frame, client)
 			TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 			//https://forums.alliedmods.net/showthread.php?t=267445
-			KillTimer(timer)
 		}
 	}
+	KillTimer(timer)
 	return Plugin_Stop
 }
 
