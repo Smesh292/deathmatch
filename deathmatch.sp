@@ -521,7 +521,7 @@ Action respawnTimer(Handle timer, int client)
 	//if(IsClientInGame(client) && gH_timer[client] != null && timer != null && !gB_isRoundEnd)
 	if(IsClientInGame(client))
 	{
-		gB_roundStart[client] = false
+		//gB_roundStart[client] = false
 		if(!gB_roundStart[client])
 		{
 			int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
