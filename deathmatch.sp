@@ -260,7 +260,10 @@ void GetPossition(int client)
 	{
 		//CS_RespawnPlayer(client)
 		//RequestFrame(frame, client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		//TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
+		SetEntPropVector(client, Prop_Data, "m_vecOrigin", gF_origin[client])
+		//SetEntPropVector(client)
+		SetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", view_as<float>({0.0, 0.0, 0.0}))
 		gB_onSpawn[client] = false
 	}
 }
