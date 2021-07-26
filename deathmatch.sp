@@ -494,7 +494,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	gB_roundStart[client] = false
 	//TeleportEntity(client, gF_origin, gF_angles, {0.0, 0.0, 0.0}) //https://github.com/alliedmodders/cssdm
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
-	if(IsClientInGame(attacker))
+	if(0 < attacker <= MaxClients && IsClientInGame(attacker))
 	{
 		int team = GetClientTeam(attacker)
 		if(team == 2)
