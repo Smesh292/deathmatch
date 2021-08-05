@@ -96,6 +96,14 @@ public void OnClientPutInServer(int client)
 	gB_roundStart[client] = false
 }
 
+public void OnClientDisconnect(int client)
+{
+	int entity
+	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
+		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
+			RemoveEntity(entity)
+}
+
 void sdkspawnpost(int client)
 {
 	if(IsFakeClient(client))
@@ -322,7 +330,6 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 		{
 			char sItem[32]
 			menu.GetItem(param2, sItem, 32)
-			PrintToServer("weapon name: %s", sItem)
 			Format(sItem, 32, "weapon_%s", sItem)
 			GivePlayerItem(param1, sItem)
 		}
