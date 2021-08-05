@@ -61,14 +61,12 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start, EventHookMode_Post)
-	HookEvent("round_end", round_end, EventHookMode_Pre)
+	HookEvent("round_start", round_start)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
-	HookEvent("cs_win_panel_round", cswinpanelround, EventHookMode_Pre)
 }
 
 public void OnMapStart()
