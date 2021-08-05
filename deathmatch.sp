@@ -93,16 +93,10 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
-	SDKHook(client, SDKHook_WeaponEquipPost, sdkweaponequippost)
 	gB_roundStart[client] = false
 }
 
 public void OnClientDisconnect(int client)
-{
-	removeDrop(client)
-}
-
-void removeDrop(int client)
 {
 	int entity
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
@@ -130,11 +124,6 @@ Action sdkweapondrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
-}
-
-void sdkweaponequippost(int client, int weapon)
-{
-	removeDrop(client)
 }
 
 Action cmd_getscore(int client, int args)
@@ -188,6 +177,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity) //https://www.bing.com/search?q=hostage+cs+source&cvid=8d2fdfec401e4826b26c977db5f1395d&aqs=edge..69i57.3328j0j4&FORM=ANAB01&PC=U531
 	if(StrEqual(classname, "hostage_entity")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
+		RemoveEntity(entity)
+	if(StrEqual(classname, "func_buyzone")) //https://developer.valvesoftware.com/wiki/Func_buyzone
 		RemoveEntity(entity)
 }
 
