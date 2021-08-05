@@ -93,10 +93,16 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
+	SDKHook(client, SDKHook_WeaponEquipPost, sdkweaponequippost)
 	gB_roundStart[client] = false
 }
 
 public void OnClientDisconnect(int client)
+{
+	removeDrop(client)
+}
+
+void removeDrop(int client)
 {
 	int entity
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
@@ -124,6 +130,11 @@ Action sdkweapondrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+}
+
+void sdkweaponequippost(int client, int weapon)
+{
+	removeDrop(client)
 }
 
 Action cmd_getscore(int client, int args)
