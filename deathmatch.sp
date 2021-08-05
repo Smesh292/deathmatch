@@ -312,7 +312,7 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 			int pistol = GetPlayerWeaponSlot(param2, CS_SLOT_SECONDARY) //http://www.sourcemod.net/new-api/cstrike/__raw
 			//if(IsValidEntity(pistol)) //Exception reported: NULL not allowed
 			if(pistol > 0)
-				RemovePlayerItem(param2, pistol)
+				RemovePlayerItem(param1, pistol)
 			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			menurifle(param1)
 		}
@@ -340,7 +340,7 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int rifle = GetPlayerWeaponSlot(param2, CS_SLOT_PRIMARY) //http://www.sourcemod.net/new-api/cstrike/__raw
 			//if(IsValidEntity(rifle)) //Exception reported: NULL not allowed
 			if(rifle > 0)
-				RemovePlayerItem(param2, rifle)
+				RemovePlayerItem(param1, rifle)
 			GivePlayerItem(param1, sItem)
 		}
 	}
