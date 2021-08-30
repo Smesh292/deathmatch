@@ -164,7 +164,7 @@ void GetPossition(int client)
 	angles[2] = StringToFloat(sString[5])
 	gF_angles[client][2] = angles[2]
 	if(!gB_onSpawn[client])
-		CreateTimer(1.0, respawnTimer, client)
+		CreateTimer(1.0, respawnTimer, client, TIMER_FLAG_NO_MAPCHANGE)
 	else
 	{
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
@@ -269,10 +269,9 @@ Action respawnTimer(Handle timer, int client)
 			int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 			if(IsValidEntity(ragdoll))
 				RemoveEntity(ragdoll)
-			CreateTimer(0.1, timer_ragdoll, client)
+			CreateTimer(0.1, timer_ragdoll, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
-	return Plugin_Stop
 }
 
 Action timer_ragdoll(Handle timer, int client)
@@ -282,7 +281,6 @@ Action timer_ragdoll(Handle timer, int client)
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	}
-	return Plugin_Stop
 }
 
 Action cmd_gunsmenu(int client, int args)
@@ -338,8 +336,7 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu.GetItem(param2, sItem, 32)
 			Format(sItem, 32, "weapon_%s", sItem)
 			int rifle = GetPlayerWeaponSlot(param1, CS_SLOT_PRIMARY) //http://www.sourcemod.net/new-api/cstrike/__raw
-			//if(IsValidEntity(rifle)) //Exception reported: NULL not allowed
-			if(rifle > 0)
+			if(IsValidEntity(rifle))
 				RemovePlayerItem(param1, rifle)
 			GivePlayerItem(param1, sItem)
 		}
