@@ -308,8 +308,7 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 			menu.GetItem(param2, sItem, 32)
 			Format(sItem, 32, "weapon_%s", sItem)
 			int pistol = GetPlayerWeaponSlot(param1, CS_SLOT_SECONDARY) //http://www.sourcemod.net/new-api/cstrike/__raw
-			//if(IsValidEntity(pistol)) //Exception reported: NULL not allowed
-			if(pistol > 0)
+			if(IsValidEntity(pistol))
 				RemovePlayerItem(param1, pistol)
 			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			menurifle(param1)
