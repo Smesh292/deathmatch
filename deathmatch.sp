@@ -69,6 +69,7 @@ public void OnMapStart()
 	gI_countLines = 0
 	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 		gI_countLines++
+	delete f
 }
 
 public void OnClientPutInServer(int client)
@@ -139,6 +140,7 @@ void GetPossition(int client)
 		if(currentLine == randomLine)
 			break
 	}
+	delete f
 	char sOrigin[3][96]
 	ExplodeString(sLine, " ", sOrigin, 3, 96)
 	char sAngles[6][96]
