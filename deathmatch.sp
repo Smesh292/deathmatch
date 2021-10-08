@@ -39,6 +39,7 @@ char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 bool gB_onRespawn[MAXPLAYERS + 1]
+
 public Plugin myinfo =
 {
 	name = "Deathmatch",
@@ -194,11 +195,11 @@ public void OnGameFrame()
 	exploded[1] = StringToInt(sExploded[1])
 	exploded[1] = exploded[1] / 100000
 	exploded[1] = (exploded[1] * 60) / 10
-	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime())
+	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_slayed)
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT < gI_countCT && !gB_slayed)
+		if(gI_countT < gI_countCT)
 		{
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -210,10 +211,9 @@ public void OnGameFrame()
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 			}
-			gB_slayed = true
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
-		else if(gI_countT > gI_countCT && !gB_slayed)
+		else if(gI_countT > gI_countCT)
 		{
 			for(int i = 1; i <= MaxClients; i++)
 			{
@@ -225,9 +225,9 @@ public void OnGameFrame()
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
 			}
-			gB_slayed = true
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
 		}
+		gB_slayed = true
 	}
 }
 
