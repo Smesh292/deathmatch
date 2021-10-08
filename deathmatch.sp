@@ -28,28 +28,17 @@
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
-
-KeyValues gKV_spawnpoint
-
 bool gB_roundStart[MAXPLAYERS + 1]
 bool gB_onSpawn[MAXPLAYERS + 1]
-
 int gI_countT
 int gI_countCT
-
-bool gI_closeIf
 int gI_time
-
-char sKVString[128]
-char sRandomInt[32]
-int gI_randomInt
-
 bool gB_slayed
-
+int gI_countLines
 char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
-
+bool gB_onRespawn[MAXPLAYERS + 1]
 public Plugin myinfo =
 {
 	name = "Deathmatch",
@@ -62,7 +51,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start)
-	HookEvent("player_death", playerdeath)
+	HookEvent("player_death", playerdeath, EventHookMode_Pre)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
@@ -72,21 +61,13 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	GetCurrentMap(gS_map, 192)
-	gKV_spawnpoint = CreateKeyValues("GlobalKey") //https://github.com/alliedmodders/sourcemod/blob/master/plugins/testsuite/keyvalues.sp
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	gKV_spawnpoint.ImportFromFile(sFormat)
-	char sKVStringTest[128]
-	gI_randomInt = 0
-	for(int i = 1; i <= 1000; i++)
-	{
-		IntToString(i, sRandomInt, 32)
-		gKV_spawnpoint.GetString(sRandomInt, sKVStringTest, 128)
-		if(strlen(sKVStringTest) > 0)
-			gI_randomInt++
-		if(strlen(sKVString) == 0)
-			continue
-	}
+	File f = OpenFile(sFormat, "r")
+	char sLine[96]
+	gI_countLines = 0
+	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+		gI_countLines++
 }
 
 public void OnClientPutInServer(int client)
@@ -117,6 +98,7 @@ void sdkspawnpost(int client)
 		GivePlayerItem(client, sWeapon)
 	}
 	gB_onSpawn[client] = true
+	gB_onRespawn[client] = true
 	GetPossition(client)
 }
 
@@ -144,31 +126,34 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	int randomint = GetRandomInt(1, gI_randomInt)
-	IntToString(randomint, sRandomInt, 32)
-	gKV_spawnpoint.GetString(sRandomInt, sKVString, 128)
-	char sString[7][128]
-	ExplodeString(sKVString, " ", sString, 6, 128)
-	float origin[3]
-	origin[0] = StringToFloat(sString[0])
-	gF_origin[client][0] = origin[0]
-	origin[1] = StringToFloat(sString[1])
-	gF_origin[client][1] = origin[1]
-	origin[2] = StringToFloat(sString[2])
-	gF_origin[client][2] = origin[2]
-	float angles[3]
-	angles[0] = StringToFloat(sString[3])
-	gF_angles[client][0] = angles[0]
-	angles[1] = StringToFloat(sString[4])
-	gF_angles[client][1] = angles[1]
-	angles[2] = StringToFloat(sString[5])
-	gF_angles[client][2] = angles[2]
+	char sFormat[256]
+	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	File f = OpenFile(sFormat, "r")
+	char sLine[96]
+	int randomLine = GetRandomInt(1, gI_countLines)
+	int currentLine
+	while(!f.EndOfFile() && f.ReadLine(sLine, 96) && randomLine)
+	{
+		currentLine++
+		if(currentLine == randomLine)
+			break
+	}
+	char sOrigin[3][96]
+	ExplodeString(sLine, " ", sOrigin, 3, 96)
+	char sAngles[6][96]
+	ExplodeString(sLine, " ", sAngles, 6, 96)
+	for(int i = 0; i <= 2; i++)
+	{
+		gF_origin[client][i] = StringToFloat(sOrigin[i])
+		gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+	}
 	if(!gB_onSpawn[client])
 		CreateTimer(1.0, respawnTimer, client, TIMER_FLAG_NO_MAPCHANGE)
 	else
 	{
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		gB_onSpawn[client] = false
+		gunsmenu(client)
 	}
 }
 
@@ -176,9 +161,9 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 {
 	if(StrEqual(classname, "weapon_c4"))
 		RemoveEntity(entity) //https://www.bing.com/search?q=hostage+cs+source&cvid=8d2fdfec401e4826b26c977db5f1395d&aqs=edge..69i57.3328j0j4&FORM=ANAB01&PC=U531
-	if(StrEqual(classname, "hostage_entity")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
+	else if(StrEqual(classname, "hostage_entity")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
 		RemoveEntity(entity)
-	if(StrEqual(classname, "func_buyzone")) //https://developer.valvesoftware.com/wiki/Func_buyzone
+	else if(StrEqual(classname, "func_buyzone")) //https://developer.valvesoftware.com/wiki/Func_buyzone
 		RemoveEntity(entity)
 }
 
@@ -186,7 +171,6 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	gI_countT = 0
 	gI_countCT = 0
-	gI_closeIf = true
 	gI_time = GetTime()
 	gB_slayed = false
 	for(int i = 1; i <= MaxClients; i++)
@@ -210,37 +194,40 @@ public void OnGameFrame()
 	exploded[1] = StringToInt(sExploded[1])
 	exploded[1] = exploded[1] / 100000
 	exploded[1] = (exploded[1] * 60) / 10
-	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && gI_closeIf)
+	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime())
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
 		if(gI_countT < gI_countCT && !gB_slayed)
 		{
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && GetClientTeam(i) == 2)
+			{
+				if(IsClientInGame(i) && GetClientTeam(i) == CS_TEAM_T)
 				{
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					FakeClientCommand(i, "kill")
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
+			}
 			gB_slayed = true
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
-		if(gI_countT > gI_countCT && !gB_slayed)
+		else if(gI_countT > gI_countCT && !gB_slayed)
 		{
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsClientInGame(i) && GetClientTeam(i) == 3)
+			{
+				if(IsClientInGame(i) && GetClientTeam(i) == CS_TEAM_CT)
 				{
 					char sName[MAX_NAME_LENGTH]
 					GetClientName(i, sName, MAX_NAME_LENGTH)
 					FakeClientCommand(i, "kill")
 					PrintToChatAll("Player '%s' lose the round.", sName)
 				}
+			}
 			gB_slayed = true
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
 		}
-		gI_closeIf = false
 	}
 }
 
@@ -255,9 +242,15 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		int team = GetClientTeam(attacker)
 		if(team == CS_TEAM_T)
 			gI_countT++
-		if(team == CS_TEAM_CT)
+		else if(team == CS_TEAM_CT)
 			gI_countCT++
 	}
+	//https://developer.valvesoftware.com/wiki/Physics_and_Ragdolls v34 doesnt had $autocenter so make 0. Also use sv_turbophysics 1.
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", view_as<float>({0.0, 0.0, 0.0}))
+	SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollOrigin", view_as<float>({0.0, 0.0, 0.0}))
+	CancelClientMenu(client)
+	gB_onRespawn[client] = true
 }
 
 Action respawnTimer(Handle timer, int client)
@@ -269,7 +262,7 @@ Action respawnTimer(Handle timer, int client)
 			int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 			if(IsValidEntity(ragdoll))
 				RemoveEntity(ragdoll)
-			CreateTimer(0.1, timer_ragdoll, client, TIMER_FLAG_NO_MAPCHANGE)
+			CreateTimer(1.0, timer_ragdoll, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
 }
@@ -280,6 +273,7 @@ Action timer_ragdoll(Handle timer, int client)
 	{
 		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		gunsmenu(client)
 	}
 }
 
@@ -291,11 +285,15 @@ Action cmd_gunsmenu(int client, int args)
 
 void gunsmenu(int client)
 {
-	Menu menu = new Menu(menu_handler)
-	menu.SetTitle("Pistols")
-	for(int i = 0; i <= 5; i++)
-		menu.AddItem(gS_weapon[i], gS_weapon[i])
-	menu.Display(client, 20)
+	if(gB_onRespawn[client])
+	{
+		Menu menu = new Menu(menu_handler)
+		menu.SetTitle("Pistols")
+		for(int i = 0; i <= 5; i++)
+			menu.AddItem(gS_weapon[i], gS_weapon[i])
+		menu.Display(client, 20)
+		gB_onRespawn[client] = false
+	}
 }
 
 int menu_handler(Menu menu, MenuAction action, int param1, int param2)
@@ -342,6 +340,13 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 	}
 }
 
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	if(!IsChatTrigger())
+		if(StrEqual(sArgs, "guns"))
+			gunsmenu(client)
+}
+
 int Stuck(int client)
 {
 	float mins[3]
@@ -363,9 +368,11 @@ public Action OnPlayerRunCmd(int client, int &buttons)
 {
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
+	{
 		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
 			SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-	if(IsPlayerAlive(client) && other == -1)
+	}
+	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 }
