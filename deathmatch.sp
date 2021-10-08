@@ -134,7 +134,7 @@ void GetPossition(int client)
 	char sLine[96]
 	int randomLine = GetRandomInt(1, gI_countLines)
 	int currentLine
-	while(!f.EndOfFile() && f.ReadLine(sLine, 96) && randomLine)
+	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 	{
 		currentLine++
 		if(currentLine == randomLine)
@@ -249,8 +249,10 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	}
 	//https://developer.valvesoftware.com/wiki/Physics_and_Ragdolls v34 doesnt had $autocenter so make 0. Also use sv_turbophysics 1.
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", view_as<float>({0.0, 0.0, 0.0}))
-	SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollOrigin", view_as<float>({0.0, 0.0, 0.0}))
+	float vec[3]
+	GetClientAbsOrigin(client, vec)
+	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", vec)
+	SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollOrigin", vec)
 	CancelClientMenu(client)
 	gB_onRespawn[client] = true
 }
