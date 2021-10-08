@@ -178,8 +178,23 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_time = GetTime()
 	gB_slayed = false
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
+		{
 			gB_roundStart[i] = true
+			int rifle = GetPlayerWeaponSlot(i, CS_SLOT_PRIMARY)
+			int pistol = GetPlayerWeaponSlot(i, CS_SLOT_SECONDARY)
+			if(IsValidEntity(rifle))
+				RemoveEntity(rifle)
+			if(IsValidEntity(pistol))
+				RemoveEntity(pistol)
+			int team = GetClientTeam(i)
+			if(team == CS_TEAM_T)
+				GivePlayerItem(i, "weapon_glock")
+			else if(team == CS_TEAM_CT)
+				GivePlayerItem(i, "weapon_usp")
+		}
+	}
 }
 
 public void OnGameFrame()
@@ -248,11 +263,6 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		else if(team == CS_TEAM_CT)
 			gI_countCT++
 	}
-	//https://developer.valvesoftware.com/wiki/Physics_and_Ragdolls
-	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-	float vec[3]
-	GetClientAbsOrigin(client, vec)
-	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", vec) //make sure the center of ragdoll is origion of player
 	CancelClientMenu(client)
 	gB_onRespawn[client] = true
 }
