@@ -247,12 +247,11 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		else if(team == CS_TEAM_CT)
 			gI_countCT++
 	}
-	//https://developer.valvesoftware.com/wiki/Physics_and_Ragdolls v34 doesnt had $autocenter so make 0. Also use sv_turbophysics 1.
+	//https://developer.valvesoftware.com/wiki/Physics_and_Ragdolls
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	float vec[3]
 	GetClientAbsOrigin(client, vec)
-	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", vec)
-	SetEntPropVector(ragdoll, Prop_Send, "m_vecRagdollOrigin", vec)
+	SetEntPropVector(ragdoll, Prop_Send, "m_vecOrigin", vec) //make sure the center of ragdoll is origion of player
 	CancelClientMenu(client)
 	gB_onRespawn[client] = true
 }
