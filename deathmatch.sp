@@ -293,7 +293,8 @@ Action timer_ragdoll(Handle timer, int client)
 
 Action cmd_gunsmenu(int client, int args)
 {
-	gunsmenu(client)
+	if(IsPlayerAlive(client))
+		gunsmenu(client)
 	return Plugin_Handled
 }
 
