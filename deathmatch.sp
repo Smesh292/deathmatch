@@ -52,7 +52,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start)
-	HookEvent("player_death", playerdeath, EventHookMode_Pre)
+	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
@@ -293,14 +293,13 @@ Action timer_ragdoll(Handle timer, int client)
 
 Action cmd_gunsmenu(int client, int args)
 {
-	if(IsPlayerAlive(client))
-		gunsmenu(client)
+	gunsmenu(client)
 	return Plugin_Handled
 }
 
 void gunsmenu(int client)
 {
-	if(gB_onRespawn[client])
+	if(IsPlayerAlive(client) && gB_onRespawn[client])
 	{
 		Menu menu = new Menu(menu_handler)
 		menu.SetTitle("Pistols")
