@@ -52,7 +52,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start)
-	HookEvent("player_death", playerdeath, EventHookMode_Pre)
+	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
@@ -177,6 +177,11 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
+{
+	RequestFrame(rf_roundstart)
+}
+
+void rf_roundstart()
 {
 	gI_countT = 0
 	gI_countCT = 0
