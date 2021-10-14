@@ -178,10 +178,10 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
-	RequestFrame(rf_roundstart)
+	CreateTimer(0.1, roundstart, _, TIMER_FLAG_NO_MAPCHANGE)
 }
 
-void rf_roundstart()
+Action roundstart(Handle timer)
 {
 	gI_countT = 0
 	gI_countCT = 0
@@ -295,8 +295,16 @@ Action timer_ragdoll(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		CreateTimer(0.1, timer_noblink, client, TIMER_FLAG_NO_MAPCHANGE)
+	}
+}
+
+Action timer_noblink(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+	{
+		CS_RespawnPlayer(client)
 		gunsmenu(client)
 	}
 }
