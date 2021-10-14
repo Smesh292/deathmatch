@@ -52,7 +52,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 	HookEvent("round_start", round_start)
-	HookEvent("player_death", playerdeath)
+	HookEvent("player_death", playerdeath, EventHookMode_Pre)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
@@ -102,6 +102,11 @@ void sdkspawnpost(int client)
 	}
 	gB_onSpawn[client] = true
 	gB_onRespawn[client] = true
+	RequestFrame(rf_menufulldraw, client)
+}
+
+void rf_menufulldraw(int client)
+{
 	GetPossition(client)
 }
 
