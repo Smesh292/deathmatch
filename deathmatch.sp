@@ -51,12 +51,15 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start)
+	HookEvent("round_start", round_start, EventHookMode_Post)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i))
+			OnClientPutInServer(i)
 }
 
 public void OnMapStart()
@@ -203,6 +206,7 @@ Action roundstart(Handle timer)
 				GivePlayerItem(i, "weapon_glock")
 			else if(team == CS_TEAM_CT)
 				GivePlayerItem(i, "weapon_usp")
+			GetPossition(i)
 		}
 	}
 }
