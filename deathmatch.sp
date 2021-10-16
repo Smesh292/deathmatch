@@ -262,7 +262,7 @@ public void OnGameFrame()
 		}
 		gB_slayed = true
 	}
-	if(GetGameTime() > 3600.0 * 2)
+	if(GetGameTime() > 3600.0 * 2.0)
 	{
 		char sMap[192]
 		GetCurrentMap(sMap, 192)
