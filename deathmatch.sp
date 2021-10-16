@@ -262,6 +262,12 @@ public void OnGameFrame()
 		}
 		gB_slayed = true
 	}
+	if(GetGameTime() > 3600.0 * 2)
+	{
+		char sMap[192]
+		GetCurrentMap(sMap, 192)
+		ForceChangeLevel(sMap, "Unlag")
+	}
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
