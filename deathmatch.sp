@@ -110,7 +110,8 @@ void sdkspawnpost(int client)
 
 void rf_menufulldraw(int client)
 {
-	GetPossition(client)
+	if(IsClientInGame(client))
+		GetPossition(client)
 }
 
 Action sdkweapondrop(int client, int weapon)
@@ -159,7 +160,6 @@ void GetPossition(int client)
 		gF_origin[client][i] = StringToFloat(sOrigin[i])
 		gF_angles[client][i] = StringToFloat(sAngles[i + 3])
 	}
-	gF_origin[client][2] += 32.0
 	if(!gB_onSpawn[client])
 		CreateTimer(1.0, respawnTimer, client, TIMER_FLAG_NO_MAPCHANGE)
 	else
