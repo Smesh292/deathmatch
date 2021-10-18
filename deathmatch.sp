@@ -33,14 +33,13 @@ bool gB_onSpawn[MAXPLAYERS + 1]
 int gI_countT
 int gI_countCT
 int gI_time
-bool gB_slayed
+bool gB_once[2]
 int gI_countLines
 char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 bool gB_onRespawn[MAXPLAYERS + 1]
 bool gB_changelevel
-bool gB_once
 
 public Plugin myinfo =
 {
@@ -187,7 +186,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	CreateTimer(0.1, roundstart, _, TIMER_FLAG_NO_MAPCHANGE)
 	ServerCommand("mat_texture_list_txlod_sync reset")
-	gB_once = false
+	gB_once[1] = false
 }
 
 Action roundstart(Handle timer)
@@ -195,7 +194,7 @@ Action roundstart(Handle timer)
 	gI_countT = 0
 	gI_countCT = 0
 	gI_time = GetTime()
-	gB_slayed = false
+	gB_once[0] = false
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
@@ -370,7 +369,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	exploded[1] = StringToInt(sExploded[1])
 	exploded[1] = exploded[1] / 100000
 	exploded[1] = (exploded[1] * 60) / 10
-	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_slayed)
+	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_once)
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
@@ -378,11 +377,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		{
 			if(GetClientTeam(client) == CS_TEAM_T)
 			{
-				if(!gB_once)
+				if(!gB_once[1])
 				{
 					SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
 					CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-					gB_once = true
+					gB_once[1] = true
 				}
 			}
 		}
@@ -390,15 +389,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		{
 			if(GetClientTeam(client) == CS_TEAM_CT)
 			{
-				if(!gB_once)
+				if(!gB_once[1])
 				{
 					SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
 					CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
-					gB_once = true
+					gB_once[1] = true
 				}
 			}
 		}
-		gB_slayed = true
+		gB_once[0] = true
 	}
 	if(GetGameTime() > 3600.0 * 2.0)
 	{
