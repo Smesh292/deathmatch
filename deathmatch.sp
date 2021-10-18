@@ -80,6 +80,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	gB_roundStart[client] = false
+	gB_onSpawn[client] = false
 	CancelClientMenu(client)
 }
 
