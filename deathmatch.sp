@@ -393,13 +393,13 @@ public Action OnPlayerRunCmd(int client, int &buttons)
 	if(GetGameTime() > 3600.0 * 2.0)
 	{
 		buttons &= ~IN_ATTACK //https://forums.alliedmods.net/showthread.php?t=131018
+		Handle convar3 = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar3)
 		if(!gB_slayed)
 		{
-			Handle convar3 = FindConVar("mp_round_restart_delay")
-			float roundrestartdelay = GetConVarFloat(convar3)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 			SetEntityMoveType(client, MOVETYPE_NONE) //https://risserver.in/forum/threads/how-to-freeze-player-movement.296/
-			button |= IN_SCORE //https://forums.alliedmods.net/archive/index.php/t-190061.html
+			buttons |= IN_SCORE //https://forums.alliedmods.net/archive/index.php/t-190061.html
 			gB_slayed = true
 		}
 		if(GetGameTime() > 3600.0 * 2.0 + roundrestartdelay)
