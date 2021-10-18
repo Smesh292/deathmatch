@@ -39,6 +39,8 @@ char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 bool gB_onRespawn[MAXPLAYERS + 1]
+bool gB_changelevel
+bool gB_once
 
 public Plugin myinfo =
 {
@@ -185,6 +187,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	CreateTimer(0.1, roundstart, _, TIMER_FLAG_NO_MAPCHANGE)
 	ServerCommand("mat_texture_list_txlod_sync reset")
+	gB_once = false
 }
 
 Action roundstart(Handle timer)
@@ -377,7 +380,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			{
 				FakeClientCommand(client, "kill")
 				PrintToChatAll("Player %N lose a round.", client)
-				CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+				if(!gB_once)
+				{
+					CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+					gB_once = true
+				}
 			}
 		}
 		else if(gI_countT > gI_countCT)
@@ -386,9 +393,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			{
 				FakeClientCommand(client, "kill")
 				PrintToChatAll("Player %N lose a round.", client)
-				CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
+				if(!gB_once)
+				{
+					CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
+					gB_once = true
+				}
 			}
 		}
+		gB_slayed = true
 	}
 	if(GetGameTime() > 3600.0 * 2.0)
 	{
@@ -396,12 +408,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
 		TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?t=297928
-		if(!gB_slayed)
+		if(!gB_changelevel)
 		{
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
 			SetEntityMoveType(client, MOVETYPE_NONE) //https://risserver.in/forum/threads/how-to-freeze-player-movement.296/
 			buttons |= IN_SCORE //https://forums.alliedmods.net/archive/index.php/t-190061.html
-			gB_slayed = true
+			gB_changelevel = true
 		}
 		if(GetGameTime() > 3600.0 * 2.0 + roundrestartdelay)
 		{
