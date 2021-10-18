@@ -395,7 +395,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		buttons &= ~IN_ATTACK //https://forums.alliedmods.net/showthread.php?t=131018
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR)
+		TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR) //https://forums.alliedmods.net/showthread.php?t=297928
 		if(!gB_slayed)
 		{
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
