@@ -214,64 +214,6 @@ Action roundstart(Handle timer)
 	}
 }
 
-public void OnGameFrame()
-{
-	Handle convar = FindConVar("mp_roundtime")
-	Handle convar2 = FindConVar("mp_freezetime")
-	float roundtime = GetConVarFloat(convar)
-	int freezetime = GetConVarInt(convar2)
-	char sRoundtime[32]
-	FloatToString(roundtime, sRoundtime, 32)
-	char sExploded[3][32]
-	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
-	int exploded[2]
-	exploded[0] = StringToInt(sExploded[0])
-	exploded[0] = exploded[0] * 60
-	exploded[1] = StringToInt(sExploded[1])
-	exploded[1] = exploded[1] / 100000
-	exploded[1] = (exploded[1] * 60) / 10
-	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_slayed)
-	{
-		Handle convar3 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT < gI_countCT)
-		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) && GetClientTeam(i) == CS_TEAM_T)
-				{
-					char sName[MAX_NAME_LENGTH]
-					GetClientName(i, sName, MAX_NAME_LENGTH)
-					FakeClientCommand(i, "kill")
-					PrintToChatAll("Player '%s' lose the round.", sName)
-				}
-			}
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-		}
-		else if(gI_countT > gI_countCT)
-		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) && GetClientTeam(i) == CS_TEAM_CT)
-				{
-					char sName[MAX_NAME_LENGTH]
-					GetClientName(i, sName, MAX_NAME_LENGTH)
-					FakeClientCommand(i, "kill")
-					PrintToChatAll("Player '%s' lose the round.", sName)
-				}
-			}
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
-		}
-		gB_slayed = true
-	}
-	if(GetGameTime() > 3600.0 * 2.0)
-	{
-		char sMap[192]
-		GetCurrentMap(sMap, 192)
-		ForceChangeLevel(sMap, "Unlag")
-	}
-}
-
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
@@ -411,6 +353,62 @@ bool TR_donthitself(int entity, int mask, int client)
 
 public Action OnPlayerRunCmd(int client, int &buttons)
 {
+	Handle convar = FindConVar("mp_roundtime")
+	Handle convar2 = FindConVar("mp_freezetime")
+	float roundtime = GetConVarFloat(convar)
+	int freezetime = GetConVarInt(convar2)
+	char sRoundtime[32]
+	FloatToString(roundtime, sRoundtime, 32)
+	char sExploded[3][32]
+	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
+	int exploded[2]
+	exploded[0] = StringToInt(sExploded[0])
+	exploded[0] = exploded[0] * 60
+	exploded[1] = StringToInt(sExploded[1])
+	exploded[1] = exploded[1] / 100000
+	exploded[1] = (exploded[1] * 60) / 10
+	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_slayed)
+	{
+		Handle convar3 = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar3)
+		if(gI_countT < gI_countCT)
+		{
+			if(GetClientTeam(client) == CS_TEAM_T)
+			{
+				FakeClientCommand(client, "kill")
+				PrintToChatAll("Player %N lose a round.", client)
+				CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
+			}
+		}
+		else if(gI_countT > gI_countCT)
+		{
+			if(GetClientTeam(client) == CS_TEAM_CT)
+			{
+				FakeClientCommand(client, "kill")
+				PrintToChatAll("Player %N lose a round.", client)
+				CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
+			}
+		}
+	}
+	if(GetGameTime() > 3600.0 * 2.0)
+	{
+		buttons &= ~IN_ATTACK //https://forums.alliedmods.net/showthread.php?t=131018
+		if(!gB_slayed)
+		{
+			Handle convar3 = FindConVar("mp_round_restart_delay")
+			float roundrestartdelay = GetConVarFloat(convar3)
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
+			SetEntityMoveType(client, MOVETYPE_NONE) //https://risserver.in/forum/threads/how-to-freeze-player-movement.296/
+			button |= IN_SCORE //https://forums.alliedmods.net/archive/index.php/t-190061.html
+			gB_slayed = true
+		}
+		if(GetGameTime() > 3600.0 * 2.0 + roundrestartdelay)
+		{
+			char sMap[192]
+			GetCurrentMap(sMap, 192)
+			ForceChangeLevel(sMap, "Unlag")
+		}
+	}
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
 	{
