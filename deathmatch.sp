@@ -372,15 +372,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT < gI_countCT)
-		{
-			SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
-			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
-		}
-		else if(gI_countT > gI_countCT)
+		if(gI_countT > gI_countCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
+		}
+		else
+		{
+			SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
+			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
 		gB_once = true
 	}
