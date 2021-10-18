@@ -351,7 +351,7 @@ bool TR_donthitself(int entity, int mask, int client)
 	return entity != client && 0 < entity <= MaxClients
 }
 
-public Action OnPlayerRunCmd(int client, int &buttons)
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	Handle convar = FindConVar("mp_roundtime")
 	Handle convar2 = FindConVar("mp_freezetime")
@@ -395,6 +395,7 @@ public Action OnPlayerRunCmd(int client, int &buttons)
 		buttons &= ~IN_ATTACK //https://forums.alliedmods.net/showthread.php?t=131018
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
+		TeleportEntity(client, NULL_VECTOR, angles, NULL_VECTOR)
 		if(!gB_slayed)
 		{
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_Draw)
