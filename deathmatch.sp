@@ -79,7 +79,6 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
-	gB_roundStart[client] = false
 	CancelClientMenu(client)
 }
 
@@ -133,6 +132,7 @@ Action cmd_getscore(int client, int args)
 
 Action joinclass(int client, const char[] command, int argc)
 {
+	gB_roundStart[client] = false
 	gB_onSpawn[client] = false
 	GetPossition(client)
 }
@@ -184,6 +184,7 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	CreateTimer(0.1, roundstart, _, TIMER_FLAG_NO_MAPCHANGE)
+	ServerCommand("mat_texture_list_txlod_sync reset")
 }
 
 Action roundstart(Handle timer)
