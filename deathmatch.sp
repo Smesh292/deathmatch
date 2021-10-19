@@ -134,6 +134,20 @@ void GetPossition(int client)
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
+Action timer_respawn(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+	{
+		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+		if(IsValidEntity(ragdoll))
+			RemoveEntity(ragdoll)
+		if(!IsPlayerAlive(client))
+			CS_RespawnPlayer(client)
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		Factory(client)
+	}
+}
+
 void Factory(int client)
 {
 	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
@@ -196,8 +210,13 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_time = GetTime()
 	gB_once = false
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(IsClientInGame(i))
+		{
+			gB_onRespawn[i] = true
 			GetPossition(i)
+		}
+	}
 	ServerCommand("mat_texture_list_txlod_sync reset")
 }
 
@@ -214,22 +233,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		else if(team == CS_TEAM_CT)
 			gI_countCT++
 	}
-	CancelClientMenu(client)
 	gB_onRespawn[client] = true
-}
-
-Action timer_respawn(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-	{
-		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-		if(IsValidEntity(ragdoll))
-			RemoveEntity(ragdoll)
-		if(!IsPlayerAlive(client))
-			CS_RespawnPlayer(client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-		Factory(client)
-	}
 }
 
 Action cmd_gunsmenu(int client, int args)
