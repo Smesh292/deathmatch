@@ -198,7 +198,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gB_once = false
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsClientInGame(i))
+		if(IsClientInGame(i) && IsPlayerAlive(i))
 		{
 			gB_onRespawn[i] = true
 			GetPossition(i)
