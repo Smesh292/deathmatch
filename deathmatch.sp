@@ -161,11 +161,33 @@ void GetPossition(int client)
 	if(!gB_onSpawn[client])
 		CreateTimer(1.0, respawnTimer, client, TIMER_FLAG_NO_MAPCHANGE)
 	else
+		RequestFrame(rf_nobug2, client)
+}
+
+void rf_nobug2(int client)
+{
+	if(IsClientInGame(client))
 	{
+		Factory(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		gB_onSpawn[client] = false
 		gunsmenu(client)
 	}
+}
+
+void Factory(int client)
+{
+	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
+	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
+	if(IsValidEntity(rifle))
+		RemoveEntity(rifle)
+	if(IsValidEntity(pistol))
+		RemoveEntity(pistol)
+	int team = GetClientTeam(client)
+	if(team == CS_TEAM_T)
+		GivePlayerItem(client, "weapon_glock")
+	else if(team == CS_TEAM_CT)
+		GivePlayerItem(client, "weapon_usp")
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
@@ -194,17 +216,6 @@ Action roundstart(Handle timer)
 		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
 		{
 			gB_roundStart[i] = true
-			int rifle = GetPlayerWeaponSlot(i, CS_SLOT_PRIMARY)
-			int pistol = GetPlayerWeaponSlot(i, CS_SLOT_SECONDARY)
-			if(IsValidEntity(rifle))
-				RemoveEntity(rifle)
-			if(IsValidEntity(pistol))
-				RemoveEntity(pistol)
-			int team = GetClientTeam(i)
-			if(team == CS_TEAM_T)
-				GivePlayerItem(i, "weapon_glock")
-			else if(team == CS_TEAM_CT)
-				GivePlayerItem(i, "weapon_usp")
 			GetPossition(i)
 		}
 	}
@@ -257,6 +268,15 @@ Action timer_noblink(Handle timer, int client)
 	if(IsClientInGame(client))
 	{
 		CS_RespawnPlayer(client)
+		RequestFrame(rf_nobug, client)
+	}
+}
+
+void rf_nobug(int client)
+{
+	if(IsClientInGame(client))
+	{
+		Factory(client)
 		gunsmenu(client)
 	}
 }
