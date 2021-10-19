@@ -28,11 +28,11 @@
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
-int gI_countT
-int gI_countCT
+int gI_scoreT
+int gI_scoreCT
 int gI_time
 bool gB_once
-int gI_countLines
+int gI_lineMax
 char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
@@ -68,10 +68,11 @@ public void OnMapStart()
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	File f = OpenFile(sFormat, "r")
 	char sLine[96]
-	gI_countLines = 0
+	gI_lineMax = 0
 	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-		gI_countLines++
+		gI_lineMax++
 	delete f
+	gB_changelevel = false
 }
 
 public void OnClientPutInServer(int client)
@@ -96,8 +97,8 @@ Action sdkweapondrop(int client, int weapon)
 
 Action cmd_getscore(int client, int args)
 {
-	PrintToServer("Counter-Terorist score is: %i", gI_countCT)
-	PrintToServer("Terorist score is: %i", gI_countT)
+	PrintToServer("Counter-Terorist score is: %i", gI_scoreCT)
+	PrintToServer("Terorist score is: %i", gI_scoreT)
 	return Plugin_Handled
 }
 
@@ -113,7 +114,7 @@ void GetPossition(int client)
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	File f = OpenFile(sFormat, "r")
 	char sLine[96]
-	int randomLine = GetRandomInt(1, gI_countLines)
+	int randomLine = GetRandomInt(1, gI_lineMax)
 	int currentLine
 	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 	{
@@ -192,8 +193,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
-	gI_countT = 0
-	gI_countCT = 0
+	gI_scoreT = 0
+	gI_scoreCT = 0
 	gI_time = GetTime()
 	gB_once = false
 	for(int i = 1; i <= MaxClients; i++)
@@ -218,9 +219,9 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		int team = GetClientTeam(attacker)
 		if(team == CS_TEAM_T)
-			gI_countT++
+			gI_scoreT++
 		else if(team == CS_TEAM_CT)
-			gI_countCT++
+			gI_scoreCT++
 	}
 }
 
@@ -341,7 +342,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
-		if(gI_countT > gI_countCT)
+		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
