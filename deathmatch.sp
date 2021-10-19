@@ -103,7 +103,7 @@ Action cmd_getscore(int client, int args)
 
 Action joinclass(int client, const char[] command, int argc)
 {
-	GetPossition(client)
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 	gB_onRespawn[client] = true
 }
 
@@ -210,7 +210,9 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
-	GetPossition(client)
+	gB_onRespawn[client] = true
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+	CancelClientMenu(client)
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(0 < attacker <= MaxClients && IsClientInGame(attacker))
 	{
@@ -220,14 +222,16 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		else if(team == CS_TEAM_CT)
 			gI_countCT++
 	}
-	gB_onRespawn[client] = true
-	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client))
-		GetPossition(client)
+	{
+		int team = GetClientTeam(client)
+		if(team == CS_TEAM_T || team == CS_TEAM_CT)
+			GetPossition(client)
+	}
 }
 
 Action cmd_gunsmenu(int client, int args)
