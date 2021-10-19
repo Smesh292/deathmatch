@@ -93,16 +93,6 @@ public void OnClientDisconnect(int client)
 
 void sdkspawnpost(int client)
 {
-	if(IsFakeClient(client))
-	{
-		int random = GetRandomInt(0, 5)
-		char sWeapon[32]
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
-		GivePlayerItem(client, sWeapon)
-		random = GetRandomInt(6, 23)
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
-		GivePlayerItem(client, sWeapon)
-	}
 	gB_onSpawn[client] = true
 	gB_onRespawn[client] = true
 	RequestFrame(rf_menufulldraw, client)
@@ -171,7 +161,6 @@ void rf_nobug2(int client)
 		Factory(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
 		gB_onSpawn[client] = false
-		gunsmenu(client)
 	}
 }
 
@@ -182,12 +171,59 @@ void Factory(int client)
 	if(IsValidEntity(rifle))
 		RemoveEntity(rifle)
 	if(IsValidEntity(pistol))
-		RemoveEntity(pistol)
-	int team = GetClientTeam(client)
-	if(team == CS_TEAM_T)
-		GivePlayerItem(client, "weapon_glock")
-	else if(team == CS_TEAM_CT)
-		GivePlayerItem(client, "weapon_usp")
+	{
+		char sWeapon[32]
+		GetEntityClassname(pistol, sWeapon, 32)
+		int team = GetClientTeam(client)
+		if(team == CS_TEAM_T)
+		{
+			if(!StrEqual(sWeapon, "weapon_glock"))
+			{
+				RemoveEntity(pistol)
+				RequestFrame(rf_nobug3, client)
+			}
+			else
+				gunsmenu(client)
+		}
+		else if(team == CS_TEAM_CT)
+		{
+			if(!StrEqual(sWeapon, "weapon_usp"))
+			{
+				RemoveEntity(pistol)
+				RequestFrame(rf_nobug3, client)
+			}
+			else
+				gunsmenu(client)
+		}
+	}
+	RequestFrame(rf_botequipment, client)
+}
+
+void rf_nobug3(int client)
+{
+	if(IsClientInGame(client))
+	{
+		int team = GetClientTeam(client)
+		if(team == CS_TEAM_T)
+			GivePlayerItem(client, "weapon_glock")
+		else if(team == CS_TEAM_CT)
+			GivePlayerItem(client, "weapon_usp")
+		gunsmenu(client)
+	}
+}
+
+void rf_botequipment(int client)
+{
+	if(IsClientInGame(client) && IsFakeClient(client))
+	{
+		int random = GetRandomInt(0, 5)
+		char sWeapon[32]
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
+		GivePlayerItem(client, sWeapon)
+		random = GetRandomInt(6, 23)
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
+		GivePlayerItem(client, sWeapon)
+	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
@@ -275,10 +311,7 @@ Action timer_noblink(Handle timer, int client)
 void rf_nobug(int client)
 {
 	if(IsClientInGame(client))
-	{
 		Factory(client)
-		gunsmenu(client)
-	}
 }
 
 Action cmd_gunsmenu(int client, int args)
