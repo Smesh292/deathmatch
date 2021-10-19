@@ -28,8 +28,6 @@
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
-bool gB_roundStart[MAXPLAYERS + 1]
-bool gB_onSpawn[MAXPLAYERS + 1]
 int gI_countT
 int gI_countCT
 int gI_time
@@ -52,7 +50,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start, EventHookMode_Post)
+	HookEvent("round_start", round_start)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
@@ -78,7 +76,6 @@ public void OnMapStart()
 
 public void OnClientPutInServer(int client)
 {
-	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	CancelClientMenu(client)
 }
@@ -89,19 +86,6 @@ public void OnClientDisconnect(int client)
 	while((entity = FindEntityByClassname(entity, "weapon_*")) > 0)
 		if(GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") == client)
 			RemoveEntity(entity)
-}
-
-void sdkspawnpost(int client)
-{
-	gB_onSpawn[client] = true
-	gB_onRespawn[client] = true
-	RequestFrame(rf_menufulldraw, client)
-}
-
-void rf_menufulldraw(int client)
-{
-	if(IsClientInGame(client))
-		GetPossition(client)
 }
 
 Action sdkweapondrop(int client, int weapon)
@@ -119,9 +103,8 @@ Action cmd_getscore(int client, int args)
 
 Action joinclass(int client, const char[] command, int argc)
 {
-	gB_roundStart[client] = false
-	gB_onSpawn[client] = false
 	GetPossition(client)
+	gB_onRespawn[client] = true
 }
 
 void GetPossition(int client)
@@ -148,20 +131,7 @@ void GetPossition(int client)
 		gF_origin[client][i] = StringToFloat(sOrigin[i])
 		gF_angles[client][i] = StringToFloat(sAngles[i + 3])
 	}
-	if(!gB_onSpawn[client])
-		CreateTimer(1.0, respawnTimer, client, TIMER_FLAG_NO_MAPCHANGE)
-	else
-		RequestFrame(rf_nobug2, client)
-}
-
-void rf_nobug2(int client)
-{
-	if(IsClientInGame(client))
-	{
-		Factory(client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0}))
-		gB_onSpawn[client] = false
-	}
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 void Factory(int client)
@@ -172,57 +142,40 @@ void Factory(int client)
 		RemoveEntity(rifle)
 	if(IsValidEntity(pistol))
 	{
-		char sWeapon[32]
-		GetEntityClassname(pistol, sWeapon, 32)
-		int team = GetClientTeam(client)
-		if(team == CS_TEAM_T)
+		if(IsFakeClient(client))
 		{
-			if(!StrEqual(sWeapon, "weapon_glock"))
-			{
-				RemoveEntity(pistol)
-				RequestFrame(rf_nobug3, client)
-			}
-			else
-				gunsmenu(client)
+			RemoveEntity(pistol)
+			int randomPistol = GetRandomInt(0, 5)
+			char sWeapon[32]
+			Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
+			GivePlayerItem(client, sWeapon)
+			int randomRifle = GetRandomInt(6, 23)
+			Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
+			GivePlayerItem(client, sWeapon)
 		}
-		else if(team == CS_TEAM_CT)
+		else
 		{
-			if(!StrEqual(sWeapon, "weapon_usp"))
+			char sWeapon[32]
+			GetEntityClassname(pistol, sWeapon, 32)
+			int team = GetClientTeam(client)
+			if(team == CS_TEAM_T)
 			{
-				RemoveEntity(pistol)
-				RequestFrame(rf_nobug3, client)
+				if(!StrEqual(sWeapon, "weapon_glock"))
+				{
+					RemoveEntity(pistol)
+					GivePlayerItem(client, "weapon_glock")
+				}
 			}
-			else
-				gunsmenu(client)
+			else if(team == CS_TEAM_CT)
+			{
+				if(!StrEqual(sWeapon, "weapon_usp"))
+				{
+					RemoveEntity(pistol)
+					GivePlayerItem(client, "weapon_usp")
+				}
+			}
+			gunsmenu(client)
 		}
-	}
-	RequestFrame(rf_botequipment, client)
-}
-
-void rf_nobug3(int client)
-{
-	if(IsClientInGame(client))
-	{
-		int team = GetClientTeam(client)
-		if(team == CS_TEAM_T)
-			GivePlayerItem(client, "weapon_glock")
-		else if(team == CS_TEAM_CT)
-			GivePlayerItem(client, "weapon_usp")
-		gunsmenu(client)
-	}
-}
-
-void rf_botequipment(int client)
-{
-	if(IsClientInGame(client) && IsFakeClient(client))
-	{
-		int random = GetRandomInt(0, 5)
-		char sWeapon[32]
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
-		GivePlayerItem(client, sWeapon)
-		random = GetRandomInt(6, 23)
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[random])
-		GivePlayerItem(client, sWeapon)
 	}
 }
 
@@ -238,23 +191,13 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
-	CreateTimer(0.1, roundstart, _, TIMER_FLAG_NO_MAPCHANGE)
-}
-
-Action roundstart(Handle timer)
-{
 	gI_countT = 0
 	gI_countCT = 0
 	gI_time = GetTime()
 	gB_once = false
 	for(int i = 1; i <= MaxClients; i++)
-	{
-		if(IsClientInGame(i)) //thanks to log for this idea . skin pref .sp
-		{
-			gB_roundStart[i] = true
+		if(IsClientInGame(i))
 			GetPossition(i)
-		}
-	}
 	ServerCommand("mat_texture_list_txlod_sync reset")
 }
 
@@ -262,7 +205,6 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
 	GetPossition(client)
-	gB_roundStart[client] = false
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(0 < attacker <= MaxClients && IsClientInGame(attacker))
 	{
@@ -276,42 +218,18 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	gB_onRespawn[client] = true
 }
 
-Action respawnTimer(Handle timer, int client)
+Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(!gB_roundStart[client])
-		{
-			int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-			if(IsValidEntity(ragdoll))
-				RemoveEntity(ragdoll)
-			CreateTimer(1.0, timer_ragdoll, client, TIMER_FLAG_NO_MAPCHANGE)
-		}
-	}
-}
-
-Action timer_ragdoll(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-	{
+		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+		if(IsValidEntity(ragdoll))
+			RemoveEntity(ragdoll)
+		if(!IsPlayerAlive(client))
+			CS_RespawnPlayer(client)
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-		CreateTimer(0.1, timer_noblink, client, TIMER_FLAG_NO_MAPCHANGE)
-	}
-}
-
-Action timer_noblink(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-	{
-		CS_RespawnPlayer(client)
-		RequestFrame(rf_nobug, client)
-	}
-}
-
-void rf_nobug(int client)
-{
-	if(IsClientInGame(client))
 		Factory(client)
+	}
 }
 
 Action cmd_gunsmenu(int client, int args)
