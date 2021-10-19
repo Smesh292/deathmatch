@@ -131,25 +131,12 @@ void GetPossition(int client)
 		gF_origin[client][i] = StringToFloat(sOrigin[i])
 		gF_angles[client][i] = StringToFloat(sAngles[i + 3])
 	}
-	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
-}
-
-Action timer_respawn(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-	{
-		int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-		if(IsValidEntity(ragdoll))
-			RemoveEntity(ragdoll)
-		if(!IsPlayerAlive(client))
-			CS_RespawnPlayer(client)
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-		Factory(client)
-	}
-}
-
-void Factory(int client)
-{
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+	if(IsValidEntity(ragdoll))
+		RemoveEntity(ragdoll)
+	if(!IsPlayerAlive(client))
+		CS_RespawnPlayer(client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
 	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
 	if(IsValidEntity(rifle))
@@ -234,6 +221,13 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 			gI_countCT++
 	}
 	gB_onRespawn[client] = true
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+}
+
+Action timer_respawn(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+		GetPossition(client)
 }
 
 Action cmd_gunsmenu(int client, int args)
