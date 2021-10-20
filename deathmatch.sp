@@ -176,9 +176,15 @@ void GetPossition(int client)
 					GivePlayerItem(client, "weapon_usp")
 				}
 			}
-			gunsmenu(client)
+			CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
+}
+
+Action timer_noTransparent(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+		gunsmenu(client)
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
