@@ -23,6 +23,7 @@
 */
 #include <cstrike>
 #include <sdktools>
+#include <sdkhooks>
 
 float gF_origin[MAXPLAYERS + 1][3]
 float gF_angles[MAXPLAYERS + 1][3]
@@ -76,6 +77,7 @@ public void OnMapStart()
 
 public void OnClientPutInServer(int client)
 {
+	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	CancelClientMenu(client)
 }
 
@@ -87,10 +89,10 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity)
 }
 
-public Action CS_OnCSWeaponDrop(int client, int weaponIndex)
+Action sdkweapondrop(int client, int weapon)
 {
-	if(IsValidEntity(weaponIndex))
-		RemoveEntity(weaponIndex)
+	if(IsValidEntity(weapon))
+		RemoveEntity(weapon)
 }
 
 Action cmd_getscore(int client, int args)
