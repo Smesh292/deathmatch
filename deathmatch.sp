@@ -99,9 +99,6 @@ Action cmd_getscore(int client, int args)
 {
 	PrintToServer("Counter-Terorist score is: %i", gI_scoreCT)
 	PrintToServer("Terorist score is: %i", gI_scoreT)
-	float vec[3]
-	SetEntPropVector(client, Prop_Data, "m_vecViewOffset", vec)
-	SetClientViewEntity(client, client)
 	return Plugin_Handled
 }
 
@@ -335,14 +332,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 {
 	Handle convar = FindConVar("mp_roundtime")
 	Handle convar2 = FindConVar("mp_freezetime")
-	Handle convar3 = FindConVar("mp_ignore_round_win_conditions")
 	float roundtime = GetConVarFloat(convar)
 	int freezetime = GetConVarInt(convar2)
-	int unlimitedround = GetConVarInt(convar3)
-	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime - unlimitedround ? 0 : 1 == GetTime() && !gB_once)
+	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime == GetTime() && !gB_once)
 	{
-		Handle convar4 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar4)
+		Handle convar3 = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar3)
 		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
