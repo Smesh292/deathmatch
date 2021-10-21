@@ -37,7 +37,7 @@ char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M
 					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
 					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 bool gB_onRespawn[MAXPLAYERS + 1]
-bool gB_changelevel
+bool gB_endgame
 
 public Plugin myinfo =
 {
@@ -72,7 +72,7 @@ public void OnMapStart()
 	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 		gI_lineMax++
 	delete f
-	gB_changelevel = false
+	gB_endgame = false
 }
 
 public void OnClientPutInServer(int client)
@@ -362,16 +362,16 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	}
 	if(GetGameTime() > 3600.0 * 2.0)
 	{
-		Handle convar3 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar3)
-		if(!gB_changelevel)
+		Handle convar3 = FindConVar("mp_chattime")
+		float chattime = GetConVarFloat(convar3)
+		if(!gB_endgame)
 		{
 			int entity
 			while((entity = FindEntityByClassname(entity, "game_end")) != -1)
 				AcceptEntityInput(entity, "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-			gB_changelevel = true
+			gB_endgame = true
 		}
-		if(GetGameTime() > 3600.0 * 2.0 + roundrestartdelay)
+		if(GetGameTime() > 3600.0 * 2.0 + chattime)
 		{
 			char sMap[192]
 			GetCurrentMap(sMap, 192)
