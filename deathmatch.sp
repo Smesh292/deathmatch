@@ -367,7 +367,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
 			char sMap[192]
 			GetCurrentMap(sMap, 192)
-			ServerCommand("sm_nextmap %s", sMap)
+			ServerCommand("sm_nextmap %s", sMap) //thanks to vermon
 			gB_endgame = true
 		}
 	}
