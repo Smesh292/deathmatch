@@ -362,20 +362,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	}
 	if(GetGameTime() > 3600.0 * 2.0)
 	{
-		Handle convar3 = FindConVar("mp_chattime")
-		float chattime = GetConVarFloat(convar3)
 		if(!gB_endgame)
 		{
-			int entity
-			while((entity = FindEntityByClassname(entity, "game_end")) != -1)
-				AcceptEntityInput(entity, "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-			gB_endgame = true
-		}
-		if(GetGameTime() > 3600.0 * 2.0 + chattime)
-		{
+			AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
 			char sMap[192]
 			GetCurrentMap(sMap, 192)
-			ForceChangeLevel(sMap, "Unlag")
+			ServerCommand("sm_nextmap %s", sMap)
+			gB_endgame = true
 		}
 	}
 	int other = Stuck(client)
