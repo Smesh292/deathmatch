@@ -334,17 +334,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	Handle convar2 = FindConVar("mp_freezetime")
 	float roundtime = GetConVarFloat(convar)
 	int freezetime = GetConVarInt(convar2)
-	char sRoundtime[32]
-	FloatToString(roundtime, sRoundtime, 32)
-	char sExploded[3][32]
-	ExplodeString(sRoundtime, ".", sExploded, 2, 32)
-	int exploded[2]
-	exploded[0] = StringToInt(sExploded[0])
-	exploded[0] = exploded[0] * 60
-	exploded[1] = StringToInt(sExploded[1])
-	exploded[1] = exploded[1] / 100000
-	exploded[1] = (exploded[1] * 60) / 10
-	if(gI_time + exploded[0] + exploded[1] + freezetime - 1 == GetTime() && !gB_once)
+	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime - 1 == GetTime() && !gB_once)
 	{
 		Handle convar3 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar3)
