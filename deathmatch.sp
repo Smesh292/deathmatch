@@ -336,7 +336,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	float roundtime = GetConVarFloat(convar)
 	int freezetime = GetConVarInt(convar2)
 	int infinityround = GetConVarInt(convar3)
-	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime - infinityround ? 0 : 1 == GetTime() && !gB_once)
+	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime - view_as<int>(infinityround ? 0 : 1) == GetTime() && !gB_once)
 	{
 		Handle convar4 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar4)
