@@ -271,7 +271,7 @@ int menu_handler(Menu menu, MenuAction action, int param1, int param2)
 			Format(sItem, 32, "weapon_%s", sItem)
 			int pistol = GetPlayerWeaponSlot(param1, CS_SLOT_SECONDARY) //http://www.sourcemod.net/new-api/cstrike/__raw
 			if(IsValidEntity(pistol))
-				RemovePlayerItem(param1, pistol)
+				RemoveEntity(pistol) //RemovePlayerItem need extra frame.
 			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 			menurifle(param1)
 		}
@@ -298,8 +298,9 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 			Format(sItem, 32, "weapon_%s", sItem)
 			int rifle = GetPlayerWeaponSlot(param1, CS_SLOT_PRIMARY) //http://www.sourcemod.net/new-api/cstrike/__raw
 			if(IsValidEntity(rifle))
-				RemovePlayerItem(param1, rifle)
-			GivePlayerItem(param1, sItem)
+				RemoveEntity(rifle)
+			if(IsClientInGame(param1))
+				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 		}
 	}
 }
