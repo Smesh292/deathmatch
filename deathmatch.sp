@@ -299,8 +299,7 @@ int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
 			int rifle = GetPlayerWeaponSlot(param1, CS_SLOT_PRIMARY) //http://www.sourcemod.net/new-api/cstrike/__raw
 			if(IsValidEntity(rifle))
 				RemoveEntity(rifle)
-			if(IsClientInGame(param1))
-				GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
+			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
 		}
 	}
 }
