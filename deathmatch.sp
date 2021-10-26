@@ -50,7 +50,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start)
+	HookEvent("round_start", round_start, EventHookMode_Post)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
@@ -203,6 +203,11 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_scoreCT = 0
 	gI_time = GetTime()
 	gB_once = false
+	CreateTimer(1.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
+}
+
+Action timer_slowEvent(Handle timer)
+{
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i) && IsPlayerAlive(i))
