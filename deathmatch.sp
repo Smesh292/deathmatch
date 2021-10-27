@@ -108,7 +108,7 @@ Action joinclass(int client, const char[] command, int argc)
 	gB_onRespawn[client] = true
 }
 
-void GetPossition(int client)
+void GetPossition(int client, bool once = false)
 {
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
@@ -136,58 +136,73 @@ void GetPossition(int client)
 	if(IsValidEntity(ragdoll))
 		RemoveEntity(ragdoll)
 	if(!IsPlayerAlive(client))
-		CS_RespawnPlayer(client)
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
-	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
-	int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
-	if(IsValidEntity(rifle))
-		RemoveEntity(rifle)
-	if(IsValidEntity(pistol))
 	{
-		if(IsFakeClient(client))
+		if(!once)
 		{
-			RemoveEntity(pistol)
-			int randomPistol = GetRandomInt(0, 5)
-			char sWeapon[32]
-			Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
-			GivePlayerItem(client, sWeapon)
-			int randomRifle = GetRandomInt(6, 23)
-			Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
-			GivePlayerItem(client, sWeapon)
-		}
-		else
-		{
-			char sWeapon[32]
-			GetEntityClassname(pistol, sWeapon, 32)
-			int team = GetClientTeam(client)
-			if(team == CS_TEAM_T)
-			{
-				if(!StrEqual(sWeapon, "weapon_glock"))
-				{
-					RemoveEntity(pistol)
-					GivePlayerItem(client, "weapon_glock")
-				}
-			}
-			else if(team == CS_TEAM_CT)
-			{
-				if(!StrEqual(sWeapon, "weapon_usp"))
-				{
-					RemoveEntity(pistol)
-					GivePlayerItem(client, "weapon_usp")
-				}
-			}
-			CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
+			CS_RespawnPlayer(client)
+			CreateTimer(0.1, timer_GetPossition, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
-	if(!IsValidEntity(knife))
-		GivePlayerItem(client, "weapon_knife")
+	else
+	{
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
+		int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
+		int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
+		if(IsValidEntity(rifle))
+			RemoveEntity(rifle)
+		if(IsValidEntity(pistol))
+		{
+			if(IsFakeClient(client))
+			{
+				RemoveEntity(pistol)
+				int randomPistol = GetRandomInt(0, 5)
+				char sWeapon[32]
+				Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
+				GivePlayerItem(client, sWeapon)
+				int randomRifle = GetRandomInt(6, 23)
+				Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
+				GivePlayerItem(client, sWeapon)
+			}
+			else
+			{
+				char sWeapon[32]
+				GetEntityClassname(pistol, sWeapon, 32)
+				int team = GetClientTeam(client)
+				if(team == CS_TEAM_T)
+				{
+					if(!StrEqual(sWeapon, "weapon_glock"))
+					{
+						RemoveEntity(pistol)
+						GivePlayerItem(client, "weapon_glock")
+					}
+				}
+				else if(team == CS_TEAM_CT)
+				{
+					if(!StrEqual(sWeapon, "weapon_usp"))
+					{
+						RemoveEntity(pistol)
+						GivePlayerItem(client, "weapon_usp")
+					}
+				}
+				CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
+			}
+		}
+		if(!IsValidEntity(knife))
+			GivePlayerItem(client, "weapon_knife")
+	}
 }
 
 Action timer_noTransparent(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 		gunsmenu(client)
+}
+
+Action timer_GetPossition(Handle timer, int client)
+{
+	if(IsClientInGame(client))
+		GetPossition(client, true)
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
@@ -206,7 +221,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_scoreCT = 0
 	gI_time = GetTime()
 	gB_once = false
-	CreateTimer(2.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(1.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_slowEvent(Handle timer)
@@ -358,7 +373,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		}
 		gB_once = true
 	}
-	if(GetGameTime() > 3600.0 * 2.0)
+	if(GetGameTime() > 3600.0)
 	{
 		if(!gB_endgame)
 		{
