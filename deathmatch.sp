@@ -159,25 +159,26 @@ void GetPossition(int client)
 	}
 	else
 	{
-		char sWeapon[32]
-		GetEntityClassname(pistol, sWeapon, 32)
-		int team = GetClientTeam(client)
-		if(team == CS_TEAM_T)
+		if(IsValidEntity(pistol))
 		{
-			if(!StrEqual(sWeapon, "weapon_glock"))
+			char sWeapon[32]
+			GetEntityClassname(pistol, sWeapon, 32)
+			int team = GetClientTeam(client)
+			if(team == CS_TEAM_T)
 			{
-				if(IsValidEntity(pistol))
+				if(!StrEqual(sWeapon, "weapon_glock"))
+				{
 					RemoveEntity(pistol)
-				GivePlayerItem(client, "weapon_glock")
+					GivePlayerItem(client, "weapon_glock")
+				}
 			}
-		}
-		else if(team == CS_TEAM_CT)
-		{
-			if(!StrEqual(sWeapon, "weapon_usp"))
+			else if(team == CS_TEAM_CT)
 			{
-				if(IsValidEntity(pistol))
+				if(!StrEqual(sWeapon, "weapon_usp"))
+				{
 					RemoveEntity(pistol)
-				GivePlayerItem(client, "weapon_usp")
+					GivePlayerItem(client, "weapon_usp")
+				}
 			}
 		}
 		CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
