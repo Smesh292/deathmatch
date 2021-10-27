@@ -180,7 +180,7 @@ void GetPossition(int client)
 			CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
-	if(!IsValidEntity(rifle))
+	if(!IsValidEntity(knife))
 		GivePlayerItem(client, "weapon_knife")
 }
 
