@@ -91,7 +91,7 @@ public void OnClientDisconnect(int client)
 
 Action sdkweapondrop(int client, int weapon)
 {
-	if(RemoveEntity(weapon))
+	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
 }
 
@@ -108,7 +108,7 @@ Action joinclass(int client, const char[] command, int argc)
 	gB_onRespawn[client] = true
 }
 
-void GetPossition(int client, bool once = false)
+void GetPossition(int client)
 {
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
@@ -136,61 +136,52 @@ void GetPossition(int client, bool once = false)
 	if(IsValidEntity(ragdoll))
 		RemoveEntity(ragdoll)
 	if(!IsPlayerAlive(client))
+		CS_RespawnPlayer(client)
+	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
+	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
+	int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
+	if(IsValidEntity(rifle))
+		RemoveEntity(rifle)
+	if(!IsValidEntity(knife))
+		GivePlayerItem(client, "weapon_knife")
+	if(IsFakeClient(client))
 	{
-		if(!once)
-		{
-			CS_RespawnPlayer(client)
-			//CreateTimer(0.1, timer_GetPossition, client, TIMER_FLAG_NO_MAPCHANGE)
-			RequestFrame(frame_GetPossition, client)
-		}
+		if(IsValidEntity(pistol))
+			RemoveEntity(pistol)
+		int randomPistol = GetRandomInt(0, 5)
+		char sWeapon[32]
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
+		GivePlayerItem(client, sWeapon)
+		int randomRifle = GetRandomInt(6, 23)
+		Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
+		GivePlayerItem(client, sWeapon)
 	}
 	else
 	{
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-		int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
-		int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
-		int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
-		if(IsValidEntity(rifle))
-			RemoveEntity(rifle)
-		if(!IsValidEntity(knife))
-			GivePlayerItem(client, "weapon_knife")
-		if(IsValidEntity(pistol))
+		char sWeapon[32]
+		GetEntityClassname(pistol, sWeapon, 32)
+		PrintToServer("%s", sWeapon)
+		int team = GetClientTeam(client)
+		if(team == CS_TEAM_T)
 		{
-			if(IsFakeClient(client))
+			if(!StrEqual(sWeapon, "weapon_glock"))
 			{
-				RemoveEntity(pistol)
-				int randomPistol = GetRandomInt(0, 5)
-				char sWeapon[32]
-				Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
-				GivePlayerItem(client, sWeapon)
-				int randomRifle = GetRandomInt(6, 23)
-				Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
-				GivePlayerItem(client, sWeapon)
-			}
-			else
-			{
-				char sWeapon[32]
-				GetEntityClassname(pistol, sWeapon, 32)
-				int team = GetClientTeam(client)
-				if(team == CS_TEAM_T)
-				{
-					if(!StrEqual(sWeapon, "weapon_glock"))
-					{
-						RemoveEntity(pistol)
-						GivePlayerItem(client, "weapon_glock")
-					}
-				}
-				else if(team == CS_TEAM_CT)
-				{
-					if(!StrEqual(sWeapon, "weapon_usp"))
-					{
-						RemoveEntity(pistol)
-						GivePlayerItem(client, "weapon_usp")
-					}
-				}
-				CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
+				if(IsValidEntity(pistol))
+					RemoveEntity(pistol)
+				GivePlayerItem(client, "weapon_glock")
 			}
 		}
+		else if(team == CS_TEAM_CT)
+		{
+			if(!StrEqual(sWeapon, "weapon_usp"))
+			{
+				if(IsValidEntity(pistol))
+					RemoveEntity(pistol)
+				GivePlayerItem(client, "weapon_usp")
+			}
+		}
+		CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
 	}
 }
 
@@ -198,13 +189,6 @@ Action timer_noTransparent(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 		gunsmenu(client)
-}
-
-//Action timer_GetPossition(Handle timer, int client)
-void frame_GetPossition(int client)
-{
-	if(IsClientInGame(client))
-		GetPossition(client, true)
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
