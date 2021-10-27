@@ -222,6 +222,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	{
 		Handle convar4 = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar4)
+		if(gI_scoreT == gI_scoreCT)
+		{
+			int whoWin = GetRandomInt(CS_TEAM_T, CS_TEAM_CT)
+			if(whoWin == CS_TEAM_T)
+				gI_scoreT++
+			else if(whoWin == CS_TEAM_CT)
+				gI_scoreCT++
+		}
 		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
@@ -253,10 +261,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 	if(buttons & IN_ATTACK || buttons & IN_ATTACK2)
-		gB_buyAble[client] = false
+		if(gB_buyAble[client])
+			gB_buyAble[client] = false
 }
 
-public Action CS_OnBuyCommand(int client, const char[] weapon)
+public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.alliedmods.net/showthread.php?t=314852
 {
 	if(StrEqual(weapon, "defuser"))
 		return Plugin_Handled
