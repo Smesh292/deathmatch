@@ -140,6 +140,7 @@ void GetPossition(int client)
 	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
 	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
+	int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
 	if(IsValidEntity(rifle))
 		RemoveEntity(rifle)
 	if(IsValidEntity(pistol))
@@ -179,6 +180,8 @@ void GetPossition(int client)
 			CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
 		}
 	}
+	if(!IsValidEntity(rifle))
+		GivePlayerItem(client, "weapon_knife")
 }
 
 Action timer_noTransparent(Handle timer, int client)
