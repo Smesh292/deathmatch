@@ -149,6 +149,12 @@ void GetPossition(int client)
 	gB_buyAble[client] = true
 }
 
+public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
+{
+	if(StrEqual(classname, "func_hostage_rescue"))
+		RemoveEntity(entity)
+}
+
 Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	gI_scoreT = 0
