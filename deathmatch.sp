@@ -91,7 +91,7 @@ public void OnClientDisconnect(int client)
 
 Action sdkweapondrop(int client, int weapon)
 {
-	if(IsValidEntity(weapon))
+	if(RemoveEntity(weapon))
 		RemoveEntity(weapon)
 }
 
@@ -140,7 +140,8 @@ void GetPossition(int client, bool once = false)
 		if(!once)
 		{
 			CS_RespawnPlayer(client)
-			CreateTimer(0.1, timer_GetPossition, client, TIMER_FLAG_NO_MAPCHANGE)
+			//CreateTimer(0.1, timer_GetPossition, client, TIMER_FLAG_NO_MAPCHANGE)
+			RequestFrame(frame_GetPossition, client)
 		}
 	}
 	else
@@ -151,6 +152,8 @@ void GetPossition(int client, bool once = false)
 		int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
 		if(IsValidEntity(rifle))
 			RemoveEntity(rifle)
+		if(!IsValidEntity(knife))
+			GivePlayerItem(client, "weapon_knife")
 		if(IsValidEntity(pistol))
 		{
 			if(IsFakeClient(client))
@@ -188,8 +191,6 @@ void GetPossition(int client, bool once = false)
 				CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
 			}
 		}
-		if(!IsValidEntity(knife))
-			GivePlayerItem(client, "weapon_knife")
 	}
 }
 
@@ -199,7 +200,8 @@ Action timer_noTransparent(Handle timer, int client)
 		gunsmenu(client)
 }
 
-Action timer_GetPossition(Handle timer, int client)
+//Action timer_GetPossition(Handle timer, int client)
+void frame_GetPossition(int client)
 {
 	if(IsClientInGame(client))
 		GetPossition(client, true)
@@ -221,7 +223,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_scoreCT = 0
 	gI_time = GetTime()
 	gB_once = false
-	CreateTimer(1.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(2.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_slowEvent(Handle timer)
