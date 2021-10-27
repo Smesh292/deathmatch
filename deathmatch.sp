@@ -50,7 +50,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start)
+	HookEvent("round_start", round_start, EventHookMode_Post)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_guns", cmd_gunsmenu)
@@ -372,9 +372,4 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-}
-
-public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.alliedmods.net/showthread.php?t=210494
-{
-	return Plugin_Handled
 }
