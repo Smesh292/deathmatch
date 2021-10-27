@@ -373,7 +373,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
 }
 
-public Action CS_OnBuyCommand(int client const char[] weapon) //https://forums.alliedmods.net/showthread.php?t=210494
+public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.alliedmods.net/showthread.php?t=210494
 {
 	return Plugin_Handled
 }
