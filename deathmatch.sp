@@ -203,7 +203,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_scoreCT = 0
 	gI_time = GetTime()
 	gB_once = false
-	CreateTimer(1.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
+	CreateTimer(2.0, timer_slowEvent, _, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_slowEvent(Handle timer)
