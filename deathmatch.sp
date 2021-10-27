@@ -240,14 +240,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
 		gB_once = true
-		if(GetGameTime() > 3600.0)
+	}
+	if(GetGameTime() > 3600.0)
+	{
+		if(!gB_endgame)
 		{
-			if(!gB_endgame)
-			{
-				AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-				ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
-				gB_endgame = true
-			}
+			AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
+			ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
+			gB_endgame = true
 		}
 	}
 	int other = Stuck(client)
