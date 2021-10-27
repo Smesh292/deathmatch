@@ -161,7 +161,6 @@ void GetPossition(int client)
 	{
 		char sWeapon[32]
 		GetEntityClassname(pistol, sWeapon, 32)
-		PrintToServer("%s", sWeapon)
 		int team = GetClientTeam(client)
 		if(team == CS_TEAM_T)
 		{
