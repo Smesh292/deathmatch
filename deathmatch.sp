@@ -63,12 +63,15 @@ public void OnMapStart()
 	GetCurrentMap(gS_map, 192)
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	File f = OpenFile(sFormat, "r")
-	char sLine[96]
-	gI_lineMax = 0
-	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-		gI_lineMax++
-	delete f
+	if(FileExists(sFormat))
+	{
+		File f = OpenFile(sFormat, "r")
+		char sLine[96]
+		gI_lineMax = 0
+		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+			gI_lineMax++
+		delete f
+	}
 	gB_endgame = false
 }
 
@@ -119,32 +122,35 @@ void GetPossition(int client)
 {
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	File f = OpenFile(sFormat, "r")
 	char sLine[96]
-	int randomLine = GetRandomInt(1, gI_lineMax)
-	int currentLine
-	while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+	if(FileExists(sFormat))
 	{
-		currentLine++
-		if(currentLine == randomLine)
-			break
-	}
-	delete f
-	char sOrigin[3][96]
-	ExplodeString(sLine, " ", sOrigin, 3, 96)
-	char sAngles[6][96]
-	ExplodeString(sLine, " ", sAngles, 6, 96)
-	for(int i = 0; i <= 2; i++)
-	{
-		gF_origin[client][i] = StringToFloat(sOrigin[i])
-		gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+		File f = OpenFile(sFormat, "r")
+		int randomLine = GetRandomInt(1, gI_lineMax)
+		int currentLine
+		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+		{
+			currentLine++
+			if(currentLine == randomLine)
+				break
+		}
+		delete f
+		char sOrigin[3][96]
+		ExplodeString(sLine, " ", sOrigin, 3, 96)
+		char sAngles[6][96]
+		ExplodeString(sLine, " ", sAngles, 6, 96)
+		for(int i = 0; i <= 2; i++)
+		{
+			gF_origin[client][i] = StringToFloat(sOrigin[i])
+			gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+		}
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	}
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	if(IsValidEntity(ragdoll))
 		RemoveEntity(ragdoll)
 	if(!IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
-	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	SetEntProp(client, Prop_Send, "m_iAccount", 16000)
 	gB_buyAble[client] = true
 }
