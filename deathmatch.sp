@@ -42,7 +42,7 @@ public Plugin myinfo =
 	name = "Deathmatch",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Make able to spawn instantly after death on the map in random place.",
-	version = "1.1",
+	version = "1.2",
 	url = "http://www.sourcemod.net/"
 }
 
@@ -171,7 +171,6 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
 	gB_onRespawn[client] = true
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
-	CancelClientMenu(client)
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(0 < attacker <= MaxClients && IsClientInGame(attacker))
 	{
@@ -241,14 +240,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
 		gB_once = true
-	}
-	if(GetGameTime() > 3600.0)
-	{
-		if(!gB_endgame)
+		if(GetGameTime() > 3600.0)
 		{
-			AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-			ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
-			gB_endgame = true
+			if(!gB_endgame)
+			{
+				AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
+				ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
+				gB_endgame = true
+			}
 		}
 	}
 	int other = Stuck(client)
