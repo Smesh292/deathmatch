@@ -33,11 +33,9 @@ int gI_scoreCT
 int gI_time
 bool gB_once
 int gI_lineMax
-char gS_weapon[][] = {"Glock", "USP", "P228", "Deagle", "Elite", "FiveSeven", "M3", "XM1014", "Galil", 
-					"AK47", "Scout", "SG552", "AWP", "G3SG1", "Famas", "M4A1", "Aug",
-					"SG550", "Mac10", "TMP", "MP5Navy", "Ump45", "P90", "M249"}
 bool gB_onRespawn[MAXPLAYERS + 1]
 bool gB_endgame
+bool gB_buyAble[MAXPLAYERS + 1]
 
 public Plugin myinfo =
 {
@@ -50,10 +48,9 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start, EventHookMode_Post)
+	HookEvent("round_start", round_start)
 	HookEvent("player_death", playerdeath)
 	AddCommandListener(joinclass, "joinclass")
-	RegConsoleCmd("sm_guns", cmd_gunsmenu)
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
 	for(int i = 1; i <= MaxClients; i++)
@@ -78,6 +75,7 @@ public void OnMapStart()
 public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
+	SDKHook(client, SDKHook_PostThink, sdkpostthink)
 	CancelClientMenu(client)
 }
 
@@ -93,6 +91,15 @@ Action sdkweapondrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon)
+}
+
+void sdkpostthink(int client)
+{
+	if(gB_buyAble[client])
+		SetEntProp(client, Prop_Send, "m_bInBuyZone", true) //https://forums.alliedmods.net/showthread.php?t=216370&page=2
+	else
+		SetEntProp(client, Prop_Send, "m_bInBuyZone", false)
+	SetEntProp(client, Prop_Send, "m_bInBombZone", false)
 }
 
 Action cmd_getscore(int client, int args)
@@ -138,67 +145,8 @@ void GetPossition(int client)
 	if(!IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
 	TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
-	int rifle = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY)
-	int pistol = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY)
-	int knife = GetPlayerWeaponSlot(client, CS_SLOT_KNIFE)
-	if(IsValidEntity(rifle))
-		RemoveEntity(rifle)
-	if(!IsValidEntity(knife))
-		GivePlayerItem(client, "weapon_knife")
-	if(IsFakeClient(client))
-	{
-		if(IsValidEntity(pistol))
-			RemoveEntity(pistol)
-		int randomPistol = GetRandomInt(0, 5)
-		char sWeapon[32]
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[randomPistol])
-		GivePlayerItem(client, sWeapon)
-		int randomRifle = GetRandomInt(6, 23)
-		Format(sWeapon, 32, "weapon_%s", gS_weapon[randomRifle])
-		GivePlayerItem(client, sWeapon)
-	}
-	else
-	{
-		if(IsValidEntity(pistol))
-		{
-			char sWeapon[32]
-			GetEntityClassname(pistol, sWeapon, 32)
-			int team = GetClientTeam(client)
-			if(team == CS_TEAM_T)
-			{
-				if(!StrEqual(sWeapon, "weapon_glock"))
-				{
-					RemoveEntity(pistol)
-					GivePlayerItem(client, "weapon_glock")
-				}
-			}
-			else if(team == CS_TEAM_CT)
-			{
-				if(!StrEqual(sWeapon, "weapon_usp"))
-				{
-					RemoveEntity(pistol)
-					GivePlayerItem(client, "weapon_usp")
-				}
-			}
-		}
-		CreateTimer(0.1, timer_noTransparent, client, TIMER_FLAG_NO_MAPCHANGE)
-	}
-}
-
-Action timer_noTransparent(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-		gunsmenu(client)
-}
-
-public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
-{
-	if(StrEqual(classname, "weapon_c4"))
-		RemoveEntity(entity) //https://www.bing.com/search?q=hostage+cs+source&cvid=8d2fdfec401e4826b26c977db5f1395d&aqs=edge..69i57.3328j0j4&FORM=ANAB01&PC=U531
-	else if(StrEqual(classname, "hostage_entity")) //https://www.bing.com/search?q=bomb+trigger+cs+source&cvid=447663238dd4439f990d357f235b993b&aqs=edge..69i57.6657j0j4&FORM=ANAB01&PC=U531
-		RemoveEntity(entity)
-	else if(StrEqual(classname, "func_buyzone")) //https://developer.valvesoftware.com/wiki/Func_buyzone
-		RemoveEntity(entity)
+	SetEntProp(client, Prop_Send, "m_iAccount", 16000)
+	gB_buyAble[client] = true
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
@@ -245,76 +193,6 @@ Action timer_respawn(Handle timer, int client)
 	}
 }
 
-Action cmd_gunsmenu(int client, int args)
-{
-	gunsmenu(client)
-	return Plugin_Handled
-}
-
-void gunsmenu(int client)
-{
-	if(IsPlayerAlive(client) && gB_onRespawn[client])
-	{
-		Menu menu = new Menu(menu_handler)
-		menu.SetTitle("Pistols")
-		for(int i = 0; i <= 5; i++)
-			menu.AddItem(gS_weapon[i], gS_weapon[i])
-		menu.Display(client, 20)
-		gB_onRespawn[client] = false
-	}
-}
-
-int menu_handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	switch(action)
-	{
-		case MenuAction_Select:
-		{
-			char sItem[32]
-			menu.GetItem(param2, sItem, 32)
-			Format(sItem, 32, "weapon_%s", sItem)
-			int pistol = GetPlayerWeaponSlot(param1, CS_SLOT_SECONDARY) //http://www.sourcemod.net/new-api/cstrike/__raw
-			if(IsValidEntity(pistol))
-				RemoveEntity(pistol) //RemovePlayerItem need extra frame.
-			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
-			menurifle(param1)
-		}
-	}
-}
-
-void menurifle(int client)
-{
-	Menu menu = new Menu(menu2_handler)
-	menu.SetTitle("Rifles")
-	for(int i = 6; i <= 23; i++)
-		menu.AddItem(gS_weapon[i], gS_weapon[i])
-	menu.Display(client, 20)
-}
-
-int menu2_handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	switch(action)
-	{
-		case MenuAction_Select:
-		{
-			char sItem[32]
-			menu.GetItem(param2, sItem, 32)
-			Format(sItem, 32, "weapon_%s", sItem)
-			int rifle = GetPlayerWeaponSlot(param1, CS_SLOT_PRIMARY) //http://www.sourcemod.net/new-api/cstrike/__raw
-			if(IsValidEntity(rifle))
-				RemoveEntity(rifle)
-			GivePlayerItem(param1, sItem) //https://www.sourcemod.net/new-api/sdktools_functions/GivePlayerItem
-		}
-	}
-}
-
-public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
-{
-	if(!IsChatTrigger())
-		if(StrEqual(sArgs, "guns"))
-			gunsmenu(client)
-}
-
 int Stuck(int client)
 {
 	float mins[3]
@@ -336,12 +214,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 {
 	Handle convar = FindConVar("mp_roundtime")
 	Handle convar2 = FindConVar("mp_freezetime")
+	Handle convar3 = FindConVar("mp_buytime")
 	float roundtime = GetConVarFloat(convar)
 	int freezetime = GetConVarInt(convar2)
+	SetConVarFloat(convar3, 3600.0)
 	if(gI_time + RoundFloat(roundtime *= 60.0) + freezetime - 1 == GetTime() && !gB_once)
 	{
-		Handle convar3 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar3)
+		Handle convar4 = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar4)
 		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
@@ -372,4 +252,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+	if(buttons & IN_ATTACK || buttons & IN_ATTACK2)
+		gB_buyAble[client] = false
+}
+
+public Action CS_OnBuyCommand(int client, const char[] weapon)
+{
+	if(StrEqual(weapon, "defuser"))
+		return Plugin_Handled
+	return Plugin_Continue
 }
