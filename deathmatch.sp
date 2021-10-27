@@ -32,7 +32,7 @@ int gI_scoreT
 int gI_scoreCT
 int gI_time
 bool gB_once
-int gI_lineMax
+int gI_spawnpointMax
 bool gB_onRespawn[MAXPLAYERS + 1]
 bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
@@ -56,9 +56,16 @@ public void OnPluginStart()
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
+	GetMaxSpawnpoint()
 }
 
 public void OnMapStart()
+{
+	GetMaxSpawnpoint()
+	gB_endgame = false
+}
+
+void GetMaxSpawnpoint()
 {
 	GetCurrentMap(gS_map, 192)
 	char sFormat[256]
@@ -67,12 +74,11 @@ public void OnMapStart()
 	{
 		File f = OpenFile(sFormat, "r")
 		char sLine[96]
-		gI_lineMax = 0
+		gI_spawnpointMax = 0
 		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-			gI_lineMax++
+			gI_spawnpointMax++
 		delete f
 	}
-	gB_endgame = false
 }
 
 public void OnClientPutInServer(int client)
@@ -126,7 +132,7 @@ void GetPossition(int client)
 	if(FileExists(sFormat))
 	{
 		File f = OpenFile(sFormat, "r")
-		int randomLine = GetRandomInt(1, gI_lineMax)
+		int randomLine = GetRandomInt(1, gI_spawnpointMax)
 		int currentLine
 		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 		{
