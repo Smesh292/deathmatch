@@ -120,47 +120,55 @@ Action cmd_getscore(int client, int args)
 Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
-	gB_buyAble[client] = true
 }
 
 void GetPossition(int client)
 {
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	if(IsValidEntity(ragdoll))
-	{
 		RemoveEntity(ragdoll)
-		PrintToServer("%i %N", ragdoll, client)
-	}
 	if(!IsPlayerAlive(client))
-		CS_RespawnPlayer(client)
-	char sFormat[256]
-	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	char sLine[96]
-	if(FileExists(sFormat))
 	{
-		File f = OpenFile(sFormat, "r")
-		int randomLine = GetRandomInt(1, gI_spawnpointMax)
-		int currentLine
-		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-		{
-			currentLine++
-			if(currentLine == randomLine)
-				break
-		}
-		delete f
-		char sOrigin[3][96]
-		ExplodeString(sLine, " ", sOrigin, 3, 96)
-		char sAngles[6][96]
-		ExplodeString(sLine, " ", sAngles, 6, 96)
-		for(int i = 0; i <= 2; i++)
-		{
-			gF_origin[client][i] = StringToFloat(sOrigin[i])
-			gF_angles[client][i] = StringToFloat(sAngles[i + 3])
-		}
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		CS_RespawnPlayer(client)
+		RequestFrame(frame_bug, client)
 	}
-	SetEntProp(client, Prop_Send, "m_iAccount", 16000)
-	gB_buyAble[client] = true
+	else if(IsPlayerAlive(client))
+	{
+		char sFormat[256]
+		Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+		char sLine[96]
+		if(FileExists(sFormat))
+		{
+			File f = OpenFile(sFormat, "r")
+			int randomLine = GetRandomInt(1, gI_spawnpointMax)
+			int currentLine
+			while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+			{
+				currentLine++
+				if(currentLine == randomLine)
+					break
+			}
+			delete f
+			char sOrigin[3][96]
+			ExplodeString(sLine, " ", sOrigin, 3, 96)
+			char sAngles[6][96]
+			ExplodeString(sLine, " ", sAngles, 6, 96)
+			for(int i = 0; i <= 2; i++)
+			{
+				gF_origin[client][i] = StringToFloat(sOrigin[i])
+				gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+			}
+			TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		}
+		SetEntProp(client, Prop_Send, "m_iAccount", 16000)
+		gB_buyAble[client] = true
+	}
+}
+
+void frame_bug(int client)
+{
+	if(IsClientInGame(client))
+		GetPossition(client)
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
