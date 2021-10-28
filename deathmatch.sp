@@ -84,6 +84,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	SDKHook(client, SDKHook_PostThink, sdkpostthink)
+	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	CancelClientMenu(client)
 }
 
@@ -110,6 +111,11 @@ void sdkpostthink(int client)
 	SetEntProp(client, Prop_Send, "m_bInBombZone", false)
 }
 
+void sdkspawnpost(int client)
+{
+	GetPossition(client)
+}
+
 Action cmd_getscore(int client, int args)
 {
 	PrintToServer("Counter-Terorist score is: %i", gI_scoreCT)
@@ -128,20 +134,17 @@ void GetPossition(int client)
 	if(IsValidEntity(ragdoll))
 		RemoveEntity(ragdoll)
 	if(!IsPlayerAlive(client))
-	{
 		CS_RespawnPlayer(client)
-		RequestFrame(frame_bug, client)
-	}
 	else if(IsPlayerAlive(client))
 	{
 		char sFormat[256]
 		Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-		char sLine[96]
 		if(FileExists(sFormat))
 		{
 			File f = OpenFile(sFormat, "r")
-			int randomLine = GetRandomInt(1, gI_spawnpointMax)
+			char sLine[96]
 			int currentLine
+			int randomLine = GetRandomInt(1, gI_spawnpointMax)
 			while(!f.EndOfFile() && f.ReadLine(sLine, 96))
 			{
 				currentLine++
@@ -163,12 +166,6 @@ void GetPossition(int client)
 		SetEntProp(client, Prop_Send, "m_iAccount", 16000)
 		gB_buyAble[client] = true
 	}
-}
-
-void frame_bug(int client)
-{
-	if(IsClientInGame(client))
-		GetPossition(client)
 }
 
 public void OnEntityCreated(int entity, const char[] classname) //https://forums.alliedmods.net/showthread.php?t=247957
