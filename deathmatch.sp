@@ -33,7 +33,6 @@ int gI_scoreCT
 int gI_time
 bool gB_once
 int gI_spawnpointMax
-bool gB_onRespawn[MAXPLAYERS + 1]
 bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
 
@@ -121,14 +120,17 @@ Action cmd_getscore(int client, int args)
 Action joinclass(int client, const char[] command, int argc)
 {
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
-	gB_onRespawn[client] = true
+	gB_buyAble[client] = true
 }
 
 void GetPossition(int client)
 {
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
 	if(IsValidEntity(ragdoll))
+	{
 		RemoveEntity(ragdoll)
+		PrintToServer("%i %N", ragdoll, client)
+	}
 	if(!IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
 	char sFormat[256]
@@ -174,20 +176,14 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_time = GetTime()
 	gB_once = false
 	for(int i = 1; i <= MaxClients; i++)
-	{
 		if(IsClientInGame(i) && IsPlayerAlive(i))
-		{
-			gB_onRespawn[i] = true
 			GetPossition(i)
-		}
-	}
 	ServerCommand("mat_texture_list_txlod_sync reset")
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
-	gB_onRespawn[client] = true
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(0 < attacker <= MaxClients && IsClientInGame(attacker))
