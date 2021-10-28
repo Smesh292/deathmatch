@@ -126,6 +126,11 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
+	if(IsValidEntity(ragdoll))
+		RemoveEntity(ragdoll)
+	if(!IsPlayerAlive(client))
+		CS_RespawnPlayer(client)
 	char sFormat[256]
 	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
 	char sLine[96]
@@ -152,11 +157,6 @@ void GetPossition(int client)
 		}
 		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	}
-	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-	if(IsValidEntity(ragdoll))
-		RemoveEntity(ragdoll)
-	if(!IsPlayerAlive(client))
-		CS_RespawnPlayer(client)
 	SetEntProp(client, Prop_Send, "m_iAccount", 16000)
 	gB_buyAble[client] = true
 }
