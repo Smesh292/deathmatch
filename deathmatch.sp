@@ -49,6 +49,7 @@ public void OnPluginStart()
 {
 	HookEvent("round_start", round_start)
 	HookEvent("player_death", playerdeath)
+	HookEvent("player_spawn", playerspawn)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
@@ -84,7 +85,6 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	SDKHook(client, SDKHook_PostThink, sdkpostthink)
-	SDKHook(client, SDKHook_SpawnPost, sdkspawnpost)
 	CancelClientMenu(client)
 }
 
@@ -109,11 +109,6 @@ void sdkpostthink(int client)
 	else
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", false)
 	SetEntProp(client, Prop_Send, "m_bInBombZone", false)
-}
-
-void sdkspawnpost(int client)
-{
-	GetPossition(client)
 }
 
 Action cmd_getscore(int client, int args)
@@ -199,6 +194,12 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 		else if(team == CS_TEAM_CT)
 			gI_scoreCT++
 	}
+}
+
+Action playerspawn(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	GetPossition(client)
 }
 
 Action timer_respawn(Handle timer, int client)
