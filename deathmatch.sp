@@ -277,7 +277,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
-	if(buttons & IN_ATTACK || buttons & IN_ATTACK2)
+	if(gI_time + freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
 		if(gB_buyAble[client])
 			gB_buyAble[client] = false
 }
