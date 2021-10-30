@@ -164,6 +164,8 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 {
 	if(StrEqual(classname, "func_hostage_rescue"))
 		RemoveEntity(entity)
+	else if(StrEqual(classname, "env_fog_controller"))
+		RemoveEntity(entity)
 }
 
 Action round_start(Event event, const char[] name, bool dontBroadcast)
