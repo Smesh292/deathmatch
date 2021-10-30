@@ -125,9 +125,6 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll")
-	if(IsValidEntity(ragdoll))
-		RemoveEntity(ragdoll)
 	if(!IsPlayerAlive(client))
 		CS_RespawnPlayer(client)
 	else if(IsPlayerAlive(client))
@@ -199,7 +196,9 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	GetPossition(client)
+	int team = GetClientTeam(client)
+	if(IsPlayerAlive(client) && (team == CS_TEAM_T || team == CS_TEAM_CT))
+		GetPossition(client)
 }
 
 Action timer_respawn(Handle timer, int client)
