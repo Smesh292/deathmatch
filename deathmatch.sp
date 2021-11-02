@@ -33,8 +33,9 @@ int gI_scoreCT
 int gI_time
 bool gB_once
 int gI_spawnpointMax
-bool gB_endgame
+//bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
+bool gB_silentKnife
 
 public Plugin myinfo =
 {
@@ -57,12 +58,13 @@ public void OnPluginStart()
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
 	GetMaxSpawnpoint()
+	AddNormalSoundHook(SoundHook)
 }
 
 public void OnMapStart()
 {
 	GetMaxSpawnpoint()
-	gB_endgame = false
+	//gB_endgame = false
 }
 
 void GetMaxSpawnpoint()
@@ -126,7 +128,10 @@ Action joinclass(int client, const char[] command, int argc)
 void GetPossition(int client)
 {
 	if(!IsPlayerAlive(client))
+	{
 		CS_RespawnPlayer(client)
+		gB_silentKnife = true
+	}
 	else if(IsPlayerAlive(client))
 	{
 		char sFormat[256]
@@ -262,7 +267,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		}
 		gB_once = true
 	}
-	if(GetGameTime() > 3600.0)
+	/*if(GetGameTime() > 3600.0)
 	{
 		if(!gB_endgame)
 		{
@@ -270,7 +275,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
 			gB_endgame = true
 		}
-	}
+	}*/
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
 	{
@@ -289,5 +294,15 @@ public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.
 {
 	if(StrEqual(weapon, "defuser"))
 		return Plugin_Handled
+	return Plugin_Continue
+}
+
+Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+{
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && gB_silentKnife)
+	{
+		gB_silentKnife = false
+		return Plugin_Handled
+	}
 	return Plugin_Continue
 }
