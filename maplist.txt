@@ -1,0 +1,10 @@
+$2000$
+cs_italy
+cs_office
+de_cbble
+de_dust2
+de_inferno
+de_mirage_csgo
+de_nuke
+de_train
+de_tuscan
