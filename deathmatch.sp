@@ -65,14 +65,14 @@ public void OnPluginStart()
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
 	GetMaxSpawnpoint()
-	ProduceOnce()
+	GetConVar()
 	AddNormalSoundHook(SoundHook)
 }
 
 public void OnMapStart()
 {
 	GetMaxSpawnpoint()
-	ProduceOnce()
+	GetConVar()
 	//gB_endgame = false
 }
 
@@ -92,7 +92,7 @@ void GetMaxSpawnpoint()
 	}
 }
 
-void ProduceOnce()
+void GetConVar()
 {
 	gCV_roundtime = FindConVar("mp_roundtime")
 	gCV_freezetime = FindConVar("mp_freezetime")
