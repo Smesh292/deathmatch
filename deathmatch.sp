@@ -231,9 +231,10 @@ Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 	int team = GetClientTeam(client)
 	if(team == CS_TEAM_T || team == CS_TEAM_CT)
 	{
-		GetPossition(client)
 		if(IsFakeClient(client))
 			CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+		else
+			GetPossition(client)
 	}
 }
 
