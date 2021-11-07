@@ -207,6 +207,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 		if(IsClientInGame(i) && IsPlayerAlive(i))
 			GetPossition(i)
 	ServerCommand("mat_texture_list_txlod_sync reset")
+	ServerCommand("mp_ignore_round_win_conditions 1")
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
@@ -273,6 +274,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			else if(whoWin == CS_TEAM_CT)
 				gI_scoreCT++
 		}
+		ServerCommand("mp_ignore_round_win_conditions 0")
 		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
