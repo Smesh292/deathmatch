@@ -36,6 +36,13 @@ int gI_spawnpointMax
 //bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
 bool gB_silentKnife
+Handle gCV_roundtime
+Handle gCV_freezetime
+Handle gCV_buytime
+Handle gCV_timelimit
+float gF_roundtime
+int gI_freezetime
+int gI_timelimit
 
 public Plugin myinfo =
 {
@@ -58,12 +65,14 @@ public void OnPluginStart()
 		if(IsClientInGame(i))
 			OnClientPutInServer(i)
 	GetMaxSpawnpoint()
+	ProduceOnce()
 	AddNormalSoundHook(SoundHook)
 }
 
 public void OnMapStart()
 {
 	GetMaxSpawnpoint()
+	ProduceOnce()
 	//gB_endgame = false
 }
 
@@ -81,6 +90,20 @@ void GetMaxSpawnpoint()
 			gI_spawnpointMax++
 		delete f
 	}
+}
+
+void ProduceOnce()
+{
+	gCV_roundtime = FindConVar("mp_roundtime")
+	gCV_freezetime = FindConVar("mp_freezetime")
+	gCV_buytime = FindConVar("mp_buytime")
+	gCV_timelimit = FindConVar("mp_timelimit")
+	gF_roundtime = GetConVarFloat(gCV_roundtime)
+	gI_freezetime = GetConVarInt(gCV_freezetime)
+	gI_timelimit = GetConVarInt(gCV_timelimit)
+	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit))
+	SetConVarFloat(gCV_roundtime, float(gI_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
+	SetConVarFloat(gCV_buytime, float(gI_timelimit))
 }
 
 public void OnClientPutInServer(int client)
@@ -238,20 +261,10 @@ bool TR_donthitself(int entity, int mask, int client)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-	Handle convar = FindConVar("mp_roundtime")
-	Handle convar2 = FindConVar("mp_freezetime")
-	Handle convar3 = FindConVar("mp_buytime")
-	Handle convar4 = FindConVar("mp_timelimit")
-	float roundtime = GetConVarFloat(convar)
-	int freezetime = GetConVarInt(convar2)
-	int timelimit = GetConVarInt(convar4)
-	SetConVarBounds(convar, ConVarBound_Upper, true, float(timelimit))
-	SetConVarFloat(convar3, float(timelimit))
-	SetConVarFloat(convar, float(timelimit) - float(freezetime) / 60.0 - 1.0 / 60.0)
-	if(gI_time + RoundFloat(roundtime * 60.0) + freezetime - 1 <= GetTime() && !gB_once)
+	if(gI_time + RoundFloat(gF_roundtime * 60.0) + gI_freezetime - 1 <= GetTime() && !gB_once)
 	{
-		Handle convar5 = FindConVar("mp_round_restart_delay")
-		float roundrestartdelay = GetConVarFloat(convar5)
+		Handle convar = FindConVar("mp_round_restart_delay")
+		float roundrestartdelay = GetConVarFloat(convar)
 		if(gI_scoreT == gI_scoreCT)
 		{
 			int whoWin = GetRandomInt(CS_TEAM_T, CS_TEAM_CT)
@@ -290,7 +303,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)*/
-	if(gI_time + freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
+	if(gI_time + gI_freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
 		if(gB_buyAble[client])
 			gB_buyAble[client] = false
 }
