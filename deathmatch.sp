@@ -162,6 +162,7 @@ void GetPossition(int client)
 		}
 		SetEntProp(client, Prop_Send, "m_iAccount", 16000)
 		gB_buyAble[client] = true
+		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
 	}
 }
 
@@ -218,7 +219,7 @@ Action timer_respawn(Handle timer, int client)
 	}
 }
 
-int Stuck(int client)
+/*int Stuck(int client)
 {
 	float mins[3]
 	float maxs[3]
@@ -233,7 +234,7 @@ int Stuck(int client)
 bool TR_donthitself(int entity, int mask, int client)
 {
 	return entity != client && 0 < entity <= MaxClients
-}
+}*/
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
@@ -275,7 +276,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
 			gB_endgame = true
 		}
-	}*/
+	}
 	int other = Stuck(client)
 	if(0 < other <= MaxClients && IsPlayerAlive(client))
 	{
@@ -284,7 +285,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 	}
 	else if(IsPlayerAlive(client) && other == -1)
 		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)
+			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)*/
 	if(gI_time + freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
 		if(gB_buyAble[client])
 			gB_buyAble[client] = false
