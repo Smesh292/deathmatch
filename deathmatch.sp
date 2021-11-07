@@ -228,9 +228,7 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	int team = GetClientTeam(client)
-	if(IsPlayerAlive(client) && (team == CS_TEAM_T || team == CS_TEAM_CT))
-		GetPossition(client)
+	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 Action timer_respawn(Handle timer, int client)
