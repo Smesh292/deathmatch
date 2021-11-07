@@ -101,7 +101,7 @@ void ProduceOnce()
 	gF_roundtime = GetConVarFloat(gCV_roundtime)
 	gI_freezetime = GetConVarInt(gCV_freezetime)
 	gI_timelimit = GetConVarInt(gCV_timelimit)
-	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit))
+	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
 	SetConVarFloat(gCV_roundtime, float(gI_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
 	SetConVarFloat(gCV_buytime, float(gI_timelimit))
 }
