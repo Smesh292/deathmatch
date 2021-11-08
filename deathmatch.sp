@@ -30,7 +30,7 @@ float gF_angles[MAXPLAYERS + 1][3]
 char gS_map[192]
 int gI_scoreT
 int gI_scoreCT
-int gI_time
+float gF_time
 int gI_spawnpointMax
 bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
@@ -41,7 +41,7 @@ Handle gCV_buytime
 Handle gCV_timelimit
 float gF_roundtime
 int gI_freezetime
-int gI_timelimit
+int gF_timelimit
 
 public Plugin myinfo =
 {
@@ -99,10 +99,10 @@ void GetConVar()
 	gCV_timelimit = FindConVar("mp_timelimit")
 	gF_roundtime = GetConVarFloat(gCV_roundtime)
 	gI_freezetime = GetConVarInt(gCV_freezetime)
-	gI_timelimit = GetConVarInt(gCV_timelimit)
-	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
-	SetConVarFloat(gCV_roundtime, float(gI_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
-	SetConVarFloat(gCV_buytime, float(gI_timelimit))
+	gF_timelimit = GetConVarInt(gCV_timelimit)
+	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gF_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
+	SetConVarFloat(gCV_roundtime, float(gF_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
+	SetConVarFloat(gCV_buytime, float(gF_timelimit))
 }
 
 public void OnClientPutInServer(int client)
@@ -203,7 +203,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 {
 	gI_scoreT = 0
 	gI_scoreCT = 0
-	gI_time = GetTime()
+	gF_time = GetGameTime()
 	gB_endgame = false
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && IsPlayerAlive(i))
@@ -249,7 +249,7 @@ Action timer_respawn(Handle timer, int client)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-	if(gI_time + RoundFloat(gF_roundtime * 60.0) + gI_freezetime - 1 <= GetTime() && !gB_endgame)
+	if(gF_time + gF_roundtime * 60.0 + float(gI_freezetime) - 1.0 <= GetGameTime() && !gB_endgame)
 	{
 		Handle convar = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar)
@@ -275,7 +275,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
 		gB_endgame = true
 	}
-	if(gI_time + gI_freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
+	if(gF_time + float(gI_freezetime) <= GetGameTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
 		if(gB_buyAble[client])
 			gB_buyAble[client] = false
 }
