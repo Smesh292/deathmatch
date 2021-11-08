@@ -57,6 +57,7 @@ public void OnPluginStart()
 	HookEvent("round_start", round_start)
 	HookEvent("player_death", playerdeath)
 	HookEvent("player_spawn", playerspawn)
+	HookEvent("player_team", playerteam)
 	AddCommandListener(joinclass, "joinclass")
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
@@ -66,7 +67,6 @@ public void OnPluginStart()
 	GetMaxSpawnpoint()
 	GetConVar()
 	AddNormalSoundHook(SoundHook)
-	CreateTimer(3.0, timer_respawnDead, _, TIMER_REPEAT)
 }
 
 public void OnMapStart()
@@ -148,42 +148,46 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	if(!IsPlayerAlive(client))
+	int team = GetClientTeam(client)
+	if(team == CS_TEAM_T || team == CS_TEAM_CT)
 	{
-		CS_RespawnPlayer(client)
-		gB_silentKnife = true
-	}
-	else if(IsPlayerAlive(client))
-	{
-		char sFormat[256]
-		Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-		if(FileExists(sFormat))
+		if(!IsPlayerAlive(client))
 		{
-			File f = OpenFile(sFormat, "r")
-			char sLine[96]
-			int currentLine
-			int randomLine = GetRandomInt(1, gI_spawnpointMax)
-			while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-			{
-				currentLine++
-				if(currentLine == randomLine)
-					break
-			}
-			delete f
-			char sOrigin[3][96]
-			ExplodeString(sLine, " ", sOrigin, 3, 96)
-			char sAngles[6][96]
-			ExplodeString(sLine, " ", sAngles, 6, 96)
-			for(int i = 0; i <= 2; i++)
-			{
-				gF_origin[client][i] = StringToFloat(sOrigin[i])
-				gF_angles[client][i] = StringToFloat(sAngles[i + 3])
-			}
-			TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+			CS_RespawnPlayer(client)
+			gB_silentKnife = true
 		}
-		SetEntProp(client, Prop_Send, "m_iAccount", 16000)
-		gB_buyAble[client] = true
-		SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		else if(IsPlayerAlive(client))
+		{
+			char sFormat[256]
+			Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+			if(FileExists(sFormat))
+			{
+				File f = OpenFile(sFormat, "r")
+				char sLine[96]
+				int currentLine
+				int randomLine = GetRandomInt(1, gI_spawnpointMax)
+				while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+				{
+					currentLine++
+					if(currentLine == randomLine)
+						break
+				}
+				delete f
+				char sOrigin[3][96]
+				ExplodeString(sLine, " ", sOrigin, 3, 96)
+				char sAngles[6][96]
+				ExplodeString(sLine, " ", sAngles, 6, 96)
+				for(int i = 0; i <= 2; i++)
+				{
+					gF_origin[client][i] = StringToFloat(sOrigin[i])
+					gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+				}
+				TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+			}
+			SetEntProp(client, Prop_Send, "m_iAccount", 16000)
+			gB_buyAble[client] = true
+			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+		}
 	}
 }
 
@@ -226,19 +230,21 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
-	int team = GetClientTeam(client)
-	if(team == CS_TEAM_T || team == CS_TEAM_CT)
-		GetPossition(client)
+	GetPossition(client)
 }
+
+void playerteam(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"))
+	if(IsFakeClient(client))
+		CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+}
+
 
 Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client))
-	{
-		int team = GetClientTeam(client)
-		if(team == CS_TEAM_T || team == CS_TEAM_CT)
-			GetPossition(client)
-	}
+		GetPossition(client)
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -289,11 +295,4 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 		return Plugin_Handled
 	}
 	return Plugin_Continue
-}
-
-Action timer_respawnDead(Handle timer)
-{
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && IsFakeClient(i) && !IsPlayerAlive(i))
-			GetPossition(i)
 }
