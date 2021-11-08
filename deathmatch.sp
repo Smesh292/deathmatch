@@ -261,7 +261,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			else if(whoWin == CS_TEAM_CT)
 				gI_scoreCT++
 		}
-		ServerCommand("mp_ignore_round_win_conditions 0")
+		SetConVarInt(FindConVar("mp_ignore_round_win_conditions"), 0)
 		if(gI_scoreT > gI_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
@@ -272,7 +272,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
-		AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
 		gB_endgame = true
 	}
 	if(gF_time + float(gI_freezetime) <= GetGameTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
