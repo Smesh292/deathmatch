@@ -59,65 +59,59 @@ Action timer_refresh(Handle timer)
 				countCT++
 		}
 	}
-	if(gCV_bot_quota.IntValue == countT + countCT)
+	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(countT > countCT)
+		if(gCV_bot_quota.IntValue == countT + countCT)
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			if(IsClientInGame(i) && IsFakeClient(i))
 			{
-				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 2)
+				if(countT > countCT && GetClientTeam(i) == 2)
 				{
 					KickClient(i)
 					//ServerCommand("kick %N", i)
-					break
+					ServerCommand("bot_add_ct")
 				}
-			}
-			ServerCommand("bot_add_ct")
-		}
-		else if(countT < countCT)
-		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 3)
+				else if(countT < countCT && GetClientTeam(i) == 3)
 				{
 					KickClient(i)
 					//ServerCommand("kick %N", i)
-					break
-				}
-			}
-			ServerCommand("bot_add_t")
-		}
-	}
-	else if(gCV_bot_quota.IntValue > countT + countCT)
-	{
-		if(countT > countCT)
-			ServerCommand("bot_add_ct")
-		if(countT < countCT)
-			ServerCommand("bot_add_t")
-	}
-	else if(gCV_bot_quota.IntValue < countT + countCT)
-	{
-		if(countT > countCT)
-		{
-			for(int i = 1; i <= MaxClients; i++)
-			{
-				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 2)
-				{
-					KickClient(i)
-					//ServerCommand("kick %N", i)
-					break
+					ServerCommand("bot_add_t")
 				}
 			}
 		}
-		else if(countT < countCT)
+		else if(gCV_bot_quota.IntValue > countT + countCT)
 		{
-			for(int i = 1; i <= MaxClients; i++)
+			if(countT > countCT)
+				ServerCommand("bot_add_ct")
+			else if(countT < countCT)
+				ServerCommand("bot_add_t")
+			else if(countT == countCT)
 			{
-				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 3)
+				int team = GetRandomInt(2, 3)
+				if(team == 2)
+					ServerCommand("bot_add_t")
+				else if(team == 3)
+					ServerCommand("bot_add_ct")
+			}
+		}
+		else if(gCV_bot_quota.IntValue < countT + countCT)
+		{
+			if(IsClientInGame(i) && IsFakeClient(i))
+			{
+				if(countT > countCT && GetClientTeam(i) == 2)
 				{
 					KickClient(i)
 					//ServerCommand("kick %N", i)
-					break
+				}
+				else if(countT < countCT && GetClientTeam(i) == 3)
+				{
+					KickClient(i)
+					//ServerCommand("kick %N", i)
+				}
+				else if(countT == countCT)
+				{
+					KickClient(i)
+					//ServerCommand("kick %N", i)
 				}
 			}
 		}
