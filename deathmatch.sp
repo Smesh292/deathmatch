@@ -41,7 +41,7 @@ Handle gCV_buytime
 Handle gCV_timelimit
 float gF_roundtime
 int gI_freezetime
-int gF_timelimit
+int gI_timelimit
 
 public Plugin myinfo =
 {
@@ -99,10 +99,10 @@ void GetConVar()
 	gCV_timelimit = FindConVar("mp_timelimit")
 	gF_roundtime = GetConVarFloat(gCV_roundtime)
 	gI_freezetime = GetConVarInt(gCV_freezetime)
-	gF_timelimit = GetConVarInt(gCV_timelimit)
-	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gF_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
-	SetConVarFloat(gCV_roundtime, float(gF_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
-	SetConVarFloat(gCV_buytime, float(gF_timelimit))
+	gI_timelimit = GetConVarInt(gCV_timelimit)
+	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
+	SetConVarFloat(gCV_roundtime, float(gI_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
+	SetConVarFloat(gCV_buytime, float(gI_timelimit))
 }
 
 public void OnClientPutInServer(int client)
