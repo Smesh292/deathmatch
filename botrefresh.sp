@@ -34,7 +34,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	CreateTimer(2.0, timer_refresh, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT)
+	CreateTimer(2.0, timer_refresh, _, TIMER_REPEAT)
 	gCV_bot_quota = CreateConVar("sm_bot_quota", "10", "Similar to bot_quota and bot_quota_mode fill.")
 	AutoExecConfig(true)
 	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) &~ FCVAR_NOTIFY) //https://hlmod.ru/threads/kak-ubrat-otobrazhenie-izmenenija-peremennyx-servera.5317/#post-38223
