@@ -185,8 +185,8 @@ void GetPossition(int client)
 				TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 			}
 			SetEntProp(client, Prop_Send, "m_iAccount", 16000)
-			gB_buyAble[client] = true
 			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+			gB_buyAble[client] = true
 		}
 	}
 }
@@ -233,7 +233,7 @@ Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 	GetPossition(client)
 }
 
-void playerteam(Event event, const char[] name, bool dontBroadcast)
+Action playerteam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(IsFakeClient(client))
