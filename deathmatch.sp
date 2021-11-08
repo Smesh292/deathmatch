@@ -31,9 +31,8 @@ char gS_map[192]
 int gI_scoreT
 int gI_scoreCT
 int gI_time
-bool gB_once
 int gI_spawnpointMax
-//bool gB_endgame
+bool gB_endgame
 bool gB_buyAble[MAXPLAYERS + 1]
 bool gB_silentKnife
 Handle gCV_roundtime
@@ -67,13 +66,13 @@ public void OnPluginStart()
 	GetMaxSpawnpoint()
 	GetConVar()
 	AddNormalSoundHook(SoundHook)
+	CreateTimer(3.0, timer_respawnDead, _, TIMER_REPEAT)
 }
 
 public void OnMapStart()
 {
 	GetMaxSpawnpoint()
 	GetConVar()
-	//gB_endgame = false
 }
 
 void GetMaxSpawnpoint()
@@ -110,7 +109,6 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	SDKHook(client, SDKHook_PostThink, sdkpostthink)
-	CancelClientMenu(client)
 }
 
 public void OnClientDisconnect(int client)
@@ -202,7 +200,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	gI_scoreT = 0
 	gI_scoreCT = 0
 	gI_time = GetTime()
-	gB_once = false
+	gB_endgame = false
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && IsPlayerAlive(i))
 			GetPossition(i)
@@ -230,12 +228,7 @@ Action playerspawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	int team = GetClientTeam(client)
 	if(team == CS_TEAM_T || team == CS_TEAM_CT)
-	{
-		if(IsFakeClient(client))
-			CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
-		else
-			GetPossition(client)
-	}
+		GetPossition(client)
 }
 
 Action timer_respawn(Handle timer, int client)
@@ -248,26 +241,9 @@ Action timer_respawn(Handle timer, int client)
 	}
 }
 
-/*int Stuck(int client)
-{
-	float mins[3]
-	float maxs[3]
-	float origin[3]
-	GetClientMins(client, mins)
-	GetClientMaxs(client, maxs)
-	GetClientAbsOrigin(client, origin)
-	TR_TraceHullFilter(origin, origin, mins, maxs, MASK_PLAYERSOLID, TR_donthitself, client) //skiper, gurman idea, plugin 2020
-	return TR_GetEntityIndex()
-}
-
-bool TR_donthitself(int entity, int mask, int client)
-{
-	return entity != client && 0 < entity <= MaxClients
-}*/
-
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-	if(gI_time + RoundFloat(gF_roundtime * 60.0) + gI_freezetime - 1 <= GetTime() && !gB_once)
+	if(gI_time + RoundFloat(gF_roundtime * 60.0) + gI_freezetime - 1 <= GetTime() && !gB_endgame)
 	{
 		Handle convar = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar)
@@ -290,26 +266,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1) //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
-		gB_once = true
+		AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
+		gB_endgame = true
 	}
-	/*if(GetGameTime() > 3600.0)
-	{
-		if(!gB_endgame)
-		{
-			AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-			ServerCommand("sm_nextmap %s", gS_map) //thanks to vermon
-			gB_endgame = true
-		}
-	}
-	int other = Stuck(client)
-	if(0 < other <= MaxClients && IsPlayerAlive(client))
-	{
-		if(GetEntProp(other, Prop_Data, "m_CollisionGroup") == 5)
-			SetEntProp(other, Prop_Data, "m_CollisionGroup", 2)
-	}
-	else if(IsPlayerAlive(client) && other == -1)
-		if(GetEntProp(client, Prop_Data, "m_CollisionGroup") == 2)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 5)*/
 	if(gI_time + gI_freezetime <= GetTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
 		if(gB_buyAble[client])
 			gB_buyAble[client] = false
@@ -330,4 +289,11 @@ Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_
 		return Plugin_Handled
 	}
 	return Plugin_Continue
+}
+
+Action timer_respawnDead(Handle timer)
+{
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i) && IsFakeClient(i) && !IsPlayerAlive(i))
+			GetPossition(i)
 }
