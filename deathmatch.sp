@@ -72,7 +72,6 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	GetMaxSpawnpoint()
-	GetConVar()
 }
 
 void GetMaxSpawnpoint()
@@ -210,6 +209,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 			GetPossition(i)
 	ServerCommand("mat_texture_list_txlod_sync reset")
 	ServerCommand("mp_ignore_round_win_conditions 1")
+	GetConVar()
 }
 
 Action playerdeath(Event event, const char[] name, bool dontBroadcast)
