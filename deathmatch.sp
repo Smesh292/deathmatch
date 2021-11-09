@@ -42,6 +42,10 @@ Handle gCV_timelimit
 float gF_roundtime
 int gI_freezetime
 int gI_timelimit
+char gS_weaponAmmo[][] = {"glock;120", "usp;100", "p228;52", "deagle;35", "elite;120", "fiveseven;100", 
+						"m3;32", "xm1014;32", "galil;90", "ak47;90", "scout;90", "sg552;90", 
+						"awp;30", "g3sg1;90", "famas;90", "m4a1;90", "aug;90", "sg550;90", 
+						"mac10;100", "tmp;120", "mp5navy;120", "ump45;100", "p90;100", "m249;100"} //https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
 
 public Plugin myinfo =
 {
@@ -108,6 +112,7 @@ public void OnClientPutInServer(int client)
 {
 	SDKHook(client, SDKHook_WeaponDrop, sdkweapondrop)
 	SDKHook(client, SDKHook_PostThink, sdkpostthink)
+	SDKHook(client, SDKHook_WeaponEquipPost, sdkweaponequip)
 }
 
 public void OnClientDisconnect(int client)
@@ -131,6 +136,32 @@ void sdkpostthink(int client)
 	else
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", false)
 	SetEntProp(client, Prop_Send, "m_bInBombZone", false)
+}
+
+void sdkweaponequip(int client, int weapon)
+{
+	SDKHook(weapon, SDKHook_ReloadPost, sdkreload)
+}
+
+void sdkreload(int weapon, bool bSuccessful)
+{
+	if(bSuccessful)
+	{
+		int ammotype = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType")
+		int start = FindSendPropInfo("CBasePlayer", "m_iAmmo")
+		char sClassname[32]
+		GetEntityClassname(weapon, sClassname, 32)
+		char sExploded[24][16]
+		for(int i = 0; i < sizeof(gS_weaponAmmo); i++)
+		{
+			ExplodeString(gS_weaponAmmo[i], ";", sExploded, 24, 16)
+			if(StrContains(sClassname, sExploded[0]) != -1)
+			{
+				SetEntData(GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity"), (start + (ammotype * 4)), StringToInt(sExploded[1])) //https://forums.alliedmods.net/showpost.php?p=1460194&postcount=3
+				break
+			}
+		}
+	}
 }
 
 Action cmd_getscore(int client, int args)
@@ -239,7 +270,6 @@ Action playerteam(Event event, const char[] name, bool dontBroadcast)
 	if(IsFakeClient(client))
 		CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
-
 
 Action timer_respawn(Handle timer, int client)
 {
