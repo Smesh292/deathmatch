@@ -66,10 +66,14 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
 	for(int i = 1; i <= MaxClients; i++)
+	{
 		if(IsClientInGame(i))
+		{
 			OnClientPutInServer(i)
-				if(!IsPlayerAlive(i))
-					GetPossition(i)
+			if(!IsPlayerAlive(i))
+				GetPossition(i)
+		}
+	}
 	GetMaxSpawnpoint()
 	GetConVar()
 	AddNormalSoundHook(SoundHook)
