@@ -71,6 +71,9 @@ public void OnPluginStart()
 	GetMaxSpawnpoint()
 	GetConVar()
 	AddNormalSoundHook(SoundHook)
+	for(int i = 1; i <= MaxClients; i++)
+		if(IsClientInGame(i) && !IsPlayerAlive(i))
+			GetPossition(i)
 }
 
 public void OnMapStart()
