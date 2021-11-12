@@ -78,7 +78,7 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 				KickClient(attacker, "Punishment for team killing")
 			else if(gI_punishCount[attacker] == 5)
 				BanClient(attacker, 5, BANFLAG_AUTO, "Punishment for team killing (5 minutes)", "Punishment for team killing (5 minutes)")
-			else if(gI_punishCount[attacker] <= 7)
+			else if(gI_punishCount[attacker] >= 7)
 				BanClient(attacker, 5, BANFLAG_AUTO, "Punishment for team killing (15 minutes)", "Punishment for team killing (15 minutes)")
 		}
 	}
