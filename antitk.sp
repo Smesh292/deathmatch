@@ -47,9 +47,9 @@ public void OnClientCookiesCached(int client)
 {
 	char sValue[16]
 	GetClientCookie(client, gH_punish[0], sValue, 16)
-	gI_punishCount[client] = view_as<bool>(StringToInt(sValue))
+	gI_punishCount[client] = StringToInt(sValue)
 	GetClientCookie(client, gH_punish[1], sValue, 16)
-	gI_punishTime[client] = view_as<bool>(StringToInt(sValue))
+	gI_punishTime[client] = StringToInt(sValue)
 }
 
 Action OnDeath(Event event, const char[] name, bool dontBroadcast)
