@@ -184,45 +184,48 @@ Action joinclass(int client, const char[] command, int argc)
 
 void GetPossition(int client)
 {
-	int team = GetClientTeam(client)
-	if(team == CS_TEAM_T || team == CS_TEAM_CT)
+	if(IsClientInGame(client))
 	{
-		if(!IsPlayerAlive(client))
+		int team = GetClientTeam(client)
+		if(team == CS_TEAM_T || team == CS_TEAM_CT)
 		{
-			CS_RespawnPlayer(client)
-			gB_silentKnife = true
-		}
-		else if(IsPlayerAlive(client))
-		{
-			char sFormat[256]
-			Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-			if(FileExists(sFormat))
+			if(!IsPlayerAlive(client))
 			{
-				File f = OpenFile(sFormat, "r")
-				char sLine[96]
-				int currentLine
-				int randomLine = GetRandomInt(1, gI_spawnpointMax)
-				while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-				{
-					currentLine++
-					if(currentLine == randomLine)
-						break
-				}
-				delete f
-				char sOrigin[3][96]
-				ExplodeString(sLine, " ", sOrigin, 3, 96)
-				char sAngles[6][96]
-				ExplodeString(sLine, " ", sAngles, 6, 96)
-				for(int i = 0; i <= 2; i++)
-				{
-					gF_origin[client][i] = StringToFloat(sOrigin[i])
-					gF_angles[client][i] = StringToFloat(sAngles[i + 3])
-				}
-				TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+				CS_RespawnPlayer(client)
+				gB_silentKnife = true
 			}
-			SetEntProp(client, Prop_Send, "m_iAccount", 16000)
-			SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-			gB_buyAble[client] = true
+			else if(IsPlayerAlive(client))
+			{
+				char sFormat[256]
+				Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+				if(FileExists(sFormat))
+				{
+					File f = OpenFile(sFormat, "r")
+					char sLine[96]
+					int currentLine
+					int randomLine = GetRandomInt(1, gI_spawnpointMax)
+					while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+					{
+						currentLine++
+						if(currentLine == randomLine)
+							break
+					}
+					delete f
+					char sOrigin[3][96]
+					ExplodeString(sLine, " ", sOrigin, 3, 96)
+					char sAngles[6][96]
+					ExplodeString(sLine, " ", sAngles, 6, 96)
+					for(int i = 0; i <= 2; i++)
+					{
+						gF_origin[client][i] = StringToFloat(sOrigin[i])
+						gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+					}
+					TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+				}
+				SetEntProp(client, Prop_Send, "m_iAccount", 16000)
+				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
+				gB_buyAble[client] = true
+			}
 		}
 	}
 }
