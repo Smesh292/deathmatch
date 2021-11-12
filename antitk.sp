@@ -58,7 +58,7 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 	int attacker = GetClientOfUserId(event.GetInt("attacker")) //user ID who killed
 	if(0 < attacker <= MaxClients && IsClientInGame(attacker) && !IsFakeClient(attacker))
 	{
-		if(GetClientTeam(client) == GetClientTeam(attacker))
+		if(client != attacker && GetClientTeam(client) == GetClientTeam(attacker))
 		{
 			if(gI_punishTime[attacker] == GetTime())
 			{
