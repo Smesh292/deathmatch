@@ -61,11 +61,14 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 		if(GetClientTeam(client) == GetClientTeam(attacker))
 		{
 			gI_punishCount[attacker]++
+			if(gI_punishTime[attacker] == GetTime())
+			{
+				SetClientCookie(attacker, gH_punish[1], "0")
+				gI_punishCount[attacker] = 0
+			}
 			char sValue[16]
 			IntToString(gI_punishCount[attacker], sValue, 16)
 			SetClientCookie(attacker, gH_punish[0], sValue)
-			if(gI_punishTime[attacker] == GetTime())
-				SetClientCookie(attacker, gH_punish[1], "0")
 			if(gI_punishTime[attacker] == 0)
 			{
 				IntToString(GetTime() + 3600 * 2, sValue, 16)
