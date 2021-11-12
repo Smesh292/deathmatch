@@ -21,6 +21,7 @@
 	any other work released this way by its authors. You can apply it to
 	your programs, too.
 */
+#include <clientprefs>
 
 public Plugin myinfo =
 {
@@ -32,15 +33,23 @@ public Plugin myinfo =
 }
 
 int gI_punishCount[MAXPLAYERS + 1]
+int gI_punishTime[MAXPLAYERS + 1]
+Handle gH_punish[2]
 
 public void OnPluginStart()
 {
 	HookEvent("player_death", OnDeath)
+	gH_punish[0] = RegClientCookie("punishCount", "store team kills", CookieAccess_Protected)
+	gH_punish[1] = RegClientCookie("punishTime", "store time to reset punish", CookieAccess_Protected)
 }
 
-public void OnClientPutInServer(int client)
+public void OnClientCookiesCached(int client)
 {
-	gI_punishCount[client] = 0
+	char sValue[16]
+	GetClientCookie(client, gH_punish[0], sValue, 16)
+	gI_punishCount[client] = view_as<bool>(StringToInt(sValue))
+	GetClientCookie(client, gH_punish[1], sValue, 16)
+	gI_punishTime[client] = view_as<bool>(StringToInt(sValue))
 }
 
 Action OnDeath(Event event, const char[] name, bool dontBroadcast)
@@ -52,15 +61,22 @@ Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 		if(GetClientTeam(client) == GetClientTeam(attacker))
 		{
 			gI_punishCount[attacker]++
-			CreateTimer(120.0, timer_punish, attacker, TIMER_FLAG_NO_MAPCHANGE)
+			char sValue[16]
+			IntToString(gI_punishCount[attacker], sValue, 16)
+			SetClientCookie(attacker, gH_punish[0], sValue)
+			if(gI_punishTime[attacker] == GetTime())
+				SetClientCookie(attacker, gH_punish[1], "0")
+			if(gI_punishTime[attacker] == 0)
+			{
+				IntToString(GetTime() + 3600 * 2, sValue, 16)
+				SetClientCookie(attacker, gH_punish[1], sValue)
+			}
 			if(gI_punishCount[attacker] == 3)
 				KickClient(attacker, "Punishment for team killing")
+			else if(gI_punishCount[attacker] == 5)
+				BanClient(attacker, 5, BANFLAG_AUTO, "Punishment for team killing (5 minutes)", "Punishment for team killing (5 minutes)")
+			else if(gI_punishCount[attacker] <= 7)
+				BanClient(attacker, 5, BANFLAG_AUTO, "Punishment for team killing (15 minutes)", "Punishment for team killing (15 minutes)")
 		}
 	}
-}
-
-Action timer_punish(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-		gI_punishCount[client]--
 }
