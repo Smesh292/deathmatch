@@ -94,6 +94,14 @@ Action timer_refresh(Handle timer)
 			ServerCommand("bot_add_ct")
 		else if(countT < countCT)
 			ServerCommand("bot_add_t")
+		else if(countT == countCT)
+		{
+			int random = GetRandomInt(2, 3)
+			if(random == 2)
+				ServerCommand("bot_add_t")
+			else if(random == 2)
+				ServerCommand("bot_add_ct")
+		}
 	}
 	else if(gCV_bot_quota.IntValue < countT + countCT)
 	{
@@ -118,6 +126,22 @@ Action timer_refresh(Handle timer)
 					KickClient(i)
 					//ServerCommand("kick %N", i)
 					break
+				}
+			}
+		}
+		else if(countT == countCT)
+		{
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(IsClientInGame(i) && IsFakeClient(i))
+				{
+					int random = GetRandomInt(2, 3)
+					if(GetClientTeam(i) == random)
+					{
+						KickClient(i)
+						//ServerCommand("kick %N", i)
+						break
+					}
 				}
 			}
 		}
