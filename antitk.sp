@@ -103,15 +103,21 @@ Action OnHurt(Event event, const char[] name, bool dontBroadcast)
 	{
 		if(client != attacker && GetClientTeam(client) == GetClientTeam(attacker))
 		{
-			gI_punishTries[attacker]++
+			int damaged = event.GetInt("dmg_health")
+			if(damaged < 30)
+				gI_punishTries[attacker]++
+			else if(70 > damaged >= 30)
+				gI_punishTries[attacker] += 2
+			else if(damaged >= 70)
+				gI_punishTries[attacker] += 3
 			char sValue[16]
 			IntToString(gI_punishTries[attacker], sValue, 16)
 			SetClientCookie(attacker, gH_punish[2], sValue)
-			if(gI_punishCount[attacker] == 30)
+			if(gI_punishTries[attacker] == 30)
 				KickClient(attacker, "Punishment for team killing attempt")
-			else if(gI_punishCount[attacker] == 50)
+			else if(gI_punishTries[attacker] == 50)
 				BanClient(attacker, 5, BANFLAG_AUTO, "Punishment for team killing attempt (5 minutes)", "Punishment for team killing attempt (5 minutes)")
-			else if(gI_punishCount[attacker] >= 70)
+			else if(gI_punishTries[attacker] >= 70)
 				BanClient(attacker, 15, BANFLAG_AUTO, "Punishment for team killing attempt (15 minutes)", "Punishment for team killing attempt (15 minutes)")
 		}
 	}
