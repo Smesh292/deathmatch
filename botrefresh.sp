@@ -42,7 +42,7 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	SetConVarFlags(FindConVar("bot_quota"), FCVAR_NOTIFY)
+	SetConVarFlags(FindConVar("bot_quota"), GetConVarFlags(FindConVar("bot_quota")) | FCVAR_NOTIFY)
 }
 
 Action timer_refresh(Handle timer)
