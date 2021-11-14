@@ -46,6 +46,10 @@ char gS_weaponAmmo[][] = {"glock;120", "usp;100", "p228;52", "deagle;35", "elite
 						"m3;32", "xm1014;32", "galil;90", "ak47;90", "scout;90", "sg552;90", 
 						"awp;30", "g3sg1;90", "famas;90", "m4a1;90", "aug;90", "sg550;90", 
 						"mac10;100", "tmp;120", "mp5navy;120", "ump45;100", "p90;100", "m249;100"} //https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
+#define debug false
+#if debug
+int gI_step[MAXPLAYERS + 1]
+#endif
 
 public Plugin myinfo =
 {
@@ -63,8 +67,10 @@ public void OnPluginStart()
 	HookEvent("player_spawn", playerspawn)
 	HookEvent("player_team", playerteam)
 	AddCommandListener(joinclass, "joinclass")
+	#if debug
 	RegConsoleCmd("sm_getscore", cmd_getscore)
 	RegConsoleCmd("sm_score", cmd_getscore)
+	#endif
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
@@ -170,12 +176,90 @@ void sdkreload(int weapon, bool bSuccessful)
 	}
 }
 
+#if debug
 Action cmd_getscore(int client, int args)
 {
 	PrintToServer("Counter-Terorist score is: %i", gI_scoreCT)
 	PrintToServer("Terorist score is: %i", gI_scoreT)
+	char sFormat[256]
+	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
+	char sCmd[8]
+	GetCmdArgString(sCmd, 8)
+	if(StrEqual(sCmd, "?"))
+	{
+		float vec[3]
+		GetClientAbsOrigin(client, vec)
+		PrintToConsole(client, "%f %f %f", vec[0], vec[1], vec[2])
+		return Plugin_Handled
+	}
+	char sExploded[8][8]
+	ExplodeString(sCmd, ";", sExploded, 8, 8)
+	if(FileExists(sFormat))
+	{
+		File f = OpenFile(sFormat, "r")
+		char sLine[96]
+		int lineChosen = StringToInt(sExploded[0])
+		int lineCurrect
+		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
+		{
+			if(lineChosen == lineCurrect)
+				break
+			lineCurrect++
+		}
+		delete f
+		char sOrigin[3][96]
+		ExplodeString(sLine, " ", sOrigin, 3, 96)
+		char sAngles[6][96]
+		ExplodeString(sLine, " ", sAngles, 6, 96)
+		for(int i = 0; i <= 2; i++)
+		{
+			gF_origin[client][i] = StringToFloat(sOrigin[i])
+			gF_angles[client][i] = StringToFloat(sAngles[i + 3])
+		}
+		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+	}
+	Menu menu = new Menu(spawnpointfixer_handler)
+	menu.SetTitle("Spawnpoint fixer")
+	menu.AddItem("0", "X+")
+	menu.AddItem("1", "X-")
+	menu.AddItem("2", "Y+")
+	menu.AddItem("3", "Y-")
+	menu.AddItem("4", "Z+")
+	menu.AddItem("5", "Z-")
+	menu.Display(client, MENU_TIME_FOREVER)
+	gI_step[client] = StringToInt(sExploded[1])
 	return Plugin_Handled
 }
+
+int spawnpointfixer_handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			float vec[3]
+			GetClientAbsOrigin(param1, vec)
+			switch(param2)
+			{
+				case 0:
+					vec[0] += gI_step[param1]
+				case 1:
+					vec[0] -= gI_step[param1]
+				case 2:
+					vec[1] += gI_step[param1]
+				case 3:
+					vec[1] -= gI_step[param1]
+				case 4:
+					vec[2] += gI_step[param1]
+				case 5:
+					vec[2] -= gI_step[param1]
+			}
+			TeleportEntity(param1, vec, NULL_VECTOR, NULL_VECTOR)
+			menu.DisplayAt(param1, GetMenuSelectionPosition(), MENU_TIME_FOREVER)
+		}
+	}
+}
+#endif
 
 Action joinclass(int client, const char[] command, int argc)
 {
