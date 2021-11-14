@@ -49,7 +49,7 @@ public void OnMapStart()
 {
 	char sFormat[32]
 	Format(sFormat, 32, "punishTries%i", GetTime())
-	gH_punish[2] = RegClientCookie("punishTries", "store tries to kill team mate", CookieAccess_Protected)
+	gH_punish[2] = RegClientCookie(sFormat, "store tries to kill team mate", CookieAccess_Protected)
 }
 
 public void OnClientCookiesCached(int client)
