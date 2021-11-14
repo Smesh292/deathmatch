@@ -36,6 +36,7 @@ int gI_punishCount[MAXPLAYERS + 1]
 int gI_punishTime[MAXPLAYERS + 1]
 int gI_punishTries[MAXPLAYERS + 1]
 Handle gH_punish[3]
+Database gH_database
 
 public void OnPluginStart()
 {
@@ -43,13 +44,40 @@ public void OnPluginStart()
 	HookEvent("player_hurt", OnHurt)
 	gH_punish[0] = RegClientCookie("punishCount", "store team kills", CookieAccess_Protected)
 	gH_punish[1] = RegClientCookie("punishTime", "store time to reset punish", CookieAccess_Protected)
+	gH_punish[2] = RegClientCookie("punishTries", "store tries to kill team mate", CookieAccess_Protected)
+	Database.Connect(SQLConnect, "clientprefs")
 }
 
 public void OnMapStart()
 {
-	char sFormat[32]
-	Format(sFormat, 32, "punishTries%i", GetTime())
-	gH_punish[2] = RegClientCookie(sFormat, "store tries to kill team mate", CookieAccess_Protected)
+	if(gH_database)
+		gH_database.Query(SQLGetCookieID, "SELECT id FROM sm_cookies WHERE name = 'punishTries'")
+}
+
+void SQLConnect(Database db, const char[] error, any data)
+{
+	if(!db)
+	{
+		PrintToServer("Failed to connect to database")
+		return
+	}
+	PrintToServer("Successfuly connected to database.") //https://hlmod.ru/threads/sourcepawn-urok-13-rabota-s-bazami-dannyx-mysql-sqlite.40011/
+	gH_database = db
+}
+
+void SQLGetCookieID(Database db, DBResultSet results, const char[] error, any data)
+{
+	if(results.FetchRow())
+	{
+		int id = results.FetchInt(0)
+		char sQuery[512]
+		Format(sQuery, 512, "DELETE FROM sm_cookie_cache WHERE cookie_id = %i", id)
+		gH_database.Query(SQLDeleteCookieCache, sQuery)
+	}
+}
+
+void SQLDeleteCookieCache(Database db, DBResultSet results, const char[] error, any data)
+{
 }
 
 public void OnClientCookiesCached(int client)
