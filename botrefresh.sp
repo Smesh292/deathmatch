@@ -67,8 +67,7 @@ Action timer_refresh(Handle timer)
 			{
 				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 2)
 				{
-					KickClient(i)
-					//ServerCommand("kick %N", i)
+					ServerCommand("bot_kick %N", i)
 					break
 				}
 			}
@@ -80,8 +79,7 @@ Action timer_refresh(Handle timer)
 			{
 				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 3)
 				{
-					KickClient(i)
-					//ServerCommand("kick %N", i)
+					ServerCommand("bot_kick %N", i)
 					break
 				}
 			}
@@ -103,7 +101,7 @@ Action timer_refresh(Handle timer)
 				ServerCommand("bot_add_ct")
 		}
 	}
-	else if(gCV_bot_quota.IntValue < countT + countCT)
+	else if(gCV_bot_quota.IntValue < (countT + countCT))
 	{
 		if(countT > countCT)
 		{
@@ -111,8 +109,7 @@ Action timer_refresh(Handle timer)
 			{
 				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 2)
 				{
-					KickClient(i)
-					//ServerCommand("kick %N", i)
+					ServerCommand("bot_kick %N", i)
 					break
 				}
 			}
@@ -123,8 +120,7 @@ Action timer_refresh(Handle timer)
 			{
 				if(IsClientInGame(i) && IsFakeClient(i) && GetClientTeam(i) == 3)
 				{
-					KickClient(i)
-					//ServerCommand("kick %N", i)
+					ServerCommand("bot_kick %N", i)
 					break
 				}
 			}
@@ -138,8 +134,7 @@ Action timer_refresh(Handle timer)
 					int random = GetRandomInt(2, 3)
 					if(GetClientTeam(i) == random)
 					{
-						KickClient(i)
-						//ServerCommand("kick %N", i)
+						ServerCommand("bot_kick %N", i)
 						break
 					}
 				}
