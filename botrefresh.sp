@@ -101,7 +101,7 @@ Action timer_refresh(Handle timer)
 				ServerCommand("bot_add_ct")
 		}
 	}
-	else if(gCV_bot_quota.IntValue < (countT + countCT))
+	else if(gCV_bot_quota.IntValue < countT + countCT)
 	{
 		if(countT > countCT)
 		{
