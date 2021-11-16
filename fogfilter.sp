@@ -33,6 +33,6 @@ public Plugin myinfo =
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if(StrEqual(classname, "env_fog_controller"))
+	if(StrEqual(classname, "env_fog_controller") || StrEqual(classname, "func_dustmotes") || StrEqual(classname, "func_dustcloud"))
 		RemoveEntity(entity)
 }
