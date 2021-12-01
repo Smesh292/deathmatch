@@ -263,7 +263,8 @@ int spawnpointfixer_handler(Menu menu, MenuAction action, int param1, int param2
 
 Action joinclass(int client, const char[] command, int argc)
 {
-	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
+	if(!IsPlayerAlive(client))
+		CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
 }
 
 void GetPossition(int client)
