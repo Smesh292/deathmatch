@@ -25,24 +25,25 @@
 #include <sdktools>
 #include <sdkhooks>
 
-float gF_origin[MAXPLAYERS + 1][3]
-float gF_angles[MAXPLAYERS + 1][3]
-char gS_map[192]
-int gI_scoreT
-int gI_scoreCT
-float gF_time
-int gI_spawnpointMax
-bool gB_endgame
-bool gB_buyAble[MAXPLAYERS + 1]
-bool gB_silentKnife
+//float g_origin[2048 + 1][3]
+//float g_angles[2048 + 1][3]
+ArrayList g_spawnInfo
+char g_map[192]
+int g_scoreT
+int g_scoreCT
+float g_time
+int g_spawnpointMax
+bool g_endgame
+bool g_buyAble[MAXPLAYERS + 1]
+bool g_silentKnife
 Handle gCV_roundtime
 Handle gCV_freezetime
 Handle gCV_buytime
 Handle gCV_timelimit
-float gF_roundtime
-int gI_freezetime
-int gI_timelimit
-char gS_weaponAmmo[][] = {"glock;120", "usp;100", "p228;52", "deagle;35", "elite;120", "fiveseven;100", 
+float g_roundtime
+int g_freezetime
+int g_timelimit
+char g_weaponAmmo[][] = {"glock;120", "usp;100", "p228;52", "deagle;35", "elite;120", "fiveseven;100", 
 						"m3;32", "xm1014;32", "galil;90", "ak47;90", "scout;90", "sg552;90", 
 						"awp;30", "g3sg1;90", "famas;90", "m4a1;90", "aug;90", "sg550;90", 
 						"mac10;100", "tmp;120", "mp5navy;120", "ump45;100", "p90;100", "m249;100"} //https://wiki.alliedmods.net/Counter-Strike:_Source_Weapons
@@ -51,21 +52,27 @@ char gS_weaponAmmo[][] = {"glock;120", "usp;100", "p228;52", "deagle;35", "elite
 int gI_step[MAXPLAYERS + 1]
 #endif
 
+enum struct eSpawn
+{
+	float origin[3]
+	float angles[3]
+}
+
 public Plugin myinfo =
 {
 	name = "Deathmatch",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Make able to spawn instantly after death on the map in random place.",
-	version = "1.2",
+	version = "1.3",
 	url = "http://www.sourcemod.net/"
 }
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", round_start)
-	HookEvent("player_death", playerdeath)
-	HookEvent("player_spawn", playerspawn)
-	HookEvent("player_team", playerteam)
+	HookEvent("round_start", OnRoundStart)
+	HookEvent("player_death", OnDeath)
+	HookEvent("player_spawn", OnSpawn)
+	HookEvent("player_team", OnTeam)
 	AddCommandListener(joinclass, "joinclass")
 	#if debug
 	RegConsoleCmd("sm_getscore", cmd_getscore)
@@ -92,16 +99,39 @@ public void OnMapStart()
 
 void GetMaxSpawnpoint()
 {
-	GetCurrentMap(gS_map, 192)
-	char sFormat[256]
-	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	if(FileExists(sFormat))
+	GetCurrentMap(g_map, 192)
+	char format[256]
+	Format(format, 256, "cfg/sourcemod/deathmatch/%s.txt", g_map)
+	if(FileExists(format))
 	{
-		File f = OpenFile(sFormat, "r")
-		char sLine[96]
-		gI_spawnpointMax = 0
-		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-			gI_spawnpointMax++
+		File f = OpenFile(format, "r")
+		char line[96]
+		char origin_[3][96]
+		char angles_[6][96]
+		g_spawnpointMax = 0
+		eSpawn spawn
+		float origin[3]
+		float angles[3]
+		delete g_spawnInfo
+		g_spawnInfo = new ArrayList(sizeof(eSpawn))
+		while(!f.EndOfFile() && f.ReadLine(line, 96))
+		{
+			ExplodeString(line, " ", origin_, 3, 96)
+			ExplodeString(line, " ", angles_, 6, 96)
+			for(int i = 0; i <= 2; i++)
+			{
+				origin[i] = StringToFloat(origin_[i])
+				angles[i] = StringToFloat(angles_[i + 3])
+			}
+			
+			for(int i = 0; i <= 2; i++)
+			{
+				spawn.origin[i] = origin[i]
+				spawn.angles[i] = angles[i]
+			}
+			g_spawnInfo.Resize(g_spawnpointMax + 2)
+			g_spawnInfo.SetArray(++g_spawnpointMax, spawn, sizeof(spawn))
+		}
 		delete f
 	}
 }
@@ -112,12 +142,12 @@ void GetConVar()
 	gCV_freezetime = FindConVar("mp_freezetime")
 	gCV_buytime = FindConVar("mp_buytime")
 	gCV_timelimit = FindConVar("mp_timelimit")
-	gF_roundtime = GetConVarFloat(gCV_roundtime)
-	gI_freezetime = GetConVarInt(gCV_freezetime)
-	gI_timelimit = GetConVarInt(gCV_timelimit)
-	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(gI_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
-	SetConVarFloat(gCV_roundtime, float(gI_timelimit) - float(gI_freezetime) / 60.0 - 1.0 / 60.0)
-	SetConVarFloat(gCV_buytime, float(gI_timelimit))
+	g_roundtime = GetConVarFloat(gCV_roundtime)
+	g_freezetime = GetConVarInt(gCV_freezetime)
+	g_timelimit = GetConVarInt(gCV_timelimit)
+	SetConVarBounds(gCV_roundtime, ConVarBound_Upper, true, float(g_timelimit)) //https://forums.alliedmods.net/showthread.php?t=317850
+	SetConVarFloat(gCV_roundtime, float(g_timelimit) - float(g_freezetime) / 60.0 - 1.0 / 60.0)
+	SetConVarFloat(gCV_buytime, float(g_timelimit))
 }
 
 public void OnClientPutInServer(int client)
@@ -143,7 +173,7 @@ Action sdkweapondrop(int client, int weapon)
 
 void sdkpostthink(int client)
 {
-	if(gB_buyAble[client])
+	if(g_buyAble[client])
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", true) //https://forums.alliedmods.net/showthread.php?t=216370&page=2
 	else
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", false)
@@ -161,15 +191,15 @@ void sdkreload(int weapon, bool bSuccessful)
 	{
 		int ammotype = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType")
 		int start = FindSendPropInfo("CBasePlayer", "m_iAmmo")
-		char sClassname[32]
-		GetEntityClassname(weapon, sClassname, 32)
-		char sExploded[24][16]
-		for(int i = 0; i < sizeof(gS_weaponAmmo); i++)
+		char classname[32]
+		GetEntityClassname(weapon, classname, 32)
+		char exploded[24][16]
+		for(int i = 0; i < sizeof(g_weaponAmmo); i++)
 		{
-			ExplodeString(gS_weaponAmmo[i], ";", sExploded, 24, 16)
-			if(StrContains(sClassname, sExploded[0]) != -1)
+			ExplodeString(g_weaponAmmo[i], ";", exploded, 24, 16)
+			if(StrContains(classname, exploded[0]) != -1)
 			{
-				SetEntData(GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity"), (start + (ammotype * 4)), StringToInt(sExploded[1])) //https://forums.alliedmods.net/showpost.php?p=1460194&postcount=3
+				SetEntData(GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity"), (start + (ammotype * 4)), StringToInt(exploded[1])) //https://forums.alliedmods.net/showpost.php?p=1460194&postcount=3
 				break
 			}
 		}
@@ -179,44 +209,29 @@ void sdkreload(int weapon, bool bSuccessful)
 #if debug
 Action cmd_getscore(int client, int args)
 {
-	PrintToServer("Counter-Terorist score is: %i", gI_scoreCT)
-	PrintToServer("Terorist score is: %i", gI_scoreT)
-	char sFormat[256]
-	Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-	char sCmd[8]
-	GetCmdArgString(sCmd, 8)
-	if(StrEqual(sCmd, "?"))
+	PrintToServer("Counter-Terorist score is: %i", g_scoreCT)
+	PrintToServer("Terorist score is: %i", g_scoreT)
+	char format[256]
+	Format(format, 256, "cfg/sourcemod/deathmatch/%s.txt", g_map)
+	char cmd[8]
+	GetCmdArgString(cmd, 8)
+	if(StrEqual(cmd, "?"))
 	{
 		float vec[3]
 		GetClientAbsOrigin(client, vec)
 		PrintToConsole(client, "%f %f %f", vec[0], vec[1], vec[2])
 		return Plugin_Handled
 	}
-	char sExploded[8][8]
-	ExplodeString(sCmd, ";", sExploded, 8, 8)
-	if(FileExists(sFormat))
+	char exploded[8][8]
+	ExplodeString(cmd, ";", exploded, 8, 8)
+	char format[256]
+	Format(format, 256, "cfg/sourcemod/deathmatch/%s.txt", g_map)
+	if(FileExists(format))
 	{
-		File f = OpenFile(sFormat, "r")
-		char sLine[96]
-		int lineChosen = StringToInt(sExploded[0])
-		int lineCurrect
-		while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-		{
-			if(lineChosen == lineCurrect)
-				break
-			lineCurrect++
-		}
-		delete f
-		char sOrigin[3][96]
-		ExplodeString(sLine, " ", sOrigin, 3, 96)
-		char sAngles[6][96]
-		ExplodeString(sLine, " ", sAngles, 6, 96)
-		for(int i = 0; i <= 2; i++)
-		{
-			gF_origin[client][i] = StringToFloat(sOrigin[i])
-			gF_angles[client][i] = StringToFloat(sAngles[i + 3])
-		}
-		TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+		int random = GetRandomInt(1, g_spawnpointMax)
+		eSpawn spawn
+		g_spawnInfo.GetArray(g_spawnpointMax, spawn, sizeof(spawn))
+		TeleportEntity(client, spawn.origin, spawn.angles, view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 	}
 	Menu menu = new Menu(spawnpointfixer_handler)
 	menu.SetTitle("Spawnpoint fixer")
@@ -227,7 +242,7 @@ Action cmd_getscore(int client, int args)
 	menu.AddItem("4", "Z+")
 	menu.AddItem("5", "Z-")
 	menu.Display(client, MENU_TIME_FOREVER)
-	gI_step[client] = StringToInt(sExploded[1])
+	gI_step[client] = StringToInt(exploded[1])
 	return Plugin_Handled
 }
 
@@ -277,39 +292,22 @@ void GetPossition(int client)
 			if(!IsPlayerAlive(client))
 			{
 				CS_RespawnPlayer(client)
-				gB_silentKnife = true
+				g_silentKnife = true
 			}
 			else if(IsPlayerAlive(client))
 			{
-				char sFormat[256]
-				Format(sFormat, 256, "cfg/sourcemod/deathmatch/%s.txt", gS_map)
-				if(FileExists(sFormat))
+				char format[256]
+				Format(format, 256, "cfg/sourcemod/deathmatch/%s.txt", g_map)
+				if(FileExists(format))
 				{
-					File f = OpenFile(sFormat, "r")
-					char sLine[96]
-					int currentLine
-					int randomLine = GetRandomInt(1, gI_spawnpointMax)
-					while(!f.EndOfFile() && f.ReadLine(sLine, 96))
-					{
-						currentLine++
-						if(currentLine == randomLine)
-							break
-					}
-					delete f
-					char sOrigin[3][96]
-					ExplodeString(sLine, " ", sOrigin, 3, 96)
-					char sAngles[6][96]
-					ExplodeString(sLine, " ", sAngles, 6, 96)
-					for(int i = 0; i <= 2; i++)
-					{
-						gF_origin[client][i] = StringToFloat(sOrigin[i])
-						gF_angles[client][i] = StringToFloat(sAngles[i + 3])
-					}
-					TeleportEntity(client, gF_origin[client], gF_angles[client], view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
+					int random = GetRandomInt(1, g_spawnpointMax)
+					eSpawn spawn
+					g_spawnInfo.GetArray(random, spawn, sizeof(spawn))
+					TeleportEntity(client, spawn.origin, spawn.angles, view_as<float>({0.0, 0.0, 0.0})) //https://github.com/alliedmodders/cssdm
 				}
 				SetEntProp(client, Prop_Send, "m_iAccount", 16000)
 				SetEntProp(client, Prop_Data, "m_CollisionGroup", 2)
-				gB_buyAble[client] = true
+				g_buyAble[client] = true
 			}
 		}
 	}
@@ -323,12 +321,12 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 		RemoveEntity(entity)
 }
 
-Action round_start(Event event, const char[] name, bool dontBroadcast)
+Action OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	gI_scoreT = 0
-	gI_scoreCT = 0
-	gF_time = GetGameTime()
-	gB_endgame = false
+	g_scoreT = 0
+	g_scoreCT = 0
+	g_time = GetGameTime()
+	g_endgame = false
 	for(int i = 1; i <= MaxClients; i++)
 		if(IsClientInGame(i) && IsPlayerAlive(i))
 			GetPossition(i)
@@ -337,7 +335,7 @@ Action round_start(Event event, const char[] name, bool dontBroadcast)
 	GetConVar()
 }
 
-Action playerdeath(Event event, const char[] name, bool dontBroadcast)
+Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")) //user ID who died
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE)
@@ -346,19 +344,19 @@ Action playerdeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		int team = GetClientTeam(attacker)
 		if(team == CS_TEAM_T)
-			gI_scoreT++
+			g_scoreT++
 		else if(team == CS_TEAM_CT)
-			gI_scoreCT++
+			g_scoreCT++
 	}
 }
 
-Action playerspawn(Event event, const char[] name, bool dontBroadcast)
+Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	GetPossition(client)
 }
 
-Action playerteam(Event event, const char[] name, bool dontBroadcast)
+Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"))
 	if(IsFakeClient(client))
@@ -373,20 +371,20 @@ Action timer_respawn(Handle timer, int client)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-	if(gF_time + gF_roundtime * 60.0 + float(gI_freezetime) - 1.0 <= GetGameTime() && !gB_endgame)
+	if(g_time + g_roundtime * 60.0 + float(g_freezetime) - 1.0 <= GetGameTime() && !g_endgame)
 	{
 		Handle convar = FindConVar("mp_round_restart_delay")
 		float roundrestartdelay = GetConVarFloat(convar)
-		if(gI_scoreT == gI_scoreCT)
+		if(g_scoreT == g_scoreCT)
 		{
 			int whoWin = GetRandomInt(CS_TEAM_T, CS_TEAM_CT)
 			if(whoWin == CS_TEAM_T)
-				gI_scoreT++
+				g_scoreT++
 			else if(whoWin == CS_TEAM_CT)
-				gI_scoreCT++
+				g_scoreCT++
 		}
 		SetConVarInt(FindConVar("mp_ignore_round_win_conditions"), 0)
-		if(gI_scoreT > gI_scoreCT)
+		if(g_scoreT > g_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1)
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin) //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
@@ -397,11 +395,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin)
 		}
 		AcceptEntityInput(CreateEntityByName("game_end"), "EndGame") //https://forums.alliedmods.net/showthread.php?t=216503
-		gB_endgame = true
+		g_endgame = true
 	}
-	if(gF_time + float(gI_freezetime) <= GetGameTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
-		if(gB_buyAble[client])
-			gB_buyAble[client] = false
+	if(g_time + float(g_freezetime) <= GetGameTime() && (buttons & IN_ATTACK || buttons & IN_ATTACK2))
+		if(g_buyAble[client])
+			g_buyAble[client] = false
 }
 
 public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.alliedmods.net/showthread.php?t=314852
@@ -413,9 +411,9 @@ public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.
 
 Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
-	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && gB_silentKnife)
+	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
 	{
-		gB_silentKnife = false
+		g_silentKnife = false
 		return Plugin_Handled
 	}
 	return Plugin_Continue
