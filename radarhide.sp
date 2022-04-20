@@ -28,50 +28,85 @@
 	any other work released this way by its authors. You can apply it to
 	your programs, too.
 */
-float gF_flashDuration[MAXPLAYERS + 1]
+#pragma semicolon 1
+#pragma newdecls required
+
+#define MAXPLAYER MAXPLAYERS + 1
+
+float g_flashDuration[MAXPLAYER];
+bool g_opened[MAXPLAYER];
 
 public Plugin myinfo =
 {
 	name = "Radar Hide",
 	author = "Smesh(Nick Yurevich)",
 	description = "Hide radar for alive player.",
-	version = "0.1",
+	version = "0.2",
 	url = "http://www.sourcemod.net/"
-}
+};
 
 public void OnPluginStart()
 {
-	HookEvent("player_spawn", OnSpawn, EventHookMode_Post)
-	HookEvent("player_blind", OnBlind, EventHookMode_Post)
+	HookEvent("player_spawn", OnSpawn, EventHookMode_Post);
+	HookEvent("player_blind", OnBlind, EventHookMode_Post);
+
+	return;
 }
 
-Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
+public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	gF_flashDuration[client] = GetGameTime()
-	RadarHide(client)
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	g_flashDuration[client] = GetGameTime();
+	g_opened[client] = true;
+	RadarHide(client);
+
+	return Plugin_Continue;
 }
 
-Action OnBlind(Event event, const char[] name, bool dontBroadcast)
+public Action OnBlind(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"))
-	gF_flashDuration[client] = GetGameTime() + GetEntPropFloat(client, Prop_Send, "m_flFlashDuration")
-	CreateTimer(GetEntPropFloat(client, Prop_Send, "m_flFlashDuration") - 0.1, timer_hide, client, TIMER_FLAG_NO_MAPCHANGE)
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	g_flashDuration[client] = GetGameTime() + GetEntPropFloat(client, Prop_Send, "m_flFlashDuration");
+	//CreateTimer(GetEntPropFloat(client, Prop_Send, "m_flFlashDuration") - 0.1, timer_hide, client, TIMER_FLAG_NO_MAPCHANGE)
+	//SetEntPropFloat(client, Prop_Send, "m_flFlashDuration", 3600.0); //https://forums.alliedmods.net/showpost.php?p=2464729&postcount=3
+	//SetEntPropFloat(client, Prop_Send, "m_flFlashMaxAlpha", 0.5);
+	g_opened[client] = true;
+	RadarHide(client);
+
+	return Plugin_Continue;
 }
 
-Action timer_hide(Handle timer, int client)
-{
-	RadarHide(client)
-}
+//Action timer_hide(Handle timer, int client)
+//{
+//	RadarHide(client)
+//}
 
-void RadarHide(int client)
+public void RadarHide(int client)
 {
-	if(IsClientInGame(client) && !IsFakeClient(client) && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3))
+	if(g_opened[client] == true && IsClientInGame(client) && !IsFakeClient(client) && (GetClientTeam(client) == 2 || GetClientTeam(client) == 3))
 	{
-		if(gF_flashDuration[client] - 0.1 <= GetGameTime())
+		if(g_flashDuration[client] - 0.1 <= GetGameTime())
 		{
-			SetEntPropFloat(client, Prop_Send, "m_flFlashDuration", 3600.0) //https://forums.alliedmods.net/showpost.php?p=2464729&postcount=3
-			SetEntPropFloat(client, Prop_Send, "m_flFlashMaxAlpha", 0.5)
+			SetEntPropFloat(client, Prop_Send, "m_flFlashDuration", 3600.0); //https://forums.alliedmods.net/showpost.php?p=2464729&postcount=3
+			SetEntPropFloat(client, Prop_Send, "m_flFlashMaxAlpha", 0.5);
+
+			g_opened[client] = false;
 		}
 	}
+
+	return;
+}
+
+/*public void RadarHide2(int client)
+{
+	SetEntPropFloat(client, Prop_Send, "m_flFlashDuration", 3600.0); //https://forums.alliedmods.net/showpost.php?p=2464729&postcount=3
+	SetEntPropFloat(client, Prop_Send, "m_flFlashMaxAlpha", 0.5);
+}*/
+
+public Action OnPlayerRunCmd(int client)
+{
+	//if(IsPlayer)
+	RadarHide(client);
+
+	return Plugin_Continue;
 }
