@@ -208,6 +208,8 @@ public void sdkpostthink(int client)
 
 public void sdkweaponequip(int client, int weapon)
 {
+	sdkreload(weapon, true);
+	
 	SDKHook(weapon, SDKHook_ReloadPost, sdkreload);
 }
 
