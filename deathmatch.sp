@@ -30,8 +30,6 @@
 
 #define MAXPLAYER MAXPLAYERS + 1
 
-//float g_origin[2048 + 1][3]
-//float g_angles[2048 + 1][3]
 ArrayList g_spawnInfo;
 char g_map[192];
 int g_scoreT;
@@ -68,7 +66,7 @@ public Plugin myinfo =
 	name = "Deathmatch",
 	author = "Nick Jurevics (Smesh, Smesh292)",
 	description = "Make able to spawn instantly after death on the map in random place.",
-	version = "1.4",
+	version = "1.5",
 	url = "http://www.sourcemod.net/"
 };
 
@@ -189,7 +187,7 @@ public void OnClientDisconnect(int client)
 			RemoveEntity(entity);
 }
 
-public Action sdkweapondrop(int client, int weapon)
+stock Action sdkweapondrop(int client, int weapon)
 {
 	if(IsValidEntity(weapon))
 		RemoveEntity(weapon);
@@ -203,17 +201,18 @@ public void sdkpostthink(int client)
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", true); //https://forums.alliedmods.net/showthread.php?t=216370&page=2
 	else
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", false);
+	
 	SetEntProp(client, Prop_Send, "m_bInBombZone", false);
 }
 
-public void sdkweaponequip(int client, int weapon)
+stock void sdkweaponequip(int client, int weapon)
 {
 	sdkreload(weapon, true);
 	
 	SDKHook(weapon, SDKHook_ReloadPost, sdkreload);
 }
 
-public void sdkreload(int weapon, bool bSuccessful)
+stock void sdkreload(int weapon, bool bSuccessful)
 {
 	if(bSuccessful)
 	{
@@ -229,9 +228,16 @@ public void sdkreload(int weapon, bool bSuccessful)
 		{
 			ExplodeString(g_weaponAmmo[i], ";", exploded, 24, 16);
 
-			if(StrContains(classname, exploded[0]) != -1)
+			char weaponName[32];
+			Format(weaponName, sizeof(weaponName), "%s", exploded[0]);
+
+			if(StrContains(classname, weaponName) != -1)
 			{
-				SetEntData(GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity"), (start + (ammotype * 4)), StringToInt(exploded[1])); //https://forums.alliedmods.net/showpost.php?p=1460194&postcount=3
+				int client = GetEntPropEnt(weapon, Prop_Data, "m_hOwnerEntity");
+				int ammoCount = StringToInt(exploded[1]);
+
+				if(GetEntData(client, (start + (ammotype * 4))) < ammoCount)
+					SetEntData(client, (start + (ammotype * 4)), ammoCount); //https://forums.alliedmods.net/showpost.php?p=1460194&postcount=3
 				
 				break;
 			}
@@ -240,7 +246,7 @@ public void sdkreload(int weapon, bool bSuccessful)
 }
 
 #if debug
-Action cmd_getscore(int client, int args)
+stock Action cmd_getscore(int client, int args)
 {
 	PrintToServer("Counter-Terorist score is: %i", g_scoreCT);
 	PrintToServer("Terorist score is: %i", g_scoreT);
@@ -255,12 +261,15 @@ Action cmd_getscore(int client, int args)
 	{
 		float vec[3];
 		GetClientAbsOrigin(client, vec);
+
 		PrintToConsole(client, "%f %f %f", vec[0], vec[1], vec[2]);
+
 		return Plugin_Handled;
 	}
 
 	char exploded[8][8];
 	ExplodeString(cmd, ";", exploded, 8, 8);
+	
 	char format[256];
 	Format(format, sizeof(format), "cfg/sourcemod/deathmatch/%s.txt", g_map);
 
@@ -292,7 +301,7 @@ Action cmd_getscore(int client, int args)
 	return Plugin_Handled;
 }
 
-public int spawnpointfixer_handler(Menu menu, MenuAction action, int param1, int param2)
+stock int spawnpointfixer_handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
@@ -325,7 +334,7 @@ public int spawnpointfixer_handler(Menu menu, MenuAction action, int param1, int
 }
 #endif
 
-public Action joinclass(int client, const char[] command, int argc)
+stock Action joinclass(int client, const char[] command, int argc)
 {
 	if(!IsPlayerAlive(client))
 		CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -398,7 +407,7 @@ stock Action OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
+stock Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid")); //user ID who died
 	CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -418,7 +427,7 @@ public Action OnDeath(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
+stock Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -427,7 +436,7 @@ public Action OnSpawn(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action OnTeam(Event event, const char[] name, bool dontBroadcast)
+stock Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
@@ -437,7 +446,7 @@ public Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action timer_respawn(Handle timer, int client)
+stock Action timer_respawn(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 		GetPossition(client);
@@ -467,16 +476,19 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vec[3
 		if(g_scoreT > g_scoreCT)
 		{
 			SetTeamScore(CS_TEAM_T, GetTeamScore(CS_TEAM_T) + 1);
+
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_TerroristWin); //https://www.bing.com/search?q=CSRoundEnd_TerroristWin&cvid=f8db94b57b5a41b59b8f6042a76dfed1&aqs=edge..69i57.399j0j4&FORM=ANAB01&PC=U531
 		}
 
 		else
 		{
 			SetTeamScore(CS_TEAM_CT, GetTeamScore(CS_TEAM_CT) + 1); //https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/teamscores.sp#L63
+
 			CS_TerminateRound(roundrestartdelay, CSRoundEnd_CTWin);
 		}
 
 		AcceptEntityInput(CreateEntityByName("game_end"), "EndGame"); //https://forums.alliedmods.net/showthread.php?t=216503
+
 		g_endgame = true;
 	}
 
@@ -495,7 +507,7 @@ public Action CS_OnBuyCommand(int client, const char[] weapon) //https://forums.
 	return Plugin_Continue;
 }
 
-public Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
+stock Action SoundHook(int clients[MAXPLAYERS], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags, char soundEntry[PLATFORM_MAX_PATH], int& seed) //https://github.com/alliedmodders/sourcepawn/issues/476
 {
 	if(StrEqual(sample, "weapons/knife/knife_deploy1.wav") && g_silentKnife)
 	{
