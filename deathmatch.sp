@@ -197,7 +197,7 @@ stock Action sdkweapondrop(int client, int weapon)
 	return Plugin_Continue;
 }
 
-public void sdkpostthink(int client)
+stock void sdkpostthink(int client)
 {
 	if(g_buyAble[client])
 		SetEntProp(client, Prop_Send, "m_bInBuyZone", true); //https://forums.alliedmods.net/showthread.php?t=216370&page=2
