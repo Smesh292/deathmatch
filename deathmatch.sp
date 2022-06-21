@@ -84,6 +84,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_score", cmd_getscore);
 	#endif
 
+	Init();
+
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
@@ -228,7 +230,7 @@ stock void sdkreload(int weapon, bool bSuccessful)
 		{
 			ExplodeString(g_weaponAmmo[i], ";", exploded, 24, 16);
 
-			char weaponName[32];
+			char weaponName[16];
 			Format(weaponName, sizeof(weaponName), "%s", exploded[0]);
 
 			if(StrContains(classname, weaponName) != -1)
@@ -389,7 +391,7 @@ public void OnEntityCreated(int entity, const char[] classname) //https://forums
 	//	RemoveEntity(entity)
 }
 
-stock Action OnRoundStart(Event event, const char[] name, bool dontBroadcast)
+stock void Init()
 {
 	g_scoreT = 0;
 	g_scoreCT = 0;
@@ -403,6 +405,11 @@ stock Action OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	ServerCommand("mat_texture_list_txlod_sync reset");
 	ServerCommand("mp_ignore_round_win_conditions 1");
 	GetConVar();
+}
+
+stock Action OnRoundStart(Event event, const char[] name, bool dontBroadcast)
+{
+	Init();
 
 	return Plugin_Continue;
 }
