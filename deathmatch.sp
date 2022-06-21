@@ -133,7 +133,7 @@ stock void GetMaxSpawnpoint()
 
 		g_spawnInfo = new ArrayList(sizeof(eSpawn));
 
-		while(!f.EndOfFile() && f.ReadLine(line, 96))
+		while(!f.EndOfFile() && f.ReadLine(line, sizeof(line)))
 		{
 			ExplodeString(line, " ", origin_, 3, 96);
 			ExplodeString(line, " ", angles_, 6, 96);
