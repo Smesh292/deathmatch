@@ -450,6 +450,10 @@ stock Action OnTeam(Event event, const char[] name, bool dontBroadcast)
 	if(IsFakeClient(client))
 		CreateTimer(1.0, timer_respawn, client, TIMER_FLAG_NO_MAPCHANGE);
 
+	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+	if(IsValidEntity(ragdoll))
+		AcceptEntityInput(ragdoll, "Kill");
+
 	return Plugin_Continue;
 }
 
